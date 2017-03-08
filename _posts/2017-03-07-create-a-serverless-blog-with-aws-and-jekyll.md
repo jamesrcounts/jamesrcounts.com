@@ -271,4 +271,66 @@ Now that you have the tools you need to create content for a static website, let
          
      1. Now I can restart the server without the `--drafts` flag, and I should still be able to see this post.
           
-1. Create an AWS account
+1. Continuous Deployment
+
+    Now that the basics are all worked out.  I'll setup the blog for continuous deployment to S3.  I'll use the following online services.
+    
+    * GitHub to store the repository - [Account Required](https://github.com/join)
+   
+    * Circle CI for builds - [Account Required](https://github.com/join)
+        
+    * Amazon Web Services - [Account Required](https://aws.amazon.com/)
+    
+        Note that an AWS account has a free tier, but it not free after the first year.  The amazon signup process can be a little intimidating, here are some notes:
+        
+        * When signing up you *will* need to provide a credit card, as certain services are not free even in the first year.  
+        * Also be aware that the CAPTCHA they use is pretty garbled and annoying, you may have to try several times before you can find one that you can decipher.
+        * You will need to provide a telephone number so that their automated system can call you to verify your identity. (Note there is a **second** annoying CAPTCHA at this stage.)  You may also need to retry this step a few times, amazon seems to have some trouble placing outbound calls reliably.
+        
+    1. Create remote repository
+    
+        If you are familiar with GitHub, create a repository then skip to the next section.
+    
+        1. After creating your account click the green "New Repository" button on the right side of the homepage.
+          
+        1. Pick a repository name.  I will use "jamesrcounts.com" to match the jekyll project name.
+        
+        1. I will create a public repository.
+        
+        1. Do not initialize the repository with a readme, or add .gitignore/.gitattributes.
+        
+        1. Click "Create Repository"
+        
+    1. Configure the new repository as a remote in your local repository.
+     
+        Again, if you are familiar with git, this will be second nature to you.  For those who prefer step-by-step instructions, follow on.
+        
+        1. First add the remote
+
+            ```bash
+            git remote add origin ${REPOSITORY_URL}
+            ```
+               
+           Example:
+           ```bash
+           git remote add origin https://github.com/jamesrcounts/jamesrcounts.com.git
+           ```
+           
+        1. Then push the contents
+                        
+           ```bash
+           git push -u origin master
+           ```
+    1. Refresh your browser and you should see your contents on GitHub.
+    
+        ![Pushed to GitHub](/media/2017/03/07/pushed-to-github.png)
+
+           
+           
+           
+           
+           
+           
+           
+           
+    
