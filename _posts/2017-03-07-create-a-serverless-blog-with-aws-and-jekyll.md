@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Getting Started with Serverless
+title: Create a serverless blog with AWS and jekyll
 ---
 ## Create a jekyll blog in S3
 
@@ -222,7 +222,7 @@ Now that you have the tools you need to create content for a static website, let
         ```yaml
         ---
         layout: post
-        title: Getting Started with Serverless
+        title: Create a serverless blog with AWS and jekyll
         ---
         ```
         
@@ -256,9 +256,19 @@ Now that you have the tools you need to create content for a static website, let
         
     1. Now would be a good time to make sure we are all checked in.
     
-    ```bash
-    git add .
-    git commit -m "Added first draft"
-    ```
+        ```bash
+        git add .
+        git commit -m "Added first draft"
+        ```
+        
+     1. Finally I will publish this post by moving it out of the draft folder into the posts folder.  In the post folder, Jekyll requires that the filename is prefixed if YEAR-MONTH-DAY.
      
+         ```bash
+         mv _drafts/getting_started_serverless.md _posts/2017-03-07-create-a-serverless-blog-with-aws-and-jekyll.md
+         ```
+         
+         As I moved the file, I thought of a better name, so I made that change as well.
+         
+     1. Now I can restart the server without the `--drafts` flag, and I should still be able to see this post.
+          
 1. Create an AWS account
