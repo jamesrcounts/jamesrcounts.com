@@ -394,6 +394,66 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
               post:
                 - bundle exec jekyll build
             ```
+            
+            Push and let CircleCI run, it may fail with an invalid date error like this:
+            
+            ![Invalid Date Error](/media/2017/03/07/invalid-date-error.png)
+            
+        1. Exclude problem file from jekyll build.
+           
+           Although I'm bothered that I could not reproduce this error locally by running `bundle exec jekyll build`, I'm happy that I have a build server.  One of the great things about a build server is that it provides a second machine to test your code on, surfacing problems that are hidden by your local configuration.
+            
+            I found this [github issue](https://github.com/jekyll/jekyll/issues/2938) after some googling.  The issue explains that the problem file is actually a test file, not one of ours.  Looking at the error again I can see that indeed the file is beneath the `vendor/bundle` folder, and not one of mine.  The commentors on the issue reccomend exluding files under this path from the build.  
+             
+            Lets update `_config.yml`.  This file is in your project root directory and it contains several settings which impact improve the over all look and feel of our site.  I've been putting it off to focus on writing this post.  Since we are here we will update them all.
+            
+            * `title` - This is the title for the whole site, your blog's name in other words. Think of what you want to call your site.  I'm going to call mine "Head In The Clouds", since its the first thing that occurs to me.
+            
+            * `email` - add your email address here.  This address will appear in the footer of every page.
+            
+            * `description` - This description should be a short blurb describing your site.  It will appear in the footer.
+            
+            * `twitter_username` - Update this to reflect your twitter handle.
+            
+            * `github_username` - Also update this to reflect your github handle.
+            
+            * `exclude` - Here we will add "vendor/bundle" to the list.  Since we are here we can also exclude "circle.yml" so that it wont be copied to the _site directory.
+            
+                ```yaml
+                exclude:
+                  - Gemfile
+                  - Gemfile.lock
+                  - vendor/bundle
+                  - circle.yml
+                ```
+                
+            My final file looks like this:
+             
+            ```yaml
+            title: Head In The Clouds
+            email: jamesrcounts@outlook.com
+            description: > 
+              I'm Jim Counts, independent consultant specializing in legacy code, cloud,
+              and devops.  This blog is where I'll share my thoughts and tips on cloud
+              and serverless computing.
+            baseurl: "" 
+            url: "" 
+            twitter_username: jamesrcounts
+            github_username:  jamesrcounts
+            
+            # Build settings
+            markdown: kramdown
+            theme: minima
+            gems:
+              - jekyll-feed
+            exclude:
+              - Gemfile
+              - Gemfile.lock
+              - vendor/bundle
+              - circle.yml
+
+            ```
+           
            
            
            
