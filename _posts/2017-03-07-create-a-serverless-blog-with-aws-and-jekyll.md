@@ -453,7 +453,25 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
               - circle.yml
 
             ```
-           
+            Push these changes and the next CircleCI build should finish without errors.  We're still missing tests though.
+            
+        1. Setup tests - [HTML Proofer](https://github.com/gjtorikian/html-proofer)
+        
+            Although I'm only using jekyll to produce a static blog site, there are still things to test.  The jekyll docs recommend a tool called HTML Proofer to check for issues like badly formed HTML or broken links. 
+            
+            I'll add a test block to my circle.yml
+            
+            ```yaml
+            test:
+              post:
+                - bundle exec htmlproofer ./_site --check-html --disable-external
+            ```
+            
+            And I'll add this line to end of my Gemfile
+            
+            ```ruby
+            gem 'html-proofer'
+            ```
            
            
            
