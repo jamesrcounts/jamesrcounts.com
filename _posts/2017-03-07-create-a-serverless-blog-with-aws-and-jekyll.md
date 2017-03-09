@@ -343,12 +343,19 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
         
     1. Click the blue "Follow and Build" button below the list of projects.
     
-    1. CircleCI will kick off the first build.  We haven't provided any instructions to CircleCI, so it will do what it can.  Once it sees the code and realizes that it's a ruby project, CircleCI will run `bundle install`.  This will succeed but the build will still show up as a failure because we haven't configured any tests.
+    1. CircleCI will kick off the first build.  
+    
+        We haven't provided any instructions to CircleCI, so it will do what it can.  Once it sees the code and realizes that it's a ruby project, CircleCI will run `bundle install`.  This will succeed but the build will still show up as a failure because we haven't configured any tests.
     
         More importantly, CircleCI does not know that it should process the project using jekyll.  We need to tell CircleCI to do so, and then it will create the outputs that we need.
         
         ![Failing Build](/media/2017/03/07/failing-build.png)
     
+    1. Create a `circle.yml` file - [Documentation](https://circleci.com/docs/1.0/configuration/)
+    
+        This file tells CircleCI how to build and test our project.
+        
+        1. Create the circle.yml file in the project root.
     
            
            
