@@ -2,8 +2,7 @@
 layout: post
 title: Create a serverless blog with AWS and jekyll
 ---
-## Create a jekyll blog in S3
-
+# Introduction
 Although I'm a polyglot programmer and use both Windows and Mac in my professional work, I'll be using a Mac for writing this particular blog post.  All `commands` will be `bash` commands.  If you are working on a modern version of Windows you should be able to activate bash on your machine, but you still may need ruby or other tools.  I'm not going to cover getting ruby and bash working for windows in this post, but I will try to point out what tools are required for each command so that you can get them setup.
     
 ## Initial setup
@@ -270,27 +269,34 @@ Now that you have the tools you need to create content for a static website, let
          As I moved the file, I thought of a better name, so I made that change as well.
          
      1. Now I can restart the server without the `--drafts` flag, and I should still be able to see this post.
-          
-1. Continuous Deployment
 
-    Now that the basics are all worked out.  I'll setup the blog for continuous deployment to S3.  I'll use the following online services.
+# Publish
+## Continuous Deployment
+
+Now that the basics are all worked out.  I'll setup the blog for continuous deployment to S3.  I'll use the following online services.
+
+* GitHub to store the repository - [Account Required](https://github.com/join)
+    * A free account with public repositories will be fine.
+
+* CircleCI for builds - [Account Required](https://github.com/join)
+    * Sign up for GitHub first, you will use that account when creating your CircleCI account.
+    * CircleCI has a free tier for private repositories, it has an even better free tier for public repositories.  Either one should work fine for building our jekyll site.
+    * *Note*: CircleCI supports BitBucket as well, if you prefer that service to GitHub. 
     
-    * GitHub to store the repository - [Account Required](https://github.com/join)
-   
-    * Circle CI for builds - [Account Required](https://github.com/join)
-        
-    * Amazon Web Services - [Account Required](https://aws.amazon.com/)
+* Amazon Web Services - [Account Required](https://aws.amazon.com/)
+
+    Note that an AWS account has a free tier, but it not free after the first year.  The amazon signup process can be a little intimidating, here are some notes:
     
-        Note that an AWS account has a free tier, but it not free after the first year.  The amazon signup process can be a little intimidating, here are some notes:
-        
-        * When signing up you *will* need to provide a credit card, as certain services are not free even in the first year.  
-        * Also be aware that the CAPTCHA they use is pretty garbled and annoying, you may have to try several times before you can find one that you can decipher.
-        * You will need to provide a telephone number so that their automated system can call you to verify your identity. (Note there is a **second** annoying CAPTCHA at this stage.)  You may also need to retry this step a few times, amazon seems to have some trouble placing outbound calls reliably.
-        
+    * When signing up you *will* need to provide a credit card, as certain services are not free even in the first year.  
+    * Also be aware that the CAPTCHA they use is pretty garbled and annoying, you may have to try several times before you can find one that you can decipher.
+    * You will need to provide a telephone number so that their automated system can call you to verify your identity. (Note there is a **second** annoying CAPTCHA at this stage.)  You may also need to retry this step a few times, amazon seems to have some trouble placing outbound calls reliably.
+
+1. Setup Github
+    
+    If you are familiar with GitHub, then create a repository and push your site to it, then skip to the next section.  If you prefer detailed step-by-step instructions, follow on.
+
     1. Create remote repository
-    
-        If you are familiar with GitHub, create a repository then skip to the next section.
-    
+        
         1. After creating your account click the green "New Repository" button on the right side of the homepage.
           
         1. Pick a repository name.  I will use "jamesrcounts.com" to match the jekyll project name.
@@ -302,8 +308,6 @@ Now that you have the tools you need to create content for a static website, let
         1. Click "Create Repository"
         
     1. Configure the new repository as a remote in your local repository.
-     
-        Again, if you are familiar with git, this will be second nature to you.  For those who prefer step-by-step instructions, follow on.
         
         1. First add the remote
 
@@ -325,7 +329,21 @@ Now that you have the tools you need to create content for a static website, let
     
         ![Pushed to GitHub](/media/2017/03/07/pushed-to-github.png)
 
-           
+1. TODO: Setup AWS
+
+1. Connect to CircleCI
+
+    1. Deselect projects you don't want to build
+    
+        By default, CircleCI selects all the projects it can access through your linked GitHub account.  You probably don't want to build all of them.
+        
+        1. Click "Deselect all projects" as needed.  You will need do do this once per organization/user.
+        
+        1. Click the check box next to the your blog repository.
+        
+    1. Click the blue "Follow and Build" button below the list of projects.
+    
+    
            
            
            
