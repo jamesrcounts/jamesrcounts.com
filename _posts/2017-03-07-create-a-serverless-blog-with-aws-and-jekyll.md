@@ -361,9 +361,11 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
             touch circle.yml
             ```
         
-        1. Next configure the machine by telling it what version of ruby you want to use.
+        1. Next configure the machine by telling it what version of ruby you want to use.  
         
-            1. Figure out the version of ruby
+            This resolves an warning during `bundle install` on the build server, and gets our feet wet with circle.yml.
+        
+            * Figure out the version of ruby
             
                 ```bash
                 echo ${RUBY_VERSION}
@@ -371,14 +373,27 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
             
                 ![Ruby Version](/media/2017/03/07/ruby-version.png)
                 
-            1. Add machine configuration to the top of the circle.yml file
+            * Add machine configuration to the top of the circle.yml file
             
                 ```yaml
                 machine:
                   ruby:
                     version: ruby-2.4.0
                 ```
-           
+             
+             Push this change and CircleCI will start a new build.  The build will still fail because there are no testing instructions.
+             
+    1. Setup jekyll build
+    
+        Before we can setup tests we need something to test.  Lets tell CircleCI how to create the site.
+        
+        1. Add a dependencies section below the machine section
+        
+            ```yaml
+            dependencies:
+              post:
+                - bundle exec jekyll build
+            ```
            
            
            
