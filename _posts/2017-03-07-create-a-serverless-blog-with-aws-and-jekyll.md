@@ -473,6 +473,9 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
             gem 'html-proofer'
             ```
            
+           After I push these changes, the next CircleCI build is finally green!
+           
+           ![Fixed Build](/media/2017/03/07/fixed-build.png)
            
            
            
