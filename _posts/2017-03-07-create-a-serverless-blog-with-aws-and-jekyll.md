@@ -329,7 +329,9 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
     
         ![Pushed to GitHub](/media/2017/03/07/pushed-to-github.png)
 
-1. TODO: Setup AWS
+1. Setup AWS S3 Bucket
+
+    To host our site in AWS we will need a storage bucket to put our files into.  To configure this bucket properly, and integrate with CircleCI later, we will also setup a user for CircleCI which has permission to put objects into the bucket. 
 
 1. Connect to CircleCI
 
