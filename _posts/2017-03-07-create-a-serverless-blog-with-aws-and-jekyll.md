@@ -356,7 +356,28 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
         This file tells CircleCI how to build and test our project.
         
         1. Create the circle.yml file in the project root.
-    
+        
+            ```bash
+            touch circle.yml
+            ```
+        
+        1. Next configure the machine by telling it what version of ruby you want to use.
+        
+            1. Figure out the version of ruby
+            
+                ```bash
+                echo ${RUBY_VERSION}
+                ```
+            
+                ![Ruby Version](/media/2017/03/07/ruby-version.png)
+                
+            1. Add machine configuration to the top of the circle.yml file
+            
+                ```yaml
+                machine:
+                  ruby:
+                    version: ruby-2.4.0
+                ```
            
            
            
