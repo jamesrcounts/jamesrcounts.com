@@ -345,62 +345,62 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
             * I don't need any optional features like versioning, logging, or tags right now.
             * I'll leave the permissions at thier default values for now.
             
-        1. Next upload the site to the primary bucket.
+    1. Next upload the site to the primary bucket.
+    
+        Later we will use CircleCI to push content into the bucket.  For now we will just create and copy the files manually.
         
-            Later we will use CircleCI to push content into the bucket.  For now we will just create and copy the files manually.
+        1. Build the site
+        
+            ```bash
+            bundle exec jekyll build
+            ```
+           
+        1. Copy everything *inside* the _site folder to your primary bucket (without the "www" prefix).  
+        
+            You can just drag them in from your file manager and drop them in the blue area of your bucket.
             
-            * Build the site
+            ![Drop Site Files](/media/2017/03/07/drop-site-files.png)
             
-                ```bash
-                bundle exec jekyll build
-                ```
-               
-            * Copy everything *inside* the _site folder to your primary bucket (without the "www" prefix).  
+            Then click the "Upload" button to send the files.
+        
+        1. Configure the bucket for website hosting - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/static-website-hosting.html)
+        
+            * Click "Properties"
+            * Click "Static website hosting"
+            * Choose "Use this bucket to host a website"
+            * Click the "Save" button
             
-                You can just drag them in from your file manager and drop them in the blue area of your bucket.
-                
-                ![Drop Site Files](/media/2017/03/07/drop-site-files.png)
-                
-                Then click the "Upload" button to send the files.
-                
-            * Configure the bucket for website hosting - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/static-website-hosting.html)
+        1. Although the website URL is now available, we receive a 403 error when trying to access the site.
+        
+            ![403 Error](/media/2017/03/07/403-error.png)
             
-                * Click "Properties"
-                * Click "Static website hosting"
-                * Choose "Use this bucket to host a website"
-                * Click the "Save" button
-                
-            * Although the website URL is now available, we receive a 403 error when trying to access the site.
+        1. Set public bucket permissions - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/set-bucket-permissions.html)
+        
+            * Click "Permissions"
+            * Click "Bucket Policy"
+            * Paste in a policy to grant permission (notice that you need to update the bucket name in your version of the policy)
             
-                ![403 Error](/media/2017/03/07/403-error.png)
-                
-            * Set public bucket permissions - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/set-bucket-permissions.html)
-            
-                * Click "Permissions"
-                * Click "Bucket Policy"
-                * Paste in a policy to grant permission (notice that you need to update the bucket name in your version of the policy)
-                
-                    ```json 
-                    {
-                      "Version":"2012-10-17",
-                      "Statement":[{
-                        "Sid":"AddPerm",
-                            "Effect":"Allow",
-                          "Principal": "*",
-                          "Action":["s3:GetObject"],
-                          "Resource":["arn:aws:s3:::jamesrcounts.com/*"
-                          ]
-                        }
+                ```json 
+                {
+                  "Version":"2012-10-17",
+                  "Statement":[{
+                    "Sid":"AddPerm",
+                        "Effect":"Allow",
+                      "Principal": "*",
+                      "Action":["s3:GetObject"],
+                      "Resource":["arn:aws:s3:::jamesrcounts.com/*"
                       ]
                     }
-                    ```
-                
-                * Click "Save"
-                
-                * We can now view the site on the public internet!
-                
-                    ![Publicly Viewable](/media/2017/03/07/publicly-viewable.png)
+                  ]
+                }
+                ```
             
+            * Click "Save"
+        
+        1. We can now view the site on the public internet!
+        
+            ![Publicly Viewable](/media/2017/03/07/publicly-viewable.png)
+    
 
 1. Connect to CircleCI
 
