@@ -418,6 +418,19 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
         
             ![Redirect To Site](/media/2017/03/07/redirect-to-site.png)
         
+1. Setup Custom Domain - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html#root-domain-walkthrough-switch-to-route53-as-dnsprovider)
+
+    1. Login to the AWS console then visit Route53
+    1. Create a hosted zone - [Instructions](http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/MigratingDNS.html#Step_CreateHostedZone)
+        1. Follow the link for specific instructions.
+        1. Enter the domain name, in my case: `jamesrcounts.com`
+        1. Click "Create"
+        
+    1. When the hosted zone is available, copy the collection of name servers.
+    
+        ![Copy Nameservers](/media/2017/03/07/copy-nameservers.png)
+    
+
 
 
 1. Connect to CircleCI
