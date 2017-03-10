@@ -363,44 +363,44 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
             
             Then click the "Upload" button to send the files.
         
-        1. Configure the bucket for website hosting - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/static-website-hosting.html)
+    1. Configure the bucket for website hosting - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/static-website-hosting.html)
         
-            * Click "Properties"
-            * Click "Static website hosting"
-            * Choose "Use this bucket to host a website"
-            * Click the "Save" button
+        1. Click "Properties"
+        1. Click "Static website hosting"
+        1. Choose "Use this bucket to host a website"
+        1. Click the "Save" button
             
-        1. Although the website URL is now available, we receive a 403 error when trying to access the site.
+    1. Although the website URL is now available, we receive a 403 error when trying to access the site.
+    
+        ![403 Error](/media/2017/03/07/403-error.png)
         
-            ![403 Error](/media/2017/03/07/403-error.png)
-            
-        1. Set public bucket permissions - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/set-bucket-permissions.html)
+    1. Set public bucket permissions - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/set-bucket-permissions.html)
+    
+        1. Click "Permissions"
+        1. Click "Bucket Policy"
+        1. Paste in a policy to grant permission (notice that you need to update the bucket name in your version of the policy)
         
-            * Click "Permissions"
-            * Click "Bucket Policy"
-            * Paste in a policy to grant permission (notice that you need to update the bucket name in your version of the policy)
-            
-                ```json 
-                {
-                  "Version":"2012-10-17",
-                  "Statement":[{
-                    "Sid":"AddPerm",
-                        "Effect":"Allow",
-                      "Principal": "*",
-                      "Action":["s3:GetObject"],
-                      "Resource":["arn:aws:s3:::jamesrcounts.com/*"
-                      ]
-                    }
+            ```json 
+            {
+              "Version":"2012-10-17",
+              "Statement":[{
+                "Sid":"AddPerm",
+                    "Effect":"Allow",
+                  "Principal": "*",
+                  "Action":["s3:GetObject"],
+                  "Resource":["arn:aws:s3:::jamesrcounts.com/*"
                   ]
                 }
-                ```
-            
-            * Click "Save"
+              ]
+            }
+            ```
         
-        1. We can now view the site on the public internet!
-        
-            ![Publicly Viewable](/media/2017/03/07/publicly-viewable.png)
+        1. Click "Save"
     
+    1. We can now view the site on the public internet!
+    
+        ![Publicly Viewable](/media/2017/03/07/publicly-viewable.png)
+
 
 1. Connect to CircleCI
 
