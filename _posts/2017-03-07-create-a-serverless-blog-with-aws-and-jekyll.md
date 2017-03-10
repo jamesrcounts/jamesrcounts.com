@@ -332,6 +332,47 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
 1. Setup AWS S3 Bucket
 
     To host our site in AWS we will need a storage bucket to put our files into.  To configure this bucket properly, and integrate with CircleCI later, we will also setup a user for CircleCI which has permission to put objects into the bucket. 
+    
+    1. Create Bucket(s) - [Create Buckets](http://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html#root-domain-walkthrough-s3-tasks)
+    
+        I will create two buckets `jamesrcounts.com` and `www.jamesrcounts.com` so that I can support requests with and without the `www`.  Eventually, I'll use AWS Route53 to handle DNS for the website, so the name of the bucket actually matters.  You can use any available name for the bucket, and just use the default URL provided by Amazon.  However, if you want to eventually host this site under your own domain name, you should go buy the domain now and name the bucket appropriately.
+        
+        1. After creating your AWS account, sign in and visit [s3](https://console.aws.amazon.com/s3)
+        
+        1. Create two buckets - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-bucket.html)
+            * I'll use the names `jamesrcounts.com` and `www.jamesrcounts.com`
+            * I'll pick "US West (Oregon)" as the region, but you should choose a region near you.
+            * I don't need any optional features like versioning, logging, or tags right now.
+            * I'll leave the permissions at thier default values for now.
+            
+        1. Next upload the site to the primary bucket.
+        
+            Later we will use CircleCI to push content into the bucket.  For now we will just create and copy the files manually.
+            
+            * Build the site
+            
+                ```bash
+                bundle exec jekyll build
+                ```
+               
+            * Copy everything *inside* the _site folder to your primary bucket (without the "www" prefix).  
+            
+                You can just drag them in from your file manager and drop them in the blue area of your bucket.
+                
+                ![Drop Site Files](/media/2017/03/07/drop-site-files.png)
+                
+                Then click the "Upload" button to send the files.
+                
+            * Configure the bucket for website hosting - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/static-website-hosting.html)
+            
+                * Click "Properties"
+                * Click "Static website hosting"
+                * Choose "Use this bucket to host a website"
+                * Click the "Save" button
+                
+            * Although the website URL is now available, we receive a 403 error when trying to access the site.
+            
+                ![403 Error](/media/2017/03/07/403-error.png)
 
 1. Connect to CircleCI
 
