@@ -426,7 +426,7 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
         1. Enter the domain name, in my case: `jamesrcounts.com`
         1. Click "Create"
         
-    1. Create alias records for each bucket
+    1. Create alias records for the first bucket
         1. Click "Create Record Set"
         1. For the first alias, leave the "Name" field blank.
         1. Choose the "Yes" radio-button next to the "Alias label"
@@ -438,11 +438,19 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
         
             ![Create First Alias](/media/2017/03/07/create-first-alias.png)
             
-    1. When the hosted zone is available, copy the collection of name servers.
+    1. Create a second alias, except this time use "www" as the name, and configure the alias to point at the secondary bucket.
+            
+1. Update DNS at the domain registrar
+
+    This step will vary depending on where you have your domain registered.  You can even use Amazon as your registrar.  I use hover.com, so I that's what I'll cover.
+    
+    1. Visit the hosted zone and copy the collection of name servers.
     
         ![Copy Nameservers](/media/2017/03/07/copy-nameservers.png)
     
-
+    1. I'll login to Hover, click on my domain and click the "Edit" button next to the nameservers
+    
+        ![Edit Nameservers](/media/2017/03/07/edit-nameservers.png)
 
 1. Connect to CircleCI
 
