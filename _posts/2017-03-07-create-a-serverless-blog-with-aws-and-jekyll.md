@@ -426,11 +426,22 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
         1. Enter the domain name, in my case: `jamesrcounts.com`
         1. Click "Create"
         
+    1. Create alias records for each bucket
+        1. Click "Create Record Set"
+        1. For the first alias, leave the "Name" field blank.
+        1. Choose the "Yes" radio-button next to the "Alias label"
+        1. Click in the "Alias Target" text box, and a drop down should offer you the matching bucket as an option.
+        
+            *Note*: If you do not see your bucket in the drop down, make sure your bucket name exactly matches the domain you are setting up.  These must match for S3 website hosting to work.  If the domain doesn't match the bucket name, recreate your bucket with the correct name and try again.
+            
+        1. Click "Create"
+        
+            ![Create First Alias](/media/2017/03/07/create-first-alias.png)
+            
     1. When the hosted zone is available, copy the collection of name servers.
     
         ![Copy Nameservers](/media/2017/03/07/copy-nameservers.png)
     
-
 
 
 1. Connect to CircleCI
