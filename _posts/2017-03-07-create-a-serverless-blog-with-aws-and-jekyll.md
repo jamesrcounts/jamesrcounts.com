@@ -451,6 +451,10 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
     1. I'll login to Hover, click on my domain and click the "Edit" button next to the nameservers
     
         ![Edit Nameservers](/media/2017/03/07/edit-nameservers.png)
+        
+    1. Paste in each name server into the record.
+    
+        ![Updated Nameservers](/media/2017/03/07/updated-nameservers.png)
 
 1. Connect to CircleCI
 
