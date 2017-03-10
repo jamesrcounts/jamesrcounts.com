@@ -373,6 +373,34 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
             * Although the website URL is now available, we receive a 403 error when trying to access the site.
             
                 ![403 Error](/media/2017/03/07/403-error.png)
+                
+            * Set public bucket permissions - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/set-bucket-permissions.html)
+            
+                * Click "Permissions"
+                * Click "Bucket Policy"
+                * Paste in a policy to grant permission (notice that you need to update the bucket name in your version of the policy)
+                
+                    ```json 
+                    {
+                      "Version":"2012-10-17",
+                      "Statement":[{
+                        "Sid":"AddPerm",
+                            "Effect":"Allow",
+                          "Principal": "*",
+                          "Action":["s3:GetObject"],
+                          "Resource":["arn:aws:s3:::jamesrcounts.com/*"
+                          ]
+                        }
+                      ]
+                    }
+                    ```
+                
+                * Click "Save"
+                
+                * We can now view the site on the public internet!
+                
+                    ![Publicly Viewable](/media/2017/03/07/publicly-viewable.png)
+            
 
 1. Connect to CircleCI
 
