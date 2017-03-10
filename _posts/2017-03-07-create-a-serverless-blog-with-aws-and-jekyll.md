@@ -396,10 +396,28 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
             ```
         
         1. Click "Save"
-    
+            
     1. We can now view the site on the public internet!
     
         ![Publicly Viewable](/media/2017/03/07/publicly-viewable.png)
+        
+    1. Configure the `www` bucket to redirect to the primary bucket - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/redirect-website-requests.html)
+    
+        1. Open the "www" bucket.
+        1. Click Properties.
+        1. Click "Staic website hosting"
+        1. Choose "Redirect requests"
+        1. Configure the redirect
+            * I'll enter "jamesrcounts.com" for the target bucket
+            * I'll enter "https" as the protocol
+        1. Click "Save"
+                
+        1. Click on "Static website hosting" again, then click on the endpoint URL.  It may take a few moments to redirect.
+         
+        1. When it eventually redirects it may not resolve to a site, depending on how your domain is currently configured.  We need to configure the domain to resolve to our bucket.
+        
+            ![Redirect To Site](/media/2017/03/07/redirect-to-site.png)
+        
 
 
 1. Connect to CircleCI
