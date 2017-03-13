@@ -463,6 +463,8 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
         For example: http://jamesrcounts.com/index.html
         
         ![DNS Resolved](/media/2017/03/07/dns-resolved.png )
+        
+TODO: setup `/` and `https`
 
 1. Connect to CircleCI
 
@@ -609,6 +611,27 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
            After I push these changes, the next CircleCI build is finally green!
            
            ![Fixed Build](/media/2017/03/07/fixed-build.png)
+           
+       1. Setup pre-commit hook - [Documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
+           
+           This part is optional, but its annoying to check something in, wait for the tests to run then find a simple error you could have fixed on your machine if you remembered to run html-proofer locally.  So I'll setup a git pre-commit hook to run jekyll build and html-proofer, and bring the failure closer to me in time and space.
+           
+           * Create an executable script int the `.git/hooks` folder called `pre-commit`
+           
+                ```bash
+                touch .git/hooks/pre-commit
+                chmod +x .git/hooks/pre-commit
+                ```
+                
+           * Open the file in your editor and add the commands from your circle.yml file to create the script.
+           
+                ```bash
+                #!/bin/sh
+                
+                bundle exec jekyll build
+                bundle exec htmlproofer ./_site --check-html --disable-external
+                ```
+       
            
            
            
