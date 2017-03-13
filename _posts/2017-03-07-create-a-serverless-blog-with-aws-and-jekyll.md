@@ -368,6 +368,7 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
         1. Click "Properties"
         1. Click "Static website hosting"
         1. Choose "Use this bucket to host a website"
+        1. Enter "index.html" as the Index Document.
         1. Click the "Save" button
             
     1. Although the website URL is now available, we receive a 403 error when trying to access the site.
@@ -409,7 +410,7 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
         1. Choose "Redirect requests"
         1. Configure the redirect
             * I'll enter "jamesrcounts.com" for the target bucket
-            * I'll enter "https" as the protocol
+            * I'll enter "http" as the protocol
         1. Click "Save"
                 
         1. Click on "Static website hosting" again, then click on the endpoint URL.  It may take a few moments to redirect.
