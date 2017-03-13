@@ -616,6 +616,8 @@ TODO: setup `/` and `https`
            
            This part is optional, but its annoying to check something in, wait for the tests to run then find a simple error you could have fixed on your machine if you remembered to run html-proofer locally.  So I'll setup a git pre-commit hook to run jekyll build and html-proofer, and bring the failure closer to me in time and space.
            
+            *Note*: This hook will only run on the local repository, it will not automatically propagate to clones, and if you wipe your local repository and clone again, you will have to recreate the hook. 
+           
            * Create an executable script int the `.git/hooks` folder called `pre-commit`
            
                 ```bash
@@ -631,7 +633,14 @@ TODO: setup `/` and `https`
                 bundle exec jekyll build
                 bundle exec htmlproofer ./_site --check-html --disable-external
                 ```
-       
+                
+           * Test your work by committing a change
+           
+                ```bash
+                git commit -am "Added git pre-commit hook"
+                ```
+        
+            
            
            
            
