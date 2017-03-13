@@ -455,6 +455,14 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
     1. Paste in each name server into the record.
     
         ![Updated Nameservers](/media/2017/03/07/updated-nameservers.png)
+        
+        The standard disclaimer for DNS is always something like "it may take up to 24 hours for the change to propagate" so don't be too surprised if the URL doesn't resolve right away.
+        
+    1. Once the DNS change has propagated, you will be able to reach your site home page, as long as you ask for the index specifically.
+    
+        For example: http://jamesrcounts.com/index.html
+        
+        ![DNS Resolved](/media/2017/03/07/dns-resolved.png )
 
 1. Connect to CircleCI
 
