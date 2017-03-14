@@ -464,10 +464,12 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
         For example: http://jamesrcounts.com/index.html
         
         ![DNS Resolved](/media/2017/03/07/dns-resolved.png )
-        
-TODO: setup `/` and `https`
 
-1. Connect to CircleCI
+1. Connect to CircleCI - [Home Page](http://circleci.com)
+
+    Now that we have a way to reach our site through a custom domain, and a version of the site is published, lets setup CircleCI to auto-publish new content.
+    
+    Get the process started by clicking the green "Sign Up" button on the home page.  In my case I'll link my GitHub account to CircleCI.
 
     1. Deselect projects you don't want to build
     
@@ -613,38 +615,125 @@ TODO: setup `/` and `https`
            
            ![Fixed Build](/media/2017/03/07/fixed-build.png)
            
-       1. Setup pre-commit hook - [Documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
-           
-           This part is optional, but its annoying to check something in, wait for the tests to run then find a simple error you could have fixed on your machine if you remembered to run html-proofer locally.  So I'll setup a git pre-commit hook to run jekyll build and html-proofer, and bring the failure closer to me in time and space.
-           
-            *Note*: This hook will only run on the local repository, it will not automatically propagate to clones, and if you wipe your local repository and clone again, you will have to recreate the hook. 
-           
-           * Create an executable script int the `.git/hooks` folder called `pre-commit`
-           
-                ```bash
-                touch .git/hooks/pre-commit
-                chmod +x .git/hooks/pre-commit
-                ```
-                
-           * Open the file in your editor and add the commands from your circle.yml file to create the script.
-           
-                ```bash
-                #!/bin/sh
-                
-                bundle exec jekyll build
-                bundle exec htmlproofer ./_site --check-html --disable-external
-                ```
-                
-           * Test your work by committing a change
-           
-                ```bash
-                git commit -am "Added git pre-commit hook"
-                ```
-        
+   1. Setup pre-commit hook - [Documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
+       
+       This part is optional, but its annoying to check something in, wait for the tests to run then find a simple error you could have fixed on your machine if you remembered to run html-proofer locally.  So I'll setup a git pre-commit hook to run jekyll build and html-proofer, and bring the failure closer to me in time and space.
+       
+        *Note*: This hook will only run on the local repository, it will not automatically propagate to clones, and if you wipe your local repository and clone again, you will have to recreate the hook. 
+       
+       1. Create an executable script int the `.git/hooks` folder called `pre-commit`
+       
+            ```bash
+            touch .git/hooks/pre-commit
+            chmod +x .git/hooks/pre-commit
+            ```
             
-           
-           
-           
-           
-           
-    
+       1. Open the file in your editor and add the commands from your circle.yml file to create the script.
+       
+            ```bash
+            #!/bin/sh
+            
+            bundle exec jekyll build
+            bundle exec htmlproofer ./_site --check-html --disable-external
+            ```
+            
+       1. Test your work by committing a change
+       
+            ```bash
+            git commit -am "Added git pre-commit hook"
+            ```
+   
+   1. Configure Deployment - [Guide](https://circleci.com/docs/1.0/continuous-deployment-with-amazon-s3/)
+   
+        Now we have a working build.  To finish things up we want to have the build output delivered to our S3 bucket, so that our site will have the latest content added to it whenever we publish to GitHub.
+        
+        1. Create IAM user for site deployment
+                              
+            To add/overwrite files in your S3 bucket, CircleCI will need access to your AWS account.  I'll create a specific user for this purpose, with only the permissions needed to publish.
+            
+            An IAM policy defines a set of access rules for resources in AWS.  When the policy is attached to an IAM user, group or role then the policy will be evaluated for that user, group or role.  By default, all access is denied.  If my user tried to access an S3 bucket without any policies attached, the request would be denied.  However, when I write a policy to allow access, and attach it to the user, then that policy will allow access.
+            
+            By itself a user is basically just a set of credentials.  Only when associated with a policy does the user become useful.  You can apply a policy to a user directly, by attaching it to the user, or indirectly, by attaching it to a group that the member is part of.
+            
+            * Create Policy
+            
+                * Login to AWS and navigate to the IAM console.
+                
+            * Click Policy, then "Create Policy"
+            
+            * Click "Select" next to "Create Your Own Policy"
+            
+            * Fill out the policy information
+               
+                * I'll use "Publish-jamesrcounts.com" as the name.
+                * Description is optional, I'll use the following:
+                
+                    ```
+                    Allows sync access to the jamesrcounts.com S3 bucket.
+                    ```
+                
+            * Use a policy doucment similar to the following:
+            
+            ```json
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Action": [
+                            "s3:ListBucket"
+                        ],
+                        "Resource": [
+                            "arn:aws:s3:::jamesrcounts.com"
+                        ]
+                    },
+                    {
+                        "Effect": "Allow",
+                        "Action": [
+                            "s3:PutObject",
+                            "s3:DeleteObject"
+                        ],
+                        "Resource": [
+                            "arn:aws:s3:::jamesrcounts.com/*"
+                        ]
+                    }
+                ]
+            }
+            ```
+            
+            User your own bucket names in the ARNs.
+            
+            *Note*: Many ARNs contain your account number, so you should usually be careful about revealing them publicly.  However, S3 ARNs are part of a global namespace that does not include the account number, so I'm not worried about showing it here -- you could have figured it out anyway from the bucket name.
+                           
+            * Create User 
+            
+                * Login and navigate to the IAM console.
+                
+                * Click Users, then Click "Add user"
+                
+                * Give the user a name, I'll use "Publisher-jamesrcounts.com"
+                 
+                * Then select the checkbox next to "Programmatic access"
+                
+                * Click "Next: Permissions"
+                
+                * Click "Attach existing policies directly", then select the checkbox next to "Publish-jamesrcounts.com"
+                
+                * Click "Next: Review"
+                
+                * Finally, click "Create user"
+                
+                * **Important** Be sure to click the "Download .csv" button before moving on.  This will be your only chance to download these keys.
+            
+        1. Configure Secrets
+        
+            * Open the CSV you downloaded in the previous step.
+            * Log in to CircleCI
+            
+            * Click the gear next to your project name in the CircleCI dashboard.
+            
+                ![CircleCI Project Settings](/media/2017/03/07/circleci-project-settings.png)
+                
+        1. Add deployment to `circle.yml`
+        
+        
