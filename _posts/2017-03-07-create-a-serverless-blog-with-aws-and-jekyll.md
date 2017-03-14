@@ -742,4 +742,16 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
                 
         1. Add deployment to `circle.yml`
         
+            CircleCI includes the AWS command line interface in every build runner.  So this means that we can use standard `awscli` commands to sync our content to S3.
+            
+            * Add the following to circle.yml
+            
+                ```yaml                
+                deployment:
+                  prod:
+                    branch: master
+                    commands:
+                      - aws s3 sync ./_site s3://jamesrcounts.com/ --delete
+                ```
+        
         
