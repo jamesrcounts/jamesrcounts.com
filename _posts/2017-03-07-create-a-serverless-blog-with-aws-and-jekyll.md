@@ -770,3 +770,13 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
                
             * Commit and push this change.
             
+            * Check the site and see that the sample post is gone!
+            
+                ![Sample post deleted](/media/2017/03/07/sample-post-deleted.png)
+                
+# Conclusion
+                
+That about wraps it up for this post.  It came out alot longer than I expected and its still rough.  Don't be surprised if I come back to it to break it up and polish the content.
+
+Hasta la vista until then.
+            
