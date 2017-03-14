@@ -734,6 +734,12 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
             
                 ![CircleCI Project Settings](/media/2017/03/07/circleci-project-settings.png)
                 
+            * Scroll down to permissions and click "AWS Permissions".  
+            
+            * Copy the Access Key ID and Secret Access Key from your CSV file into the appropriate fields here.
+            
+                ![AWS Permissions](/media/2017/03/07/aws-permissions.png)
+                
         1. Add deployment to `circle.yml`
         
         
