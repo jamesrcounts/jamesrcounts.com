@@ -758,5 +758,5 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
         
         1. Push these changes and check your website once the CircleCI build completes.  Everything should be up-to-date!
         
-
+            ![Everything Up To Date](/media/2017/03/07/everything-up-to-date.png)
         
