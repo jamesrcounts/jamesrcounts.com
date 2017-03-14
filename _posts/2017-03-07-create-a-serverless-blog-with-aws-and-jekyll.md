@@ -740,6 +740,8 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
             
                 ![AWS Permissions](/media/2017/03/07/aws-permissions.png)
                 
+            * Don't forget to click "Save AWS keys".
+                
         1. Add deployment to `circle.yml`
         
             CircleCI includes the AWS command line interface in every build runner.  So this means that we can use standard `awscli` commands to sync our content to S3.
@@ -754,4 +756,7 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
                       - aws s3 sync ./_site s3://jamesrcounts.com/ --delete
                 ```
         
+        1. Push these changes and check your website once the CircleCI build completes.  Everything should be up-to-date!
+        
+
         
