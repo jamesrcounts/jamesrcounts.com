@@ -759,4 +759,14 @@ Now that the basics are all worked out.  I'll setup the blog for continuous depl
         1. Push these changes and check your website once the CircleCI build completes.  Everything should be up-to-date!
         
             ![Everything Up To Date](/media/2017/03/07/everything-up-to-date.png)
+            
+        1. Let's make sure that CircleCI can also delete files.
         
+            * Removing the sample post which jekyll generated.
+            
+               ```bash
+               rm _posts/2017-03-07-welcome-to-jekyll.markdown 
+               ```
+               
+            * Commit and push this change.
+            
