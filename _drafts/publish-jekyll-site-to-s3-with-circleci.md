@@ -182,7 +182,9 @@ The primary bucket can be either bucket that you created in the previous step. I
         }
         ```
         
-        > *Note*: You need to update the bucket name in your version of the policy.
+        > *Note*: You need to update the bucket name in your version of the policy    
+         
+        > *Note*: Many ARNs contain your account number, so you should usually be careful about revealing them publicly.  However, S3 ARNs are part of a global namespace that does not include the account number, so I'm not worried about showing it here -- you could have figured it out anyway from the bucket name.
         
     1. Click "Save"
                     
@@ -283,76 +285,71 @@ If you are unfamiliar with IAM, an IAM policy defines a set of rules to access r
 By default, AWS denies all access to resources.  When a newly created user tries to access my primary S3 bucket, AWS will check for a policy that allows access to the bucket.  AWS will deny the request unless I write a policy to allow access and attach it to the user.  Earlier, we setup a bucket policy that allowed public read-only access to the primary bucket so that the bucket could serve web content to anyone.  This policy would allow CircleCI to read the bucket.  To perform writes and deletes, CircleCI will need additional permission.  
 
 Only when associated with a polices do users become useful.  You can apply a policy to a user by attaching it directly to the user, or by attaching it to a group that the user is in.
+
+Perform these steps in your browser after logging in an navigating to the [IAM console](https://console.aws.amazon.com/iam/home){:target="_blank"}    
+   
+1. Click "Policies", then "Create Policy"
+
+1. Click "Select" next to "Create Your Own Policy"
+ 
+1. Fill out the policy information
+    
+    * I'll use "Publish-jamesrcounts.com" as the name.
+    
+    * Description is optional, I'll use the following:
+     
+         ```
+         Allows sync access to the jamesrcounts.com S3 bucket.
+         ```
+ 
+    * Use a policy document similar to the following:
+         
+        ```json
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:ListBucket"
+              ],
+              "Resource": [
+                "arn:aws:s3:::jamesrcounts.com"
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:PutObject",
+                "s3:DeleteObject"
+              ],
+              "Resource": [
+                "arn:aws:s3:::jamesrcounts.com\/*"
+              ]
+            }
+          ]
+        }
+        ```
+     
+        > *Note*: use your own bucket name in the ARNs
                 
-                 * Create Policy
-                 
-                     * Login to AWS and navigate to the IAM console.
-                     
-                 * Click Policy, then "Create Policy"
-                 
-                 * Click "Select" next to "Create Your Own Policy"
-                 
-                 * Fill out the policy information
-                    
-                     * I'll use "Publish-jamesrcounts.com" as the name.
-                     * Description is optional, I'll use the following:
-                     
-                         ```
-                         Allows sync access to the jamesrcounts.com S3 bucket.
-                         ```
-                     
-                 * Use a policy doucment similar to the following:
-                 
-                 ```json
-                 {
-                     "Version": "2012-10-17",
-                     "Statement": [
-                         {
-                             "Effect": "Allow",
-                             "Action": [
-                                 "s3:ListBucket"
-                             ],
-                             "Resource": [
-                                 "arn:aws:s3:::jamesrcounts.com"
-                             ]
-                         },
-                         {
-                             "Effect": "Allow",
-                             "Action": [
-                                 "s3:PutObject",
-                                 "s3:DeleteObject"
-                             ],
-                             "Resource": [
-                                 "arn:aws:s3:::jamesrcounts.com/*"
-                             ]
-                         }
-                     ]
-                 }
-                 ```
-                 
-                 User your own bucket names in the ARNs.
-                 
-                 *Note*: Many ARNs contain your account number, so you should usually be careful about revealing them publicly.  However, S3 ARNs are part of a global namespace that does not include the account number, so I'm not worried about showing it here -- you could have figured it out anyway from the bucket name.
-                                
-                 * Create User 
-                 
-                     * Login and navigate to the IAM console.
-                     
-                     * Click Users, then Click "Add user"
-                     
-                     * Give the user a name, I'll use "Publisher-jamesrcounts.com"
-                      
-                     * Then select the checkbox next to "Programmatic access"
-                     
-                     * Click "Next: Permissions"
-                     
-                     * Click "Attach existing policies directly", then select the checkbox next to "Publish-jamesrcounts.com"
-                     
-                     * Click "Next: Review"
-                     
-                     * Finally, click "Create user"
-                     
-                     * **Important** Be sure to click the "Download .csv" button before moving on.  This will be your only chance to download these keys.
+1. Click "Create Policy"
+
+1. Next, click "Users" then click "Add user"
+     
+     * Give the user a name, I'll use "Publisher-jamesrcounts.com"
+      
+     * Then select the checkbox next to "Programmatic access"
+     
+1. Click "Next: Permissions"
+     
+1. Click "Attach existing policies directly", then select the checkbox next to "Publish-jamesrcounts.com"
+     
+1. Click "Next: Review"
+     
+1. Finally, click "Create user"
+     
+> **Important! Be sure to click the "Download .csv" button before moving on.  This will be your only chance to download these keys.**
 
 # <a name="circleci"></a> Create CircleCI Pipeline
 
