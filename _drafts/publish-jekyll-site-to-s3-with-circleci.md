@@ -272,7 +272,85 @@ Do these tasks in your browser after logging into the AWS and navigating to [Rou
             
         ![DNS Resolved](/media/2017/03/07/dns-resolved.png )
         
-<a name="custom-domain-end"></a>        
+<a name="custom-domain-end"></a>   
+     
+             1. Create IAM user for site deployment
+                                   
+                 To add/overwrite files in your S3 bucket, CircleCI will need access to your AWS account.  I'll create a specific user for this purpose, with only the permissions needed to publish.
+                 
+                 An IAM policy defines a set of access rules for resources in AWS.  When the policy is attached to an IAM user, group or role then the policy will be evaluated for that user, group or role.  By default, all access is denied.  If my user tried to access an S3 bucket without any policies attached, the request would be denied.  However, when I write a policy to allow access, and attach it to the user, then that policy will allow access.
+                 
+                 By itself a user is basically just a set of credentials.  Only when associated with a policy does the user become useful.  You can apply a policy to a user directly, by attaching it to the user, or indirectly, by attaching it to a group that the member is part of.
+                 
+                 * Create Policy
+                 
+                     * Login to AWS and navigate to the IAM console.
+                     
+                 * Click Policy, then "Create Policy"
+                 
+                 * Click "Select" next to "Create Your Own Policy"
+                 
+                 * Fill out the policy information
+                    
+                     * I'll use "Publish-jamesrcounts.com" as the name.
+                     * Description is optional, I'll use the following:
+                     
+                         ```
+                         Allows sync access to the jamesrcounts.com S3 bucket.
+                         ```
+                     
+                 * Use a policy doucment similar to the following:
+                 
+                 ```json
+                 {
+                     "Version": "2012-10-17",
+                     "Statement": [
+                         {
+                             "Effect": "Allow",
+                             "Action": [
+                                 "s3:ListBucket"
+                             ],
+                             "Resource": [
+                                 "arn:aws:s3:::jamesrcounts.com"
+                             ]
+                         },
+                         {
+                             "Effect": "Allow",
+                             "Action": [
+                                 "s3:PutObject",
+                                 "s3:DeleteObject"
+                             ],
+                             "Resource": [
+                                 "arn:aws:s3:::jamesrcounts.com/*"
+                             ]
+                         }
+                     ]
+                 }
+                 ```
+                 
+                 User your own bucket names in the ARNs.
+                 
+                 *Note*: Many ARNs contain your account number, so you should usually be careful about revealing them publicly.  However, S3 ARNs are part of a global namespace that does not include the account number, so I'm not worried about showing it here -- you could have figured it out anyway from the bucket name.
+                                
+                 * Create User 
+                 
+                     * Login and navigate to the IAM console.
+                     
+                     * Click Users, then Click "Add user"
+                     
+                     * Give the user a name, I'll use "Publisher-jamesrcounts.com"
+                      
+                     * Then select the checkbox next to "Programmatic access"
+                     
+                     * Click "Next: Permissions"
+                     
+                     * Click "Attach existing policies directly", then select the checkbox next to "Publish-jamesrcounts.com"
+                     
+                     * Click "Next: Review"
+                     
+                     * Finally, click "Create user"
+                     
+                     * **Important** Be sure to click the "Download .csv" button before moving on.  This will be your only chance to download these keys.
 
 # <a name="circleci"></a> Create CircleCI Pipeline
 
@@ -462,90 +540,13 @@ The finish line for my new blog site is within reach.  If you're following along
         ```bash
         git commit -am "Added git pre-commit hook"
         ```
-
 <a name="pre-commit-hook-end"></a>
 
 1. Configure Deployment - [Guide](https://circleci.com/docs/1.0/continuous-deployment-with-amazon-s3/)
 
-        Now we have a working build.  To finish things up we want to have the build output delivered to our S3 bucket, so that our site will have the latest content added to it whenever we publish to GitHub.
+    Now I have a working build.  To finish things up I want the build output delivered to my S3 bucket, so that my site will have the latest content added to it whenever I publish to GitHub.
         
-        1. Create IAM user for site deployment
-                              
-            To add/overwrite files in your S3 bucket, CircleCI will need access to your AWS account.  I'll create a specific user for this purpose, with only the permissions needed to publish.
-            
-            An IAM policy defines a set of access rules for resources in AWS.  When the policy is attached to an IAM user, group or role then the policy will be evaluated for that user, group or role.  By default, all access is denied.  If my user tried to access an S3 bucket without any policies attached, the request would be denied.  However, when I write a policy to allow access, and attach it to the user, then that policy will allow access.
-            
-            By itself a user is basically just a set of credentials.  Only when associated with a policy does the user become useful.  You can apply a policy to a user directly, by attaching it to the user, or indirectly, by attaching it to a group that the member is part of.
-            
-            * Create Policy
-            
-                * Login to AWS and navigate to the IAM console.
-                
-            * Click Policy, then "Create Policy"
-            
-            * Click "Select" next to "Create Your Own Policy"
-            
-            * Fill out the policy information
-               
-                * I'll use "Publish-jamesrcounts.com" as the name.
-                * Description is optional, I'll use the following:
-                
-                    ```
-                    Allows sync access to the jamesrcounts.com S3 bucket.
-                    ```
-                
-            * Use a policy doucment similar to the following:
-            
-            ```json
-            {
-                "Version": "2012-10-17",
-                "Statement": [
-                    {
-                        "Effect": "Allow",
-                        "Action": [
-                            "s3:ListBucket"
-                        ],
-                        "Resource": [
-                            "arn:aws:s3:::jamesrcounts.com"
-                        ]
-                    },
-                    {
-                        "Effect": "Allow",
-                        "Action": [
-                            "s3:PutObject",
-                            "s3:DeleteObject"
-                        ],
-                        "Resource": [
-                            "arn:aws:s3:::jamesrcounts.com/*"
-                        ]
-                    }
-                ]
-            }
-            ```
-            
-            User your own bucket names in the ARNs.
-            
-            *Note*: Many ARNs contain your account number, so you should usually be careful about revealing them publicly.  However, S3 ARNs are part of a global namespace that does not include the account number, so I'm not worried about showing it here -- you could have figured it out anyway from the bucket name.
-                           
-            * Create User 
-            
-                * Login and navigate to the IAM console.
-                
-                * Click Users, then Click "Add user"
-                
-                * Give the user a name, I'll use "Publisher-jamesrcounts.com"
-                 
-                * Then select the checkbox next to "Programmatic access"
-                
-                * Click "Next: Permissions"
-                
-                * Click "Attach existing policies directly", then select the checkbox next to "Publish-jamesrcounts.com"
-                
-                * Click "Next: Review"
-                
-                * Finally, click "Create user"
-                
-                * **Important** Be sure to click the "Download .csv" button before moving on.  This will be your only chance to download these keys.
+
             
         1. Configure Secrets
         
