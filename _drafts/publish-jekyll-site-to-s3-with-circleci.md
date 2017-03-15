@@ -274,14 +274,16 @@ Do these tasks in your browser after logging into the AWS and navigating to [Rou
         
 <a name="custom-domain-end"></a>   
      
-             1. Create IAM user for site deployment
+### Create IAM User for Site Deployment
                                    
-                 To add/overwrite files in your S3 bucket, CircleCI will need access to your AWS account.  I'll create a specific user for this purpose, with only the permissions needed to publish.
-                 
-                 An IAM policy defines a set of access rules for resources in AWS.  When the policy is attached to an IAM user, group or role then the policy will be evaluated for that user, group or role.  By default, all access is denied.  If my user tried to access an S3 bucket without any policies attached, the request would be denied.  However, when I write a policy to allow access, and attach it to the user, then that policy will allow access.
-                 
-                 By itself a user is basically just a set of credentials.  Only when associated with a policy does the user become useful.  You can apply a policy to a user directly, by attaching it to the user, or indirectly, by attaching it to a group that the member is part of.
-                 
+To add/overwrite files in your S3 bucket, CircleCI needs access to the AWS account.  I'll create a specific user for this purpose, granting only the permissions needed to publish.
+
+If you are unfamiliar with IAM, an IAM policy defines a set of rules to access resources in AWS and users are essentially just a set of credentials that can have these rules attached.  
+
+By default, AWS denies all access to resources.  When a newly created user tries to access my primary S3 bucket, AWS will check for a policy that allows access to the bucket.  AWS will deny the request unless I write a policy to allow access and attach it to the user.  Earlier, we setup a bucket policy that allowed public read-only access to the primary bucket so that the bucket could serve web content to anyone.  This policy would allow CircleCI to read the bucket.  To perform writes and deletes, CircleCI will need additional permission.  
+
+Only when associated with a polices do users become useful.  You can apply a policy to a user by attaching it directly to the user, or by attaching it to a group that the user is in.
+                
                  * Create Policy
                  
                      * Login to AWS and navigate to the IAM console.
