@@ -411,27 +411,27 @@ The finish line for my new blog site is within reach.  If you're following along
         
 1. Push these changes and the next CircleCI build should finish without errors.  We're still missing tests though.
         
-        1. Setup tests - [HTML Proofer](https://github.com/gjtorikian/html-proofer)
+1. Setup tests - [HTML Proofer](https://github.com/gjtorikian/html-proofer)
         
-            Although I'm only using jekyll to produce a static blog site, there are still things to test.  The jekyll docs recommend a tool called HTML Proofer to check for issues like badly formed HTML or broken links. 
+    Jekyll produces a static blog site, but there are still things to test. The jekyll docs recommend a tool called HTML Proofer to check for issues like badly formed HTML or broken links. 
             
-            I'll add a test block to my circle.yml
+    1. I'll add a test block to my circle.yml
+        
+        ```yaml
+        test:
+          post:
+            - bundle exec htmlproofer ./_site --check-html --disable-external
+        ```
             
-            ```yaml
-            test:
-              post:
-                - bundle exec htmlproofer ./_site --check-html --disable-external
-            ```
-            
-            And I'll add this line to end of my Gemfile
-            
-            ```ruby
-            gem 'html-proofer'
-            ```
+    1. I'll add this line to end of my Gemfile
+        
+        ```ruby
+        gem 'html-proofer'
+        ```
            
-           After I push these changes, the next CircleCI build is finally green!
-           
-           ![Fixed Build](/media/2017/03/07/fixed-build.png)
+    1. I'll push these changes and the next CircleCI build is finally green!
+       
+       ![Fixed Build](/media/2017/03/07/fixed-build.png)
            
    1. Setup pre-commit hook - [Documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
        
