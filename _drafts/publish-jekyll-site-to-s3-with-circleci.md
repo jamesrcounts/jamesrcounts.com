@@ -282,59 +282,61 @@ The finish line for my new blog site is within reach.  If you're following along
     
 1. Start the setup process by clicking the green "Sign Up" button on the CircleCI home page.  
 
-    * Since my repository is on GitHub, I'll link my GitHub account to CircleCI.
+    Since my repository is on GitHub, I'll link my GitHub account to CircleCI.
 
 1. Deselect projects you don't want to build
     
-        By default, CircleCI selects all the projects it can access through your linked GitHub account.  You probably don't want to build all of them.
-        
-        1. Click "Deselect all projects" as needed.  You will need do do this once per organization/user.
-        
-        1. Click the check box next to the your blog repository.
-        
-    1. Click the blue "Follow and Build" button below the list of projects.
+    By default, CircleCI selects all the projects it can access through your linked GitHub account.  You probably don't want to build all of them.
     
-    1. CircleCI will kick off the first build.  
+    1. Click "Deselect all projects" as needed.  
     
-        We haven't provided any instructions to CircleCI, so it will do what it can.  Once it sees the code and realizes that it's a ruby project, CircleCI will run `bundle install`.  This will succeed but the build will still show up as a failure because we haven't configured any tests.
+        You will need do do this once per organization/user.
     
-        More importantly, CircleCI does not know that it should process the project using jekyll.  We need to tell CircleCI to do so, and then it will create the outputs that we need.
+    1. Click the check box next to the your blog repository.
         
-        ![Failing Build](/media/2017/03/07/failing-build.png)
+1. Click the blue "Follow and Build" button below the list of projects.
     
-    1. Create a `circle.yml` file - [Documentation](https://circleci.com/docs/1.0/configuration/)
+1. CircleCI will kick off the first build.  
     
-        This file tells CircleCI how to build and test our project.
+    We haven't provided any instructions to CircleCI, so it will infer what it can by examining the repository.  Once CircleCI sees the code and realizes that the jekyll site is a ruby based project, it will run `bundle install`.  This command will succeed but the build will show up as a failure because we haven't configured any tests.
+    
+    More importantly, although CircleCI sees the "rubiness" of the project, it does not know that it should run jekyll to produce the site.  I need to tell CircleCI to do so before it will create the outputs I need.
+    
+    ![Failing Build](/media/2017/03/07/failing-build.png)
+    
+1. Create a `circle.yml` file - [Documentation](https://circleci.com/docs/1.0/configuration/)
+    
+    This configuration file tells CircleCI how to build and test our project.
+    
+    1. Create the circle.yml file in the project root.  Run in your terminal at the project root:
+    
+        ```bash
+        touch circle.yml
+        ```
         
-        1. Create the circle.yml file in the project root.
+    1. Next configure the machine section with a specific ruby version.
+    
+        This gets our feet wet with circle.yml and resolves an warning during `bundle install` on the build server.
+        
+        * Figure out the version of ruby you are using locally by running this command in your terminal at the project root:
         
             ```bash
-            touch circle.yml
+            echo ${RUBY_VERSION}
             ```
         
-        1. Next configure the machine by telling it what version of ruby you want to use.  
+            ![Ruby Version](/media/2017/03/07/ruby-version.png)
+            
+        * Add machine configuration to the top of the circle.yml file to tell CircleCI to use the same version.
         
-            This resolves an warning during `bundle install` on the build server, and gets our feet wet with circle.yml.
-        
-            * Figure out the version of ruby
-            
-                ```bash
-                echo ${RUBY_VERSION}
-                ```
-            
-                ![Ruby Version](/media/2017/03/07/ruby-version.png)
-                
-            * Add machine configuration to the top of the circle.yml file
-            
-                ```yaml
-                machine:
-                  ruby:
-                    version: ruby-2.4.0
-                ```
-             
-             Push this change and CircleCI will start a new build.  The build will still fail because there are no testing instructions.
-             
-    1. Setup jekyll build
+            ```yaml
+            machine:
+              ruby:
+                version: ruby-2.4.0
+            ```
+         
+    1. Push this change and CircleCI will start a new build.  The build will still fail because there are no testing instructions.
+         
+1. Setup jekyll build
     
         Before we can setup tests we need something to test.  Lets tell CircleCI how to create the site.
         
