@@ -54,6 +54,8 @@ However, for those who have been following along and prefer step-by-step instruc
 
 ### Create Remote Repository
 
+Take these steps in your browser.
+
 1. Create your account and login. 
 
 1. Click the green "New Repository" button on the right side of the homepage.
@@ -69,48 +71,61 @@ However, for those who have been following along and prefer step-by-step instruc
     ![Create Repository](/media/2017/03/15/create-repository.png)
     
         
-1. Push the site to the remote repository.
-    
-    1. First add the remote
+### Push to Remote Repository
 
-        ```bash
-        git remote add origin ${REPOSITORY_URL}
-        ```
-           
-       Example:
-       ```bash
-       git remote add origin https://github.com/jamesrcounts/jamesrcounts.com.git
-       ```
-           
-    1. Then push the contents
-                    
-       ```bash
-       git push -u origin master
-       ```
+Run these commands in your local bash terminal.
+
+1. First add the remote
+
+    ```bash
+    git remote add origin ${REPOSITORY_URL}
+    ```
        
-1. Refresh your browser and you should see your contents on GitHub.
+   Example:
+   ```bash
+   git remote add origin https://github.com/jamesrcounts/jamesrcounts.com.git
+   ```
+       
+1. Then push the contents
+                
+   ```bash
+   git push -u origin master
+   ```
+   
+### Check the Remote Repository
 
-    ![Pushed to GitHub](/media/2017/03/07/pushed-to-github.png)
+Refresh your browser and you should see your contents on GitHub.
+
+![Pushed to GitHub](/media/2017/03/07/pushed-to-github.png)
 
 <a name="github-end"></a>
 
-### <a name="aws"></a>Create an AWS S3 Website
+# <a name="aws"></a>Create an AWS S3 Website
 
-    To host our site in AWS we will need a storage bucket to put our files into.  To configure this bucket properly, and integrate with CircleCI later, we will also setup a user for CircleCI which has permission to put objects into the bucket. 
+To host my site in AWS I will need a storage bucket to put our files into.  Turning a bucket into a website requires some special configuration of the bucket.  I also want to setup a custom domain for the website, and for that I'll use Amazon's Route53 service.
+  
+  Finally, before leaving the Amazon section of this post, I'll setup a credentials and permissions for CircleCI to use when publishing updates to the site.
     
-    1. Create Bucket(s) - [Create Buckets](http://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html#root-domain-walkthrough-s3-tasks)
+### Create Bucket(s) 
+
+You can find further details in Amazon's own documentation - [Create Buckets](http://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html#root-domain-walkthrough-s3-tasks)
+
+I will create two buckets `jamesrcounts.com` and `www.jamesrcounts.com` so that I can support requests with and without the `www`.  
+
+Because I'll use AWS Route53 to handle DNS for the website, the name of the bucket matters.  The bucket name must match the domain you intend to use, if you haven't purchased your domain yet, you should do so now.  This is optional.  If you don't want to spend any money, or you just don't care about a custom domain, then you can just use default URL AWS provides you.     
+
+1. After creating your AWS account, sign in and visit [s3](https://console.aws.amazon.com/s3)
+        
+1. Create two buckets - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-bucket.html)
+
+    * I'll use the names `jamesrcounts.com` and `www.jamesrcounts.com`
+    * I'll pick "US West (Oregon)" as the region, but you should choose a region near you.
+    * Click "Create".
     
-        I will create two buckets `jamesrcounts.com` and `www.jamesrcounts.com` so that I can support requests with and without the `www`.  Eventually, I'll use AWS Route53 to handle DNS for the website, so the name of the bucket actually matters.  You can use any available name for the bucket, and just use the default URL provided by Amazon.  However, if you want to eventually host this site under your own domain name, you should go buy the domain now and name the bucket appropriately.
-        
-        1. After creating your AWS account, sign in and visit [s3](https://console.aws.amazon.com/s3)
-        
-        1. Create two buckets - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-bucket.html)
-            * I'll use the names `jamesrcounts.com` and `www.jamesrcounts.com`
-            * I'll pick "US West (Oregon)" as the region, but you should choose a region near you.
-            * I don't need any optional features like versioning, logging, or tags right now.
-            * I'll leave the permissions at thier default values for now.
+        ![Create Bucket](/media/2017/03/15/create-bucket.png)
+    
             
-    1. Next upload the site to the primary bucket.
+1. Next upload the site to the primary bucket.
     
         Later we will use CircleCI to push content into the bucket.  For now we will just create and copy the files manually.
         
