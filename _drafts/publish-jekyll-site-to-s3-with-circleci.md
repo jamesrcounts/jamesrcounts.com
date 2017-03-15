@@ -252,7 +252,7 @@ Do these tasks in your browser after logging into the AWS and navigating to [Rou
             
 1. Update DNS at the domain registrar
 
-    This step will vary depending on where you have your domain registered.  You can even use Amazon as your registrar.  I use hover.com, so I that's what I'll cover.
+    This step will vary depending on where you have your domain registered.  You can even use Amazon as your registrar.  I use [hover.com](https://hover.com), so I that's what I'll cover.
     
     1. Visit the hosted zone and copy the collection of name servers.
     
@@ -268,15 +268,13 @@ Do these tasks in your browser after logging into the AWS and navigating to [Rou
         
         The standard disclaimer for DNS is always something like "it may take up to 24 hours for the change to propagate" so don't be too surprised if the URL doesn't resolve right away.
         
-    1. Once the DNS change has propagated, you will be able to reach your site home page, as long as you ask for the index specifically.
-    
-        For example: http://jamesrcounts.com/index.html
-        
+    1. Once the DNS change has propagated, you will be able to reach your site home page at the custom domain.
+            
         ![DNS Resolved](/media/2017/03/07/dns-resolved.png )
         
 <a name="custom-domain-end"></a>        
 
-1. Connect to CircleCI - [Home Page](http://circleci.com)
+### 1. Connect to CircleCI - [Home Page](http://circleci.com)
 
     Now that we have a way to reach our site through a custom domain, and a version of the site is published, lets setup CircleCI to auto-publish new content.
     
