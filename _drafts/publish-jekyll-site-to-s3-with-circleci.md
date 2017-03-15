@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Publishing a Jekyll Site to AWS S3 with CircleCI
+title: Publish a Jekyll Site to AWS S3 with CircleCI
 categories:
     - serverless
     - guides
@@ -15,7 +15,7 @@ In this post I'll walk through the process I used to setup continuous publishing
 
 By the end of the post I'll have setup the following:
 
-* GitHub to store the site repository
+* GitHub to store the site repository - [Jump](#github)
 
     * An [account is required](https://github.com/join), if you are following along sign up now.
     * A free account with public repositories will be fine.
@@ -27,17 +27,27 @@ By the end of the post I'll have setup the following:
         
         > *Note*: CircleCI supports BitBucket as well, if you prefer that service to GitHub. 
     
-* Amazon Web Services - [Account Required](https://aws.amazon.com/)
+* Amazon Web Services to host the site
 
-    Note that an AWS account has a free tier, but it not free after the first year.  The amazon signup process can be a little intimidating, here are some notes:
+     > *Note*: that an AWS account has a free tier, but it is not free after the first year.  
+     
+    * An [account is required](https://aws.amazon.com/).  The AWS sign up process can be a little intimidating.
     
-    * When signing up you *will* need to provide a credit card, as certain services are not free even in the first year.  
-    * Also be aware that the CAPTCHA they use is pretty garbled and annoying, you may have to try several times before you can find one that you can decipher.
-    * You will need to provide a telephone number so that their automated system can call you to verify your identity. (Note there is a **second** annoying CAPTCHA at this stage.)  You may also need to retry this step a few times, amazon seems to have some trouble placing outbound calls reliably.
+    * You *will* need to provide a credit card during sign up; certain services are not free even in the first year.  
+    
+    * AWS uses a pretty garbled and annoying CAPTCHA.  You may have to try several times before you can decipher the image.
+    
+    * You will need to provide a telephone number during sign up.  AWS uses an automated system to call for identity verification. 
+    
+        > *Note*: AWS uses a **second** annoying CAPTCHA at this stage--just in case you were replaced by a robot after the first CAPTCHA.
+        
+        > *Note*: You may need to retry this step a few times before AWS can place the outbound call.  A few people I know have mentioned this was a problem for them.
+      
+# <a name="github"></a> Publish the Jekyll Site to GitHub
 
-1. Setup Github
-    
-    If you are familiar with GitHub, then create a repository and push your site to it, then skip to the next section.  If you prefer detailed step-by-step instructions, follow on.
+I suspect a good number of readers are already familiar with GitHub.  If this is you, then create a public repository on GitHub and push your site to it.  You can skip to the next session.
+
+However, for those who have been following along and prefer step-by-step instructions, read on.
 
     1. Create remote repository
         
