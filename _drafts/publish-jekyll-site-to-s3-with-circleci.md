@@ -114,7 +114,7 @@ I will create two buckets `jamesrcounts.com` and `www.jamesrcounts.com` so that 
 
 Because I'll use AWS Route53 to handle DNS for the website, the name of the bucket matters.  The bucket name must match the domain you intend to use, if you haven't purchased your domain yet, you should do so now.  This is optional.  If you don't want to spend any money, or you just don't care about a custom domain, then you can just use default URL AWS provides you.     
 
-1. After creating your AWS account, sign in and visit [s3](https://console.aws.amazon.com/s3)
+1. After creating your AWS account, sign in and visit [s3](https://console.aws.amazon.com/s3){:target="_blank"}
         
 1. Create two buckets - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-bucket.html)
 
@@ -227,27 +227,25 @@ In this section I'll use Route53 to provide DNS service for my domain.  You can 
 
 If you are following along with the Amazon documentation we've made it to [here](http://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html#root-domain-walkthrough-switch-to-route53-as-dnsprovider).
 
+Do these tasks in your browser after logging into the AWS and navigating to [Route53](https://console.aws.amazon.com/route53/home){:target="_blank"}
 
-
-    1. Login to the AWS console then visit Route53
-    1. Create a hosted zone - [Instructions](http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/MigratingDNS.html#Step_CreateHostedZone)
-        1. Follow the link for specific instructions.
-        1. Enter the domain name, in my case: `jamesrcounts.com`
-        1. Click "Create"
+1. Create a hosted zone - [Instructions](http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/MigratingDNS.html#Step_CreateHostedZone)
+    * Enter the domain name, in my case: `jamesrcounts.com`
+    * Click "Create"
         
-    1. Create alias records for the first bucket
-        1. Click "Create Record Set"
-        1. For the first alias, leave the "Name" field blank.
-        1. Choose the "Yes" radio-button next to the "Alias label"
-        1. Click in the "Alias Target" text box, and a drop down should offer you the matching bucket as an option.
+1. Create alias record for the primary bucket
+    1. Click "Create Record Set"
+    1. Leave the "Name" field blank.
+    1. Choose the "Yes" radio-button next to the "Alias" label
+    1. Click in the "Alias Target" text box, and a drop down should offer you the matching bucket as an option.
+    
+         > *Note*: If you do not see your bucket in the drop down, make sure your bucket name exactly matches the domain you are setting up.  These must match for DNS setup to work.  If the domain doesn't match the bucket name, recreate your bucket with the correct name and try again.
         
-            *Note*: If you do not see your bucket in the drop down, make sure your bucket name exactly matches the domain you are setting up.  These must match for S3 website hosting to work.  If the domain doesn't match the bucket name, recreate your bucket with the correct name and try again.
-            
-        1. Click "Create"
+    1. Click "Create"
+    
+        ![Create First Alias](/media/2017/03/07/create-first-alias.png)
         
-            ![Create First Alias](/media/2017/03/07/create-first-alias.png)
-            
-    1. Create a second alias, except this time use "www" as the name, and configure the alias to point at the secondary bucket.
+1. Create a second alias, except this time use "www" as the name, and configure the alias to point at the secondary bucket.
             
 1. Update DNS at the domain registrar
 
