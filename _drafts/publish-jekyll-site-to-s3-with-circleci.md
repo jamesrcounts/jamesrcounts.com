@@ -11,23 +11,18 @@ tags:
     - CircleCI
     - GitHub
 ---
-In this post I'll walk through the process I used to setup continuous publishing for this blog using GitHub, CircleCI and S3.  I write my blog posts using jekyll so there are some jekyll specific steps included in the build process.  Although I'm not trying to ensure that this post is so general that it covers every scenario, it should still be useful (with some adaptations) for any static site.
+In this post I'll walk through the process I used to setup continuous publishing for this blog using GitHub, CircleCI and S3.  I write posts on this site using jekyll, and I already setup a jekyll project in a [previous post]({% post_url 2017-03-07-create-a-serverless-blog-with-aws-and-jekyll %}){:target="_blank"}.  
 
-By the end of the post I'll have setup the following:
+To create a publishing pipeline for the site I'll start by pushing the existing site to a remote repository on GitHub.  Next, I will publish the site to AWS S3 manually and configure website to use a custom domain. Once I have a working version of the site hosted on S3, I'll setup Circle CI to connect the two sides of the pipeline so that changes pushed to GitHub will automatically flow through to the S3 website.
+
+Here are some notes on the services I'll be using:
 
 * GitHub to store the site repository - [Jump](#github)
 
     * An [account is required](https://github.com/join), if you are following along sign up now.
     * A free account with public repositories will be fine.
 
-* CircleCI to generate and validate the jekyll site
- 
-    * An [account is required](https://github.com/join), if you are following along sign up for CircleCI after creating your github account.
-    * CircleCI has a free tier for private repositories, it has an even better free tier for public repositories.  Either one should work fine for building our jekyll site.
-        
-        > *Note*: CircleCI supports BitBucket as well, if you prefer that service to GitHub. 
-    
-* Amazon Web Services to host the site
+* Amazon Web Services to host the site - [Jump](#aws)
 
      > *Note*: that an AWS account has a free tier, but it is not free after the first year.  
      
@@ -42,7 +37,15 @@ By the end of the post I'll have setup the following:
         > *Note*: AWS uses a **second** annoying CAPTCHA at this stage--just in case you were replaced by a robot after the first CAPTCHA.
         
         > *Note*: You may need to retry this step a few times before AWS can place the outbound call.  A few people I know have mentioned this was a problem for them.
-      
+
+
+* CircleCI to generate and validate the jekyll site
+ 
+    * An [account is required](https://github.com/join), if you are following along sign up for CircleCI after creating your github account.
+    * CircleCI has a free tier for private repositories, it has an even better free tier for public repositories.  Either one should work fine for building our jekyll site.
+        
+        > *Note*: CircleCI supports BitBucket as well, if you prefer that service to GitHub. 
+    
 # <a name="github"></a> Publish the Jekyll Site to GitHub
 
 I suspect a good number of readers are already familiar with GitHub.  If this is you, then create a public repository on GitHub and push your site to it.  You can skip to the [next section](#github-end).
@@ -91,7 +94,7 @@ However, for those who have been following along and prefer step-by-step instruc
 
 <a name="github-end"></a>
 
-1. <a name="aws"></a>Setup AWS S3 Bucket
+### <a name="aws"></a>Create an AWS S3 Website
 
     To host our site in AWS we will need a storage bucket to put our files into.  To configure this bucket properly, and integrate with CircleCI later, we will also setup a user for CircleCI which has permission to put objects into the bucket. 
     
