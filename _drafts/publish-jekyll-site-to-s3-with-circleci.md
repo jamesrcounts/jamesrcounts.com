@@ -433,36 +433,40 @@ The finish line for my new blog site is within reach.  If you're following along
        
        ![Fixed Build](/media/2017/03/07/fixed-build.png)
            
-   1. Setup pre-commit hook - [Documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
-       
-       This part is optional, but its annoying to check something in, wait for the tests to run then find a simple error you could have fixed on your machine if you remembered to run html-proofer locally.  So I'll setup a git pre-commit hook to run jekyll build and html-proofer, and bring the failure closer to me in time and space.
-       
-        *Note*: This hook will only run on the local repository, it will not automatically propagate to clones, and if you wipe your local repository and clone again, you will have to recreate the hook. 
-       
-       1. Create an executable script int the `.git/hooks` folder called `pre-commit`
-       
-            ```bash
-            touch .git/hooks/pre-commit
-            chmod +x .git/hooks/pre-commit
-            ```
-            
-       1. Open the file in your editor and add the commands from your circle.yml file to create the script.
-       
-            ```bash
-            #!/bin/sh
-            
-            bundle exec jekyll build
-            bundle exec htmlproofer ./_site --check-html --disable-external
-            ```
-            
-       1. Test your work by committing a change
-       
-            ```bash
-            git commit -am "Added git pre-commit hook"
-            ```
+1. Setup pre-commit hook - [Documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
    
-   1. Configure Deployment - [Guide](https://circleci.com/docs/1.0/continuous-deployment-with-amazon-s3/)
+    This part is optional (you can [skip](#pre-commit-hook-end)), but its annoying to check something in, wait for the tests to run then find a simple error you could have fixed on your machine if you remembered to run html-proofer locally.  So I'll setup a git pre-commit hook to run jekyll build and html-proofer, and bring the failure closer to me in time and space.
+    
+    > *Note*: This hook will only run on the local repository, it will not automatically propagate to clones, and if you wipe your local repository and clone again, you will have to recreate the hook. 
    
+    1. Create an executable script int the `.git/hooks` folder called `pre-commit`
+    
+        ```bash
+        touch .git/hooks/pre-commit
+        chmod +x .git/hooks/pre-commit
+        ```
+        
+   1. Open the file in your editor and add commands similar to those in your circle.yml file to create the script.
+   
+        > *Note*: This script also builds and tests drafts, so that I can resolve errors while the work is still in progress.
+   
+        ```bash
+        #!/bin/sh
+        
+        bundle exec jekyll build --drafts
+        bundle exec htmlproofer ./_site --check-html --disable-external
+        ```
+        
+   1. Test your work by committing a change
+   
+        ```bash
+        git commit -am "Added git pre-commit hook"
+        ```
+
+<a name="pre-commit-hook-end"></a>
+
+1. Configure Deployment - [Guide](https://circleci.com/docs/1.0/continuous-deployment-with-amazon-s3/)
+
         Now we have a working build.  To finish things up we want to have the build output delivered to our S3 bucket, so that our site will have the latest content added to it whenever we publish to GitHub.
         
         1. Create IAM user for site deployment
