@@ -546,61 +546,59 @@ This part is optional (you can [skip](#pre-commit-hook-end)), but its annoying t
 ### Configure Deployment 
 
 Now I have a working build.  To finish things up I want the build output delivered to my S3 bucket, so that my site will have the latest content added to it whenever I publish to GitHub. - [Guide](https://circleci.com/docs/1.0/continuous-deployment-with-amazon-s3/)
-        
+                  
+1. Configure Secrets
 
-            
-        1. Configure Secrets
+    1. Open the CSV you downloaded when you created your IAM user for CircleCI.
+    
+    1. Click the gear next to your project name in the CircleCI dashboard.
+    
+        ![CircleCI Project Settings](/media/2017/03/07/circleci-project-settings.png)
         
-            * Open the CSV you downloaded in the previous step.
-            * Log in to CircleCI
-            
-            * Click the gear next to your project name in the CircleCI dashboard.
-            
-                ![CircleCI Project Settings](/media/2017/03/07/circleci-project-settings.png)
+    1. Scroll down to permissions and click "AWS Permissions".  
+    
+    1. Copy the Access Key ID and Secret Access Key from your CSV file into the appropriate fields here.
+    
+        ![AWS Permissions](/media/2017/03/07/aws-permissions.png)
+        
+    1. Click "Save AWS keys".
                 
-            * Scroll down to permissions and click "AWS Permissions".  
-            
-            * Copy the Access Key ID and Secret Access Key from your CSV file into the appropriate fields here.
-            
-                ![AWS Permissions](/media/2017/03/07/aws-permissions.png)
-                
-            * Don't forget to click "Save AWS keys".
-                
-        1. Add deployment to `circle.yml`
+1. Add deployment to `circle.yml`
+
+    CircleCI includes the AWS command line interface in every build runner.  So this means that we can use standard `awscli` commands to sync our content to S3.
+    
+    * Add the following to circle.yml
+    
+        ```yaml                
+        deployment:
+          prod:
+            branch: master
+            commands:
+              - aws s3 sync ./_site s3://jamesrcounts.com/ --delete
+        ```
         
-            CircleCI includes the AWS command line interface in every build runner.  So this means that we can use standard `awscli` commands to sync our content to S3.
+1. Push these changes and check your website once the CircleCI build completes.  Everything should be up-to-date!
+
+    ![Everything Up To Date](/media/2017/03/07/everything-up-to-date.png)
             
-            * Add the following to circle.yml
-            
-                ```yaml                
-                deployment:
-                  prod:
-                    branch: master
-                    commands:
-                      - aws s3 sync ./_site s3://jamesrcounts.com/ --delete
-                ```
-        
-        1. Push these changes and check your website once the CircleCI build completes.  Everything should be up-to-date!
-        
-            ![Everything Up To Date](/media/2017/03/07/everything-up-to-date.png)
-            
-        1. Let's make sure that CircleCI can also delete files.
-        
-            * Removing the sample post which jekyll generated.
-            
-               ```bash
-               rm _posts/2017-03-07-welcome-to-jekyll.markdown 
-               ```
-               
-            * Commit and push this change.
-            
-            * Check the site and see that the sample post is gone!
-            
-                ![Sample post deleted](/media/2017/03/07/sample-post-deleted.png)
+1. Let's make sure that CircleCI can also delete files.
+
+    * Remove the sample post which jekyll generated.
+    
+       ```bash
+       rm _posts/2017-03-07-welcome-to-jekyll.markdown 
+       ```
+       
+    * Commit and push this change.
+    
+    * Check the site and see that the sample post is gone!
+    
+        ![Sample post deleted](/media/2017/03/07/sample-post-deleted.png)
                 
 # Conclusion
                 
-That about wraps it up for this post.  It came out alot longer than I expected and its still rough.  Don't be surprised if I come back to it to break it up and polish the content.
+In this post I published the blog you are reading to AWS S3 and created a build pipeline to automatically publish new content using CircleCI.  Now I'm ready to move forward and write new posts on a variety of tech topics. 
 
-Hasta la vista until then.
-            
+For the most part this series is done, but there are still revisit the blog in future posts.  For example I would like to enable HTTPS, but I left those steps out because this series was already getting to be pretty long.  I would also like to set up a discussion/comment system.  
+
+For now, if you have any feedback, reach out through twitter or even email.  Thanks for reading.
