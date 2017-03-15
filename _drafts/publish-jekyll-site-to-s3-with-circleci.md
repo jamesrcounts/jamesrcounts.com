@@ -45,45 +45,53 @@ By the end of the post I'll have setup the following:
       
 # <a name="github"></a> Publish the Jekyll Site to GitHub
 
-I suspect a good number of readers are already familiar with GitHub.  If this is you, then create a public repository on GitHub and push your site to it.  You can skip to the next session.
+I suspect a good number of readers are already familiar with GitHub.  If this is you, then create a public repository on GitHub and push your site to it.  You can skip to the [next section](#github-end).
 
 However, for those who have been following along and prefer step-by-step instructions, read on.
 
-    1. Create remote repository
-        
-        1. After creating your account click the green "New Repository" button on the right side of the homepage.
+### Create Remote Repository
+
+1. Create your account and login. 
+
+1. Click the green "New Repository" button on the right side of the homepage.
           
-        1. Pick a repository name.  I will use "jamesrcounts.com" to match the jekyll project name.
+    1. I will use "jamesrcounts.com" as the name, to match the jekyll project name
         
-        1. I will create a public repository.
+    1. Create a public repository
         
-        1. Do not initialize the repository with a readme, or add .gitignore/.gitattributes.
+    1. Do not initialize the repository with a readme, or add .gitignore/.gitattributes
         
-        1. Click "Create Repository"
-        
-    1. Configure the new repository as a remote in your local repository.
-        
-        1. First add the remote
-
-            ```bash
-            git remote add origin ${REPOSITORY_URL}
-            ```
-               
-           Example:
-           ```bash
-           git remote add origin https://github.com/jamesrcounts/jamesrcounts.com.git
-           ```
-           
-        1. Then push the contents
-                        
-           ```bash
-           git push -u origin master
-           ```
-    1. Refresh your browser and you should see your contents on GitHub.
+    1. Click "Create Repository"
     
-        ![Pushed to GitHub](/media/2017/03/07/pushed-to-github.png)
+    ![Create Repository](/media/2017/03/15/create-repository.png)
+    
+        
+1. Push the site to the remote repository.
+    
+    1. First add the remote
 
-1. Setup AWS S3 Bucket
+        ```bash
+        git remote add origin ${REPOSITORY_URL}
+        ```
+           
+       Example:
+       ```bash
+       git remote add origin https://github.com/jamesrcounts/jamesrcounts.com.git
+       ```
+           
+    1. Then push the contents
+                    
+       ```bash
+       git push -u origin master
+       ```
+       
+1. Refresh your browser and you should see your contents on GitHub.
+
+    ![Pushed to GitHub](/media/2017/03/07/pushed-to-github.png)
+
+<a name="github-end"></a>
+
+1. <a name="aws"></a>Setup AWS S3 Bucket
 
     To host our site in AWS we will need a storage bucket to put our files into.  To configure this bucket properly, and integrate with CircleCI later, we will also setup a user for CircleCI which has permission to put objects into the bucket. 
     
