@@ -245,7 +245,10 @@ Do these tasks in your browser after logging into the AWS and navigating to [Rou
     
         ![Create First Alias](/media/2017/03/07/create-first-alias.png)
         
-1. Create a second alias, except this time use "www" as the name, and configure the alias to point at the secondary bucket.
+1. Create an alias for the secondary bucket
+ 
+    * Enter "www" as the name
+    * Configure the alias to point at the secondary bucket
             
 1. Update DNS at the domain registrar
 
