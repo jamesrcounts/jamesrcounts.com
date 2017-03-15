@@ -39,7 +39,7 @@ Here are some notes on the services I'll be using:
         > *Note*: You may need to retry this step a few times before AWS can place the outbound call.  A few people I know have mentioned this was a problem for them.
 
 
-* CircleCI to generate and validate the jekyll site
+* CircleCI to generate and validate the jekyll site - [Jump](#circleci)
  
     * An [account is required](https://github.com/join), if you are following along sign up for CircleCI after creating your github account.
     * CircleCI has a free tier for private repositories, it has an even better free tier for public repositories.  Either one should work fine for building our jekyll site.
@@ -274,13 +274,17 @@ Do these tasks in your browser after logging into the AWS and navigating to [Rou
         
 <a name="custom-domain-end"></a>        
 
-### 1. Connect to CircleCI - [Home Page](http://circleci.com)
+# <a name="circleci"></a> Create CircleCI Pipeline
 
-    Now that we have a way to reach our site through a custom domain, and a version of the site is published, lets setup CircleCI to auto-publish new content.
+Now that I have published my site and it is available on my custom domain, I want to setup [CircleCI](https://circleci.com) to auto-publish new content.
+
+The finish line for my new blog site is within reach.  If you're following along, we're almost there.
     
-    Get the process started by clicking the green "Sign Up" button on the home page.  In my case I'll link my GitHub account to CircleCI.
+1. Start the setup process by clicking the green "Sign Up" button on the CircleCI home page.  
 
-    1. Deselect projects you don't want to build
+    * Since my repository is on GitHub, I'll link my GitHub account to CircleCI.
+
+1. Deselect projects you don't want to build
     
         By default, CircleCI selects all the projects it can access through your linked GitHub account.  You probably don't want to build all of them.
         
