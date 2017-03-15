@@ -122,18 +122,19 @@ Because I'll use AWS Route53 to handle DNS for the website, the name of the buck
     * I'll pick "US West (Oregon)" as the region, but you should choose a region near you.
     * Click "Create".
     
-        ![Create Bucket](/media/2017/03/15/create-bucket.png)
-    
+        ![Create Bucket](/media/2017/03/15/create-bucket.png)    
             
-1. Next upload the site to the primary bucket.
-    
-        Later we will use CircleCI to push content into the bucket.  For now we will just create and copy the files manually.
+### Upload Site to Primary Bucket
+
+The primary bucket will be the bucket with the "naked" domain (no `www` prefix).  The goal is that CircleCI should push content into this bucket, as mentioned before.  However, there is a fair bit of configuration that goes into setting up the S3 website, so I want to put some content in the bucket now, so that I can be sure that the configuration is correct before setting up CircleCI.
         
-        1. Build the site
-        
-            ```bash
-            bundle exec jekyll build
-            ```
+1. Build the site
+
+    Run this command from your project root in your local terminal.
+
+    ```bash
+    bundle exec jekyll build
+    ```
            
         1. Copy everything *inside* the _site folder to your primary bucket (without the "www" prefix).  
         
