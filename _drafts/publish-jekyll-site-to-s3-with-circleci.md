@@ -196,6 +196,8 @@ If you are not going to use a custom domain, then you can probably [skip](#secon
         
 1. Configure the `www` bucket to redirect to the primary bucket - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/redirect-website-requests.html)
 
+    Take these steps in your browser after navigating to S3.
+
     1. Open the "www" bucket.
     1. Click Properties.
     1. Click "Static website hosting"
@@ -205,17 +207,21 @@ If you are not going to use a custom domain, then you can probably [skip](#secon
         * I'll enter "http" as the protocol
     1. Click "Save"
     
-        ![Redirect Configuration](/media/03/07/15/redirect-configuration.png)
+        ![Redirect Configuration](/media/2017/03/15/redirect-configuration.png)
                 
-        1. Click on "Static website hosting" again, then click on the endpoint URL.  It may take a few moments to redirect.
-         
-        1. When it eventually redirects it may not resolve to a site, depending on how your domain is currently configured.  We need to configure the domain to resolve to our bucket.
-        
-            ![Redirect To Site](/media/2017/03/07/redirect-to-site.png)
+1. Click on "Static website hosting" again, then click on the endpoint URL. 
+ 
+   > *Note*: It may take a few moments to redirect.
+            
+1. When the browser redirects it may not resolve to a site.
+
+    This depends on how your on how your domain is currently configured.  You may see a default website provided by your registrar, or nothing at all.  Because the primary bucket has a `.com` in it, S3 treats it like a URL.  To see the redirect to my site, I need to configure the `jamesrcounts.com` domain to resolve to my primary bucket.
+
+    ![Redirect To Site](/media/2017/03/07/redirect-to-site.png)
             
 <a name="secondary-bucket-end"></a>
 
-1. Setup Custom Domain - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html#root-domain-walkthrough-switch-to-route53-as-dnsprovider)
+### 1. Setup Custom Domain - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html#root-domain-walkthrough-switch-to-route53-as-dnsprovider)
 
     1. Login to the AWS console then visit Route53
     1. Create a hosted zone - [Instructions](http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/MigratingDNS.html#Step_CreateHostedZone)
