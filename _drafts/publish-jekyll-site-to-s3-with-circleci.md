@@ -221,7 +221,13 @@ If you are not going to use a custom domain, then you can probably [skip](#secon
             
 <a name="secondary-bucket-end"></a>
 
-### 1. Setup Custom Domain - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html#root-domain-walkthrough-switch-to-route53-as-dnsprovider)
+### Setup Custom Domain 
+
+In this section I'll use Route53 to provide DNS service for my domain.  You can [skip](#custom-domain-end) this step if you only plan to use the default URL provided by AWS.
+
+If you are following along with the Amazon documentation we've made it to [here](http://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html#root-domain-walkthrough-switch-to-route53-as-dnsprovider).
+
+
 
     1. Login to the AWS console then visit Route53
     1. Create a hosted zone - [Instructions](http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/MigratingDNS.html#Step_CreateHostedZone)
@@ -266,6 +272,8 @@ If you are not going to use a custom domain, then you can probably [skip](#secon
         For example: http://jamesrcounts.com/index.html
         
         ![DNS Resolved](/media/2017/03/07/dns-resolved.png )
+        
+<a name="custom-domain-end"></a>        
 
 1. Connect to CircleCI - [Home Page](http://circleci.com)
 
