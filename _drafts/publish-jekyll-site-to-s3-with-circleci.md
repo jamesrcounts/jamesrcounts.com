@@ -356,6 +356,8 @@ Perform these steps in your browser after logging in an navigating to the [IAM c
 Now that I have published my site and it is available on my custom domain, I want to setup [CircleCI](https://circleci.com) to auto-publish new content.
 
 The finish line for my new blog site is within reach.  If you're following along, we're almost there.
+
+### Sign Up and Configure First Build
     
 1. Start the setup process by clicking the green "Sign Up" button on the CircleCI home page.  
 
@@ -381,169 +383,169 @@ The finish line for my new blog site is within reach.  If you're following along
     
     ![Failing Build](/media/2017/03/07/failing-build.png)
     
-1. Create a `circle.yml` file - [Documentation](https://circleci.com/docs/1.0/configuration/)
+### Create a `circle.yml` file 
+
+This configuration file tells CircleCI how to build and test our project. - [Documentation](https://circleci.com/docs/1.0/configuration/)
+
+1. Create the circle.yml file in the project root.  Run in your terminal at the project root:
+
+    ```bash
+    touch circle.yml
+    ```
     
-    This configuration file tells CircleCI how to build and test our project.
+1. Next configure the machine section with a specific ruby version.
+
+    This gets our feet wet with circle.yml and resolves an warning during `bundle install` on the build server.
     
-    1. Create the circle.yml file in the project root.  Run in your terminal at the project root:
+    * Figure out the version of ruby you are using locally by running this command in your terminal at the project root:
     
         ```bash
-        touch circle.yml
+        echo ${RUBY_VERSION}
         ```
-        
-    1. Next configure the machine section with a specific ruby version.
     
-        This gets our feet wet with circle.yml and resolves an warning during `bundle install` on the build server.
+        ![Ruby Version](/media/2017/03/07/ruby-version.png)
         
-        * Figure out the version of ruby you are using locally by running this command in your terminal at the project root:
-        
-            ```bash
-            echo ${RUBY_VERSION}
-            ```
-        
-            ![Ruby Version](/media/2017/03/07/ruby-version.png)
-            
-        * Add machine configuration to the top of the circle.yml file to tell CircleCI to use the same version.
-        
-            ```yaml
-            machine:
-              ruby:
-                version: ruby-2.4.0
-            ```
-         
-    1. Push this change and CircleCI will start a new build.  The build will still fail because there are no testing instructions.
-         
-1. Setup jekyll build
-    
-    Before we can setup tests we need something to test.  Lets tell CircleCI how to create the site.
-        
-    1. Add a dependencies section below the machine section
+    * Add machine configuration to the top of the circle.yml file to tell CircleCI to use the same version.
     
         ```yaml
-        dependencies:
-          post:
-            - bundle exec jekyll build
+        machine:
+          ruby:
+            version: ruby-2.4.0
         ```
-        
-    1. Push and let CircleCI run, it may fail with an invalid date error like this:
-        
-        ![Invalid Date Error](/media/2017/03/07/invalid-date-error.png)
-            
-    1. Exclude problem file from jekyll build.
-       
-       After seeing the error message in CircleCI, I tried to reproduce the error locally by running `bundle exec jekyll build`.  I couldn't reproduce the error locally, and surfacing this kind of problem is one reason I like using build servers.  A build server automatically involves a second machine in your delivery process, and that second machine often surfaces problems hidden by your local configuration.       
-       
-        I searched the error message and found this [github issue](https://github.com/jekyll/jekyll/issues/2938).  The issue explains that the problem file not one of my files, it is actually a test file.  The commenters on the issue recommend excluding files under the `vendor/bundle` path from the build.  
+     
+1. Push this change and CircleCI will start a new build.  The build will still fail because there are no testing instructions.
          
-        File exclusions are setup in `_config.yml`, a file I haven't touched yet.  This file is in the project root directory and it contains several settings which impact improve the overall look and feel of the site.  There are important items in the file, like the footer contents and site-wide title.  I've been putting off updating these items to focus on writing this post.  Now will be a good time to update these items while also fixing the problem with `vendor/bundle`.  So you should read through this section, even if you don't encounter the build error I saw.
+### Setup jekyll build
+
+Before we can setup tests we need something to test.  Lets tell CircleCI how to create the site.
+    
+1. Add a dependencies section below the machine section
+
+    ```yaml
+    dependencies:
+      post:
+        - bundle exec jekyll build
+    ```
+    
+1. Push and let CircleCI run, it may fail with an invalid date error like this:
+    
+    ![Invalid Date Error](/media/2017/03/07/invalid-date-error.png)
         
-        Open _config.yml and update these items:
-        
-        * `title` - This is the title for the whole site, your blog's name in other words. Think of what you want to call your site.  I'm going to call mine "Head In The Clouds", since its the first thing that occurs to me.
-        
-        * `email` - add your email address here.  This address will appear in the footer of every page.
-        
-        * `description` - This description should be a short blurb describing your site.  It will appear in the footer.
-        
-        * `twitter_username` - Update this to reflect your twitter handle.
-        
-        * `github_username` - Also update this to reflect your GitHub handle.
-        
-        * `exclude` - Here we will add "vendor/bundle" to the list.  We can also exclude "circle.yml" so that it wont be copied to the _site directory.
-        
-            ```yaml
-            exclude:
-              - Gemfile
-              - Gemfile.lock
-              - vendor/bundle
-              - circle.yml
-            ```
-            
-        My final _config.yml file looks like this:
-         
+1. Exclude problem file from jekyll build.
+   
+   After seeing the error message in CircleCI, I tried to reproduce the error locally by running `bundle exec jekyll build`.  I couldn't reproduce the error locally, and surfacing this kind of problem is one reason I like using build servers.  A build server automatically involves a second machine in your delivery process, and that second machine often surfaces problems hidden by your local configuration.       
+   
+    I searched the error message and found this [github issue](https://github.com/jekyll/jekyll/issues/2938).  The issue explains that the problem file not one of my files, it is actually a test file.  The commenters on the issue recommend excluding files under the `vendor/bundle` path from the build.  
+     
+    File exclusions are setup in `_config.yml`, a file I haven't touched yet.  This file is in the project root directory and it contains several settings which impact improve the overall look and feel of the site.  There are important items in the file, like the footer contents and site-wide title.  I've been putting off updating these items to focus on writing this post.  Now will be a good time to update these items while also fixing the problem with `vendor/bundle`.  So you should read through this section, even if you don't encounter the build error I saw.
+    
+    Open _config.yml and update these items:
+    
+    * `title` - This is the title for the whole site, your blog's name in other words. Think of what you want to call your site.  I'm going to call mine "Head In The Clouds", since its the first thing that occurs to me.
+    
+    * `email` - add your email address here.  This address will appear in the footer of every page.
+    
+    * `description` - This description should be a short blurb describing your site.  It will appear in the footer.
+    
+    * `twitter_username` - Update this to reflect your twitter handle.
+    
+    * `github_username` - Also update this to reflect your GitHub handle.
+    
+    * `exclude` - Here we will add "vendor/bundle" to the list.  We can also exclude "circle.yml" so that it wont be copied to the _site directory.
+    
         ```yaml
-        title: Head In The Clouds
-        email: jamesrcounts@outlook.com
-        description: > 
-          I'm Jim Counts, independent consultant specializing in legacy code, cloud,
-          and devops.  This blog is where I'll share my thoughts and tips on cloud
-          and serverless computing.
-        baseurl: "" 
-        url: "" 
-        twitter_username: jamesrcounts
-        github_username:  jamesrcounts
-        
-        # Build settings
-        markdown: kramdown
-        theme: minima
-        gems:
-          - jekyll-feed
         exclude:
           - Gemfile
           - Gemfile.lock
           - vendor/bundle
           - circle.yml
-
         ```
         
+    My final _config.yml file looks like this:
+     
+    ```yaml
+    title: Head In The Clouds
+    email: jamesrcounts@outlook.com
+    description: > 
+      I'm Jim Counts, independent consultant specializing in legacy code, cloud,
+      and devops.  This blog is where I'll share my thoughts and tips on cloud
+      and serverless computing.
+    baseurl: "" 
+    url: "" 
+    twitter_username: jamesrcounts
+    github_username:  jamesrcounts
+    
+    # Build settings
+    markdown: kramdown
+    theme: minima
+    gems:
+      - jekyll-feed
+    exclude:
+      - Gemfile
+      - Gemfile.lock
+      - vendor/bundle
+      - circle.yml
+
+    ```
+    
 1. Push these changes and the next CircleCI build should finish without errors.  We're still missing tests though.
         
-1. Setup tests - [HTML Proofer](https://github.com/gjtorikian/html-proofer)
+### Setup Tests 
+    
+Jekyll produces a static blog site, but there are still things to test. The jekyll docs recommend a tool called HTML Proofer to check for issues like badly formed HTML or broken links. - [HTML Proofer](https://github.com/gjtorikian/html-proofer) 
         
-    Jekyll produces a static blog site, but there are still things to test. The jekyll docs recommend a tool called HTML Proofer to check for issues like badly formed HTML or broken links. 
-            
-    1. I'll add a test block to my circle.yml
+1. I'll add a test block to my circle.yml
+    
+    ```yaml
+    test:
+      post:
+        - bundle exec htmlproofer ./_site --check-html --disable-external
+    ```
         
-        ```yaml
-        test:
-          post:
-            - bundle exec htmlproofer ./_site --check-html --disable-external
-        ```
-            
-    1. I'll add this line to end of my Gemfile
-        
-        ```ruby
-        gem 'html-proofer'
-        ```
-           
-    1. I'll push these changes and the next CircleCI build is finally green!
+1. I'll add this line to end of my Gemfile
+    
+    ```ruby
+    gem 'html-proofer'
+    ```
        
-       ![Fixed Build](/media/2017/03/07/fixed-build.png)
+1. I'll push these changes and the next CircleCI build is finally green!
+   
+   ![Fixed Build](/media/2017/03/07/fixed-build.png)
            
-1. Setup pre-commit hook - [Documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
+### Setup pre-commit hook 
    
-    This part is optional (you can [skip](#pre-commit-hook-end)), but its annoying to check something in, wait for the tests to run then find a simple error you could have fixed on your machine if you remembered to run html-proofer locally.  So I'll setup a git pre-commit hook to run jekyll build and html-proofer, and bring the failure closer to me in time and space.
+This part is optional (you can [skip](#pre-commit-hook-end)), but its annoying to check something in, wait for the tests to run then find a simple error you could have fixed on your machine if you remembered to run html-proofer locally.  So I'll setup a git pre-commit hook to run jekyll build and html-proofer, and bring the failure closer to me in time and space.
+
+> *Note*: This hook will only run on the local repository, it will not automatically propagate to clones, and if you wipe your local repository and clone again, you will have to recreate the hook. 
+
+1. Create an executable script int the `.git/hooks` folder called `pre-commit` - [Documentation](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
+
+    ```bash
+    touch .git/hooks/pre-commit
+    chmod +x .git/hooks/pre-commit
+    ```
     
-    > *Note*: This hook will only run on the local repository, it will not automatically propagate to clones, and if you wipe your local repository and clone again, you will have to recreate the hook. 
-   
-    1. Create an executable script int the `.git/hooks` folder called `pre-commit`
+1. Open the file in your editor and add commands similar to those in your circle.yml file to create the script.
+
+    > *Note*: This script also builds and tests drafts, so that I can resolve errors while the work is still in progress.
+
+    ```bash
+    #!/bin/sh
     
-        ```bash
-        touch .git/hooks/pre-commit
-        chmod +x .git/hooks/pre-commit
-        ```
-        
-   1. Open the file in your editor and add commands similar to those in your circle.yml file to create the script.
-   
-        > *Note*: This script also builds and tests drafts, so that I can resolve errors while the work is still in progress.
-   
-        ```bash
-        #!/bin/sh
-        
-        bundle exec jekyll build --drafts
-        bundle exec htmlproofer ./_site --check-html --disable-external
-        ```
-        
-   1. Test your work by committing a change
-   
-        ```bash
-        git commit -am "Added git pre-commit hook"
-        ```
+    bundle exec jekyll build --drafts
+    bundle exec htmlproofer ./_site --check-html --disable-external
+    ```
+    
+1. Test your work by committing a change
+
+    ```bash
+    git commit -am "Added git pre-commit hook"
+    ```
 <a name="pre-commit-hook-end"></a>
 
-1. Configure Deployment - [Guide](https://circleci.com/docs/1.0/continuous-deployment-with-amazon-s3/)
+### Configure Deployment 
 
-    Now I have a working build.  To finish things up I want the build output delivered to my S3 bucket, so that my site will have the latest content added to it whenever I publish to GitHub.
+Now I have a working build.  To finish things up I want the build output delivered to my S3 bucket, so that my site will have the latest content added to it whenever I publish to GitHub. - [Guide](https://circleci.com/docs/1.0/continuous-deployment-with-amazon-s3/)
         
 
             
