@@ -338,76 +338,79 @@ The finish line for my new blog site is within reach.  If you're following along
          
 1. Setup jekyll build
     
-        Before we can setup tests we need something to test.  Lets tell CircleCI how to create the site.
+    Before we can setup tests we need something to test.  Lets tell CircleCI how to create the site.
         
-        1. Add a dependencies section below the machine section
+    1. Add a dependencies section below the machine section
+    
+        ```yaml
+        dependencies:
+          post:
+            - bundle exec jekyll build
+        ```
+        
+    1. Push and let CircleCI run, it may fail with an invalid date error like this:
+        
+        ![Invalid Date Error](/media/2017/03/07/invalid-date-error.png)
+            
+    1. Exclude problem file from jekyll build.
+       
+       After seeing the error message in CircleCI, I tried to reproduce the error locally by running `bundle exec jekyll build`.  I couldn't reproduce the error locally, and surfacing this kind of problem is one reason I like using build servers.  A build server automatically involves a second machine in your delivery process, and that second machine often surfaces problems hidden by your local configuration.       
+       
+        I searched the error message and found this [github issue](https://github.com/jekyll/jekyll/issues/2938).  The issue explains that the problem file not one of my files, it is actually a test file.  The commenters on the issue recommend excluding files under the `vendor/bundle` path from the build.  
+         
+        File exclusions are setup in `_config.yml`, a file I haven't touched yet.  This file is in the project root directory and it contains several settings which impact improve the overall look and feel of the site.  There are important items in the file, like the footer contents and site-wide title.  I've been putting off updating these items to focus on writing this post.  Now will be a good time to update these items while also fixing the problem with `vendor/bundle`.  So you should read through this section, even if you don't encounter the build error I saw.
+        
+        Open _config.yml and update these items:
+        
+        * `title` - This is the title for the whole site, your blog's name in other words. Think of what you want to call your site.  I'm going to call mine "Head In The Clouds", since its the first thing that occurs to me.
+        
+        * `email` - add your email address here.  This address will appear in the footer of every page.
+        
+        * `description` - This description should be a short blurb describing your site.  It will appear in the footer.
+        
+        * `twitter_username` - Update this to reflect your twitter handle.
+        
+        * `github_username` - Also update this to reflect your GitHub handle.
+        
+        * `exclude` - Here we will add "vendor/bundle" to the list.  We can also exclude "circle.yml" so that it wont be copied to the _site directory.
         
             ```yaml
-            dependencies:
-              post:
-                - bundle exec jekyll build
-            ```
-            
-            Push and let CircleCI run, it may fail with an invalid date error like this:
-            
-            ![Invalid Date Error](/media/2017/03/07/invalid-date-error.png)
-            
-        1. Exclude problem file from jekyll build.
-           
-           Although I'm bothered that I could not reproduce this error locally by running `bundle exec jekyll build`, I'm happy that I have a build server.  One of the great things about a build server is that it provides a second machine to test your code on, surfacing problems that are hidden by your local configuration.
-            
-            I found this [github issue](https://github.com/jekyll/jekyll/issues/2938) after some googling.  The issue explains that the problem file is actually a test file, not one of ours.  Looking at the error again I can see that indeed the file is beneath the `vendor/bundle` folder, and not one of mine.  The commentors on the issue reccomend exluding files under this path from the build.  
-             
-            Lets update `_config.yml`.  This file is in your project root directory and it contains several settings which impact improve the over all look and feel of our site.  I've been putting it off to focus on writing this post.  Since we are here we will update them all.
-            
-            * `title` - This is the title for the whole site, your blog's name in other words. Think of what you want to call your site.  I'm going to call mine "Head In The Clouds", since its the first thing that occurs to me.
-            
-            * `email` - add your email address here.  This address will appear in the footer of every page.
-            
-            * `description` - This description should be a short blurb describing your site.  It will appear in the footer.
-            
-            * `twitter_username` - Update this to reflect your twitter handle.
-            
-            * `github_username` - Also update this to reflect your github handle.
-            
-            * `exclude` - Here we will add "vendor/bundle" to the list.  Since we are here we can also exclude "circle.yml" so that it wont be copied to the _site directory.
-            
-                ```yaml
-                exclude:
-                  - Gemfile
-                  - Gemfile.lock
-                  - vendor/bundle
-                  - circle.yml
-                ```
-                
-            My final file looks like this:
-             
-            ```yaml
-            title: Head In The Clouds
-            email: jamesrcounts@outlook.com
-            description: > 
-              I'm Jim Counts, independent consultant specializing in legacy code, cloud,
-              and devops.  This blog is where I'll share my thoughts and tips on cloud
-              and serverless computing.
-            baseurl: "" 
-            url: "" 
-            twitter_username: jamesrcounts
-            github_username:  jamesrcounts
-            
-            # Build settings
-            markdown: kramdown
-            theme: minima
-            gems:
-              - jekyll-feed
             exclude:
               - Gemfile
               - Gemfile.lock
               - vendor/bundle
               - circle.yml
-
             ```
-            Push these changes and the next CircleCI build should finish without errors.  We're still missing tests though.
             
+        My final _config.yml file looks like this:
+         
+        ```yaml
+        title: Head In The Clouds
+        email: jamesrcounts@outlook.com
+        description: > 
+          I'm Jim Counts, independent consultant specializing in legacy code, cloud,
+          and devops.  This blog is where I'll share my thoughts and tips on cloud
+          and serverless computing.
+        baseurl: "" 
+        url: "" 
+        twitter_username: jamesrcounts
+        github_username:  jamesrcounts
+        
+        # Build settings
+        markdown: kramdown
+        theme: minima
+        gems:
+          - jekyll-feed
+        exclude:
+          - Gemfile
+          - Gemfile.lock
+          - vendor/bundle
+          - circle.yml
+
+        ```
+        
+1. Push these changes and the next CircleCI build should finish without errors.  We're still missing tests though.
+        
         1. Setup tests - [HTML Proofer](https://github.com/gjtorikian/html-proofer)
         
             Although I'm only using jekyll to produce a static blog site, there are still things to test.  The jekyll docs recommend a tool called HTML Proofer to check for issues like badly formed HTML or broken links. 
