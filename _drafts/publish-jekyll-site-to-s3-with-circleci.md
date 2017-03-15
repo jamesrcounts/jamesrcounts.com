@@ -124,9 +124,9 @@ Because I'll use AWS Route53 to handle DNS for the website, the name of the buck
     
         ![Create Bucket](/media/2017/03/15/create-bucket.png)    
             
-### Upload Site to Primary Bucket
+### Upload Site and Configure Primary Bucket
 
-The primary bucket will be the bucket with the "naked" domain (no `www` prefix).  The goal is that CircleCI should push content into this bucket, as mentioned before.  However, there is a fair bit of configuration that goes into setting up the S3 website, so I want to put some content in the bucket now, so that I can be sure that the configuration is correct before setting up CircleCI.
+The primary bucket can be either bucket that you created in the previous step. I will be the bucket with the "naked" domain (no `www` prefix).  The goal is that CircleCI should push content into this bucket, as mentioned before.  However, there is a fair bit of configuration that goes into setting up the S3 website, so I want to put some content in the bucket now, so that I can be sure that the configuration is correct before setting up CircleCI.
         
 1. Build the site
 
@@ -136,70 +136,85 @@ The primary bucket will be the bucket with the "naked" domain (no `www` prefix).
     bundle exec jekyll build
     ```
            
-        1. Copy everything *inside* the _site folder to your primary bucket (without the "www" prefix).  
-        
-            You can just drag them in from your file manager and drop them in the blue area of your bucket.
-            
-            ![Drop Site Files](/media/2017/03/07/drop-site-files.png)
-            
-            Then click the "Upload" button to send the files.
-        
-    1. Configure the bucket for website hosting - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/static-website-hosting.html)
-        
-        1. Click "Properties"
-        1. Click "Static website hosting"
-        1. Choose "Use this bucket to host a website"
-        1. Enter "index.html" as the Index Document.
-        1. Click the "Save" button
-            
-    1. Although the website URL is now available, we receive a 403 error when trying to access the site.
+1. Copy everything *inside* the `_site` folder to the primary bucket.  
+
+    * You can just drag them in from your file manager and drop them in the blue area of your bucket.
     
-        ![403 Error](/media/2017/03/07/403-error.png)
-        
-    1. Set public bucket permissions - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/set-bucket-permissions.html)
+        ![Drop Site Files](/media/2017/03/07/drop-site-files.png)
     
-        1. Click "Permissions"
-        1. Click "Bucket Policy"
-        1. Paste in a policy to grant permission (notice that you need to update the bucket name in your version of the policy)
+    * Then click the "Upload" button to send the files.
+            
+1. Configure the bucket for website hosting - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/static-website-hosting.html)
+    
+    1. Click "Properties"
+    1. Click "Static website hosting"
+    1. Choose "Use this bucket to host a website"
+    1. Enter "index.html" as the Index Document.
+    1. Click the "Save" button
+    
+            
+1. Although the website URL is now available, we receive a 403 error when trying to access the site.
+
+    ![403 Error](/media/2017/03/07/403-error.png)
         
-            ```json 
+1. Set public bucket permissions - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/set-bucket-permissions.html)
+
+    1. Click "Permissions"
+    1. Click "Bucket Policy"
+    1. Paste in a policy to grant read-only permission 
+    
+        ```json 
+        {
+          "Version": "2012-10-17",
+          "Statement": [
             {
-              "Version":"2012-10-17",
-              "Statement":[{
-                "Sid":"AddPerm",
-                    "Effect":"Allow",
-                  "Principal": "*",
-                  "Action":["s3:GetObject"],
-                  "Resource":["arn:aws:s3:::jamesrcounts.com/*"
-                  ]
-                }
+              "Sid": "AddPerm",
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": [
+                "s3:GetObject"
+              ],
+              "Resource": [
+                "arn:aws:s3:::jamesrcounts.com\/*"
               ]
             }
-            ```
+          ]
+        }
+        ```
         
-        1. Click "Save"
-            
-    1. We can now view the site on the public internet!
-    
-        ![Publicly Viewable](/media/2017/03/07/publicly-viewable.png)
+        > *Note*: You need to update the bucket name in your version of the policy.
         
-    1. Configure the `www` bucket to redirect to the primary bucket - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/redirect-website-requests.html)
+    1. Click "Save"
+                    
+1. We can now view the site on the public internet!
+
+    ![Publicly Viewable](/media/2017/03/07/publicly-viewable.png)
+        
+### Configure Secondary Bucket
+
+If you are not going to use a custom domain, then you can probably [skip](#secondary-bucket-end) this step.  I don't see much usability benefit to having one default URL redirect to another default.  It's up to you, but I'll only cover the custom domain case here.  If you want to skip this step, go ahead and delete the secondary bucket now, it is only used for redirects.
+        
+1. Configure the `www` bucket to redirect to the primary bucket - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/user-guide/redirect-website-requests.html)
+
+    1. Open the "www" bucket.
+    1. Click Properties.
+    1. Click "Static website hosting"
+    1. Choose "Redirect requests"
+    1. Configure the redirect
+        * I'll enter "jamesrcounts.com" for the target bucket
+        * I'll enter "http" as the protocol
+    1. Click "Save"
     
-        1. Open the "www" bucket.
-        1. Click Properties.
-        1. Click "Staic website hosting"
-        1. Choose "Redirect requests"
-        1. Configure the redirect
-            * I'll enter "jamesrcounts.com" for the target bucket
-            * I'll enter "http" as the protocol
-        1. Click "Save"
+        ![Redirect Configuration](/media/03/07/15/redirect-configuration.png)
                 
         1. Click on "Static website hosting" again, then click on the endpoint URL.  It may take a few moments to redirect.
          
         1. When it eventually redirects it may not resolve to a site, depending on how your domain is currently configured.  We need to configure the domain to resolve to our bucket.
         
             ![Redirect To Site](/media/2017/03/07/redirect-to-site.png)
-        
+            
+<a name="secondary-bucket-end"></a>
+
 1. Setup Custom Domain - [Instructions](http://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html#root-domain-walkthrough-switch-to-route53-as-dnsprovider)
 
     1. Login to the AWS console then visit Route53
