@@ -11,9 +11,9 @@ tags:
     - CircleCI
     - GitHub
 ---
-In this post I'll walk through the process I used to setup continuous publishing for this blog using GitHub, CircleCI and S3.  I write posts on this site using jekyll, and I already setup a jekyll project in a [previous post]({% post_url 2017-03-07-create-a-serverless-blog-with-aws-and-jekyll %}){:target="_blank"}.  
+In this post I'll walk through the process I used to setup continuous publishing for this blog using GitHub, CircleCI, and S3.  I write posts on this site using jekyll, and I already set up a jekyll project in a [previous post]({% post_url 2017-03-07-create-a-serverless-blog-with-aws-and-jekyll %}){:target="_blank"}.  
 
-To create a publishing pipeline for the site I'll start by pushing the existing site to a remote repository on GitHub.  Next, I will publish the site to AWS S3 manually and configure website to use a custom domain. Once I have a working version of the site hosted on S3, I'll setup Circle CI to connect the two sides of the pipeline so that changes pushed to GitHub will automatically flow through to the S3 website.
+To create a publishing pipeline for the site I'll start by pushing the existing site to a remote repository on GitHub.  Next, I will publish the site to AWS S3 manually and configure the website to use a custom domain. Once I have a working version of the site hosted on S3, I'll setup CircleCI to connect the two sides of the pipeline so that changes pushed to GitHub will automatically flow through to the S3 website.
 
 Here are some notes on the services I'll be using:
 
@@ -41,10 +41,10 @@ Here are some notes on the services I'll be using:
 
 * CircleCI to generate and validate the jekyll site - [Jump](#circleci)
  
-    * An [account is required](https://github.com/join), if you are following along sign up for CircleCI after creating your github account.
+    * An [account is required](https://github.com/join), if you are following along sign up for CircleCI after creating your GitHub account.
     * CircleCI has a free tier for private repositories, it has an even better free tier for public repositories.  Either one should work fine for building our jekyll site.
         
-        > *Note*: CircleCI supports BitBucket as well, if you prefer that service to GitHub. 
+        > *Note*: CircleCI supports BitBucket as well if you prefer that service to GitHub. 
     
 # <a name="github"></a> Publish the Jekyll Site to GitHub
 
@@ -56,7 +56,7 @@ However, for those who have been following along and prefer step-by-step instruc
 
 Take these steps in your browser.
 
-1. Create your account and login. 
+1. Create your account and log in. 
 
 1. Click the green "New Repository" button on the right side of the homepage.
           
@@ -75,7 +75,7 @@ Take these steps in your browser.
 
 Run these commands in your local bash terminal.
 
-1. First add the remote
+1. First, add the remote
 
     ```bash
     git remote add origin ${REPOSITORY_URL}
@@ -102,9 +102,9 @@ Refresh your browser and you should see your contents on GitHub.
 
 # <a name="aws"></a>Create an AWS S3 Website
 
-To host my site in AWS I will need a storage bucket to put our files into.  Turning a bucket into a website requires some special configuration of the bucket.  I also want to setup a custom domain for the website, and for that I'll use Amazon's Route53 service.
+To host my site in AWS I will need a storage bucket to put our files into.  Turning a bucket into a website requires some special configuration of the bucket.  I also want to setup a custom domain for the website, and for that, I'll use Amazon's Route53 service.
   
-  Finally, before leaving the Amazon section of this post, I'll setup a credentials and permissions for CircleCI to use when publishing updates to the site.
+  Finally, before leaving the Amazon section of this post, I'll set up credentials and permissions for CircleCI to use when publishing updates to the site.
     
 ### Create Bucket(s) 
 
@@ -126,7 +126,7 @@ Because I'll use AWS Route53 to handle DNS for the website, the name of the buck
             
 ### Upload Site and Configure Primary Bucket
 
-The primary bucket can be either bucket that you created in the previous step. I will be the bucket with the "naked" domain (no `www` prefix).  The goal is that CircleCI should push content into this bucket, as mentioned before.  However, there is a fair bit of configuration that goes into setting up the S3 website, so I want to put some content in the bucket now, so that I can be sure that the configuration is correct before setting up CircleCI.
+The primary bucket can be either bucket that you created in the previous step. I will be the bucket with the "naked" domain (no `www` prefix).  The goal is that CircleCI should push content into this bucket, as mentioned before.  However, there is a fair bit of configuration that goes into setting up the S3 website, so I want to put some content in the bucket now so that I can be sure that the configuration is correct before setting up CircleCI.
         
 1. Build the site
 
@@ -175,7 +175,7 @@ The primary bucket can be either bucket that you created in the previous step. I
                 "s3:GetObject"
               ],
               "Resource": [
-                "arn:aws:s3:::jamesrcounts.com\/*"
+                "arn:aws:s3:::jamesrcounts.com/*"
               ]
             }
           ]
@@ -217,7 +217,7 @@ If you are not going to use a custom domain, then you can probably [skip](#secon
             
 1. When the browser redirects it may not resolve to a site.
 
-    This depends on how your on how your domain is currently configured.  You may see a default website provided by your registrar, or nothing at all.  Because the primary bucket has a `.com` in it, S3 treats it like a URL.  To see the redirect to my site, I need to configure the `jamesrcounts.com` domain to resolve to my primary bucket.
+    This depends on how your on how your domain is currently configured.  You may see a default website provided by your registrar, or nothing at all.  Because the primary bucket has a `.com` in it, S3 treats it like an address.  To see the redirect to my site, I need to configure the `jamesrcounts.com` domain to resolve to my primary bucket.
 
     ![Redirect To Site](/media/2017/03/07/redirect-to-site.png)
             
@@ -225,7 +225,7 @@ If you are not going to use a custom domain, then you can probably [skip](#secon
 
 ### Setup Custom Domain 
 
-In this section I'll use Route53 to provide DNS service for my domain.  You can [skip](#custom-domain-end) this step if you only plan to use the default URL provided by AWS.
+In this section, I'll use Route53 to provide DNS service for my domain.  You can [skip](#custom-domain-end) this step if you only plan to use the default URL provided by AWS.
 
 If you are following along with the Amazon documentation we've made it to [here](http://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html#root-domain-walkthrough-switch-to-route53-as-dnsprovider).
 
@@ -238,8 +238,8 @@ Do these tasks in your browser after logging into the AWS and navigating to [Rou
 1. Create alias record for the primary bucket
     1. Click "Create Record Set"
     1. Leave the "Name" field blank.
-    1. Choose the "Yes" radio-button next to the "Alias" label
-    1. Click in the "Alias Target" text box, and a drop down should offer you the matching bucket as an option.
+    1. Choose the "Yes" radio button next to the "Alias" label
+    1. Click in the "Alias Target" text box, and a drop-down should offer you the matching bucket as an option.
     
          > *Note*: If you do not see your bucket in the drop down, make sure your bucket name exactly matches the domain you are setting up.  These must match for DNS setup to work.  If the domain doesn't match the bucket name, recreate your bucket with the correct name and try again.
         
@@ -260,7 +260,7 @@ Do these tasks in your browser after logging into the AWS and navigating to [Rou
     
         ![Copy Nameservers](/media/2017/03/07/copy-nameservers.png)
     
-    1. I'll login to Hover, click on my domain and click the "Edit" button next to the nameservers
+    1. I'll log in to Hover, click on my domain and click the "Edit" button next to the nameservers
     
         ![Edit Nameservers](/media/2017/03/07/edit-nameservers.png)
         
@@ -282,9 +282,9 @@ To add/overwrite files in your S3 bucket, CircleCI needs access to the AWS accou
 
 If you are unfamiliar with IAM, an IAM policy defines a set of rules to access resources in AWS and users are essentially just a set of credentials that can have these rules attached.  
 
-By default, AWS denies all access to resources.  When a newly created user tries to access my primary S3 bucket, AWS will check for a policy that allows access to the bucket.  AWS will deny the request unless I write a policy to allow access and attach it to the user.  Earlier, we setup a bucket policy that allowed public read-only access to the primary bucket so that the bucket could serve web content to anyone.  This policy would allow CircleCI to read the bucket.  To perform writes and deletes, CircleCI will need additional permission.  
+By default, AWS denies all access to resources.  When a newly created user tries to access my primary S3 bucket, AWS will check for a policy that allows access to the bucket.  AWS will deny the request unless I write a policy to allow access and attach it to the user.  Earlier, we set up a bucket policy that allowed public read-only access to the primary bucket so that the bucket could serve web content to anyone.  This policy would allow CircleCI to read the bucket.  To perform writes and deletes, CircleCI will need additional permission.  
 
-Only when associated with a polices do users become useful.  You can apply a policy to a user by attaching it directly to the user, or by attaching it to a group that the user is in.
+Only when associated with polices do users become useful.  You can apply a policy to a user by attaching it directly to the user, or by attaching it to a group that the user is in.
 
 Perform these steps in your browser after logging in an navigating to the [IAM console](https://console.aws.amazon.com/iam/home){:target="_blank"}    
    
@@ -324,7 +324,7 @@ Perform these steps in your browser after logging in an navigating to the [IAM c
                 "s3:DeleteObject"
               ],
               "Resource": [
-                "arn:aws:s3:::jamesrcounts.com\/*"
+                "arn:aws:s3:::jamesrcounts.com/*"
               ]
             }
           ]
@@ -369,9 +369,9 @@ The finish line for my new blog site is within reach.  If you're following along
     
     1. Click "Deselect all projects" as needed.  
     
-        You will need do do this once per organization/user.
+        You will need to do this once per organization/user.
     
-    1. Click the check box next to the your blog repository.
+    1. Click the check box next to your blog repository.
         
 1. Click the blue "Follow and Build" button below the list of projects.
     
@@ -393,9 +393,9 @@ This configuration file tells CircleCI how to build and test our project. - [Doc
     touch circle.yml
     ```
     
-1. Next configure the machine section with a specific ruby version.
+1. Next, configure the machine section with a specific ruby version.
 
-    This gets our feet wet with circle.yml and resolves an warning during `bundle install` on the build server.
+    This gets our feet wet with the `circle.yml` file and resolves a warning during `bundle install` on the build server.
     
     * Figure out the version of ruby you are using locally by running this command in your terminal at the project root:
     
@@ -417,7 +417,7 @@ This configuration file tells CircleCI how to build and test our project. - [Doc
          
 ### Setup jekyll build
 
-Before we can setup tests we need something to test.  Lets tell CircleCI how to create the site.
+Before we can setup tests we need something to test.  Let's tell CircleCI how to create the site.
     
 1. Add a dependencies section below the machine section
 
@@ -441,7 +441,7 @@ Before we can setup tests we need something to test.  Lets tell CircleCI how to 
     
     Open _config.yml and update these items:
     
-    * `title` - This is the title for the whole site, your blog's name in other words. Think of what you want to call your site.  I'm going to call mine "Head In The Clouds", since its the first thing that occurs to me.
+    * `title` - This is the title for the whole site, your blog's name in other words. Think of what you want to call your site.  The first thing which occurs to me is "Head In The Clouds", so I'll call it that.
     
     * `email` - add your email address here.  This address will appear in the footer of every page.
     
@@ -451,7 +451,7 @@ Before we can setup tests we need something to test.  Lets tell CircleCI how to 
     
     * `github_username` - Also update this to reflect your GitHub handle.
     
-    * `exclude` - Here we will add "vendor/bundle" to the list.  We can also exclude "circle.yml" so that it wont be copied to the _site directory.
+    * `exclude` - Here we will add "vendor/bundle" to the list.  We can also exclude "circle.yml" so that it won't be copied to the _site directory.
     
         ```yaml
         exclude:
@@ -467,8 +467,8 @@ Before we can setup tests we need something to test.  Lets tell CircleCI how to 
     title: Head In The Clouds
     email: jamesrcounts@outlook.com
     description: > 
-      I'm Jim Counts, independent consultant specializing in legacy code, cloud,
-      and devops.  This blog is where I'll share my thoughts and tips on cloud
+      I'm Jim Counts, an independent consultant specializing in legacy code, cloud,
+      and DevOps.  This blog is where I'll share my thoughts and tips on cloud
       and serverless computing.
     baseurl: "" 
     url: "" 
@@ -488,7 +488,7 @@ Before we can setup tests we need something to test.  Lets tell CircleCI how to 
 
     ```
     
-1. Push these changes and the next CircleCI build should finish without errors.  We're still missing tests though.
+1. Push these changes and the next CircleCI build should finish without errors.  I'm still missing tests and I need to resolve that to get a green build.
         
 ### Setup Tests 
     
@@ -514,7 +514,7 @@ Jekyll produces a static blog site, but there are still things to test. The jeky
            
 ### Setup pre-commit hook 
    
-This part is optional (you can [skip](#pre-commit-hook-end)), but its annoying to check something in, wait for the tests to run then find a simple error you could have fixed on your machine if you remembered to run html-proofer locally.  So I'll setup a git pre-commit hook to run jekyll build and html-proofer, and bring the failure closer to me in time and space.
+This part is optional (you can [skip](#pre-commit-hook-end)), but it is annoying to check something in, wait for the tests to run then find a simple error you could have fixed on your machine if you remembered to run html-proofer locally.  So I'll setup a git pre-commit hook to run jekyll build and html-proofer, and bring the failure closer to me in time and space.
 
 > *Note*: This hook will only run on the local repository, it will not automatically propagate to clones, and if you wipe your local repository and clone again, you will have to recreate the hook. 
 
@@ -545,7 +545,7 @@ This part is optional (you can [skip](#pre-commit-hook-end)), but its annoying t
 
 ### Configure Deployment 
 
-Now I have a working build.  To finish things up I want the build output delivered to my S3 bucket, so that my site will have the latest content added to it whenever I publish to GitHub. - [Guide](https://circleci.com/docs/1.0/continuous-deployment-with-amazon-s3/)
+Now I have a working build.  To finish things up I want the build output delivered to my S3 bucket so that my site will have the latest content added to it whenever I publish to GitHub. - [Guide](https://circleci.com/docs/1.0/continuous-deployment-with-amazon-s3/)
                   
 1. Configure Secrets
 
@@ -597,8 +597,8 @@ Now I have a working build.  To finish things up I want the build output deliver
                 
 # Conclusion
                 
-In this post I published the blog you are reading to AWS S3 and created a build pipeline to automatically publish new content using CircleCI.  Now I'm ready to move forward and write new posts on a variety of tech topics. 
+In this post, I published the blog you are reading to AWS S3 and created a build pipeline to automatically publish new content using CircleCI.  Now I'm ready to move forward and write new posts on a variety of tech topics. 
 
-For the most part this series is done, but there are still revisit the blog in future posts.  For example I would like to enable HTTPS, but I left those steps out because this series was already getting to be pretty long.  I would also like to set up a discussion/comment system.  
+For the most part, this series is done, but there are still revisit the blog in future posts.  For example, I would like to enable HTTPS, but I left those steps out because this series was already getting to be pretty long.  I would also like to set up a discussion/comment system.  
 
 For now, if you have any feedback, reach out through twitter or even email.  Thanks for reading.
