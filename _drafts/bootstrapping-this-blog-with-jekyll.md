@@ -156,29 +156,29 @@ Once I get these posts into the site, I'll be able to finish writing from within
     
     ![Broken Media Links](/media/2017/03/07/broken-media-links.png)
     
-     1. Create a folder for media - [Writing Posts](https://jekyllrb.com/docs/posts/#including-images-and-resources)
-     
-        Jekyll's documentation points out that a common solution to including images and other blobs is to create a top-level folder like `assets` or `downloads`.  Jekyll is not very opinionated here.  Anything it sees in the root directory it will either copy to the `_site` directory as-is, or it will pre-process the input if it finds front matter in the file.  
-        
-        I looked at a few example sites that the jekyll documentation links to, and found that I like the top level folder idea, but I'll include sub-folders to avoid a giant sea of blobs. This is for my own convenience, neither jekyll or the web care how I organize these blobs.
-        
-        I'll use `mkdir -p` to create my destination folder and it's parents in one go.
-        
-        ```bash
-        mkdir -p media/2017/03/07
-        ```
-        
-        The year/month/day directory structure will make a little more sense once I publish this post out of draft mode.  I doubt I'll be posting so often that having a folder for the day will get confusing, and if that happens, I can change things for new posts without breaking anything.   Anyway, this is good enough for now.  
-        
-        Next I'll copy the media files from the old location.
-        
-        ```bash
-        cp ../../jamesrcounts.com/media/* media/2017/03/07/
-        ```
-        
-        And now, the image links are working.
-        
-        ![Working Images](/media/2017/03/07/working-images.png)
+ 1. Create a folder for media - [Writing Posts](https://jekyllrb.com/docs/posts/#including-images-and-resources)
+ 
+    Jekyll's documentation points out that a common solution to including images and other blobs is to create a top-level folder like `assets` or `downloads`.  Jekyll is not very opinionated here.  It processes content in the root directory in one of two ways.  If it finds front matter in the file, it will pre-process the input.  If it finds no front matter, it copies the content as is to the `_site` directory.  This means blobs like images are always copied.  
+    
+    I looked at a few example sites that the jekyll documentation links to, and found that I like the top level folder idea, but I'll include sub-folders to avoid a giant sea of blobs. This is for my own convenience, neither jekyll or the web care how I organize these blobs.
+    
+    I'll use `mkdir -p` to create my destination folder and it's parents in one go.
+    
+    ```bash
+    mkdir -p media/2017/03/07
+    ```
+    
+    The year/month/day directory structure will make a little more sense once I publish this post out of draft mode.  I doubt I'll post often enough that having a folder for the day will get confusing, and if that happens, I can change things for new posts without breaking anything.   Anyway, this is good enough for now.  
+    
+    Next I'll copy the media files from the old location.
+    
+    ```bash
+    cp ../../jamesrcounts.com/media/* media/2017/03/07/
+    ```
+    
+    I do a search and replace to update my image source paths to include the subfolders.  Now, the image links are working.
+    
+    ![Working Images](/media/2017/03/07/working-images.png)
         
     1. Now would be a good time to make sure we are all checked in.
     
