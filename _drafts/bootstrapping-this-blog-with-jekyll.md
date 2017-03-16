@@ -65,36 +65,36 @@ Now that we have initialized our site.  Lets turn it into a git repository.  One
 
 I assume that many of you will already be familiar with git, and you can feel free to skim or [skip](#git-end) this section.  Just make sure that you initialize a new repository and make your first commit with the files jekyll generated.
     
-    1. Navigate to your site folder and run:
-        
-        ```bash
-        git init .
-        ```
-        
-    1. Normally the next thing I like to do is create a `.gitignore` file.  But jekyll already created one for us, nice.
+1. Navigate to your site folder and run:
     
-        ```
-        # .gitignore
-        _site
-        .sass-cache
-        .jekyll-metadata
-        ```
-        
-    1. Add the initial files.
+    ```bash
+    git init .
+    ```
     
-        ```bash
-        git add .
-        ```
-        
-    1. Now commit them.
+1. Normally the next thing I like to do is create a `.gitignore` file.  But jekyll already created one for us, nice.
+
+    ```
+    # .gitignore
+    _site
+    .sass-cache
+    .jekyll-metadata
+    ```
     
-        ```bash
-        git commit -m "Initial jekyll site"
-        ```
-        
-    We don't need to worry about pushing to a remote just yet.  Lets move on to creating some custom content for our site.
+1. Add the initial files.
+
+    ```bash
+    git add .
+    ```
     
- <a name="git-end"></a>
+1. Now commit them.
+
+    ```bash
+    git commit -m "Initial jekyll site"
+    ```
+    
+I won't push this commit to a remote just yet.  First, I want to get the content I've already written into the site.
+
+<a name="git-end"></a>
     
 # 1. <a name="migrate-to-jekyll"></a> Create some custom content
     
