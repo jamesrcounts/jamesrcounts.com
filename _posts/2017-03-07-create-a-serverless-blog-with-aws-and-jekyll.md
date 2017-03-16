@@ -274,4 +274,4 @@ Now that you have the tools you need to create content for a static website, let
 
 We've come pretty far in this post.  I got some tooling squared away and bootstrapped a new site.  Although I've worked in quite a few languages, I actually have relatively little experience with ruby.  So tools like RVM and bundler were new to me.  Of course, this was also my first experience with Jekyll but I like it so far. 
 
-I learned alot, but I still need to setup a deployment pipeline in order to get these posts into your hands.  To find out how I set that up, [read on]({% post_url 2017-03-15-publish-jekyll-site-to-s3-with-circleci %}).            
+I learned alot, but I still need to setup a deployment pipeline in order to get these posts into your hands.  To find out how I set that up, [read on]({% post_url 2017-03-16-bootstrapping-this-blog-with-jekyll %}).            

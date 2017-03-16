@@ -11,7 +11,7 @@ tags:
     - CircleCI
     - GitHub
 ---
-In this post I'll walk through the process I used to setup continuous publishing for this blog using GitHub, CircleCI, and S3.  I write posts on this site using jekyll, and I already set up a jekyll project in a [previous post]({% post_url 2017-03-07-create-a-serverless-blog-with-aws-and-jekyll %}){:target="_blank"}.  
+In this post I'll walk through the process I used to setup continuous publishing for this blog using GitHub, CircleCI, and S3.  I write posts on this site using jekyll, and I already set up a jekyll project in a [previous post]({% post_url 2017-03-16-bootstrapping-this-blog-with-jekyll %}){:target="_blank"}.  
 
 To create a publishing pipeline for the site I'll start by pushing the existing site to a remote repository on GitHub.  Next, I will publish the site to AWS S3 manually and configure the website to use a custom domain. Once I have a working version of the site hosted on S3, I'll setup CircleCI to connect the two sides of the pipeline so that changes pushed to GitHub will automatically flow through to the S3 website.
 
