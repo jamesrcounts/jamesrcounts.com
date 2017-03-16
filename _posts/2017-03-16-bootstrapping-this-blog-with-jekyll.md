@@ -10,7 +10,7 @@ tags:
 
 I've been writing this series of posts on setting up my blog while I've been setting up this blog.  To get things started I just created a folder and put a markdown file in it, and started writing the first post.  
 
-The first step to setting up my blog was to get the required tools for running jekyll.  I covered that in [the first part of the series]({% post_url 2017-03-07-create-a-serverless-blog-with-aws-and-jekyll %}){:target="_blank"}.  
+The first step to setting up my blog was to get the required tools for running jekyll.  I covered that in [the first part of the series]({% post_url 2017-03-07-getting-started-with-serverless %}){:target="_blank"}.  
 
 Now that I have the tools, I need to create the jekyll site, then move the content I've already written into it.  Then I can finish the series from within the site itself.
 
