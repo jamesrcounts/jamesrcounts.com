@@ -59,9 +59,11 @@ Besides markdown, Jekyll can handle many other formats.  Jekyll is more than a s
     
     ![Jekyll Site](/media/2017/03/07/jekyll-site.png)
     
-# <a name="git"></a> 1. Create local git repository
+# <a name="git"></a> Create local git repository
 
-    Now that we have initialized our site.  Lets turn it into a git repository.
+Now that we have initialized our site.  Lets turn it into a git repository.  One of the things I like about jekyll is that everything in jekyll is just code and blob files.  There is no database or backend.  I can use git as my backup and versioning system.
+
+I assume that many of you will already be familiar with git, and you can feel free to skim or [skip](#git-end) this section.  Just make sure that you initialize a new repository and make your first commit with the files jekyll generated.
     
     1. Navigate to your site folder and run:
         
@@ -91,6 +93,8 @@ Besides markdown, Jekyll can handle many other formats.  Jekyll is more than a s
         ```
         
     We don't need to worry about pushing to a remote just yet.  Lets move on to creating some custom content for our site.
+    
+ <a name="git-end"></a>
     
 # 1. <a name="migrate-to-jekyll"></a> Create some custom content
     
