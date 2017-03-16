@@ -180,23 +180,23 @@ Once I get these posts into the site, I'll be able to finish writing from within
     
     ![Working Images](/media/2017/03/07/working-images.png)
         
-    1. Now would be a good time to make sure we are all checked in.
-    
-        ```bash
-        git add .
-        git commit -m "Added first draft"
-        ```
+1. Now would be a good time to make sure we are all checked in.
+
+    ```bash
+    git add .
+    git commit -m "Added first draft"
+    ```
         
-     1. Finally I will publish this post by moving it out of the draft folder into the posts folder.  In the post folder, Jekyll requires that the filename is prefixed if YEAR-MONTH-DAY.
+ 1. Finally I will publish this post by moving it out of the draft folder into the posts folder.  In the post folder, Jekyll requires that the filename is prefixed if YEAR-MONTH-DAY.
+ 
+     ```bash
+     mv _drafts/getting_started_serverless.md _posts/2017-03-07-create-a-serverless-blog-with-aws-and-jekyll.md
+     ```
      
-         ```bash
-         mv _drafts/getting_started_serverless.md _posts/2017-03-07-create-a-serverless-blog-with-aws-and-jekyll.md
-         ```
+     As I moved the file, I thought of a better name, so I made that change as well.
          
-         As I moved the file, I thought of a better name, so I made that change as well.
-         
-     1. Now I can restart the server without the `--drafts` flag, and I should still be able to see this post.
-     
+ 1. Now I can restart the server without the `--drafts` flag, and I should still be able to see this post.
+ 
 <a name="migrate-to-jekyll-end"></a>
 
 # Next Steps
