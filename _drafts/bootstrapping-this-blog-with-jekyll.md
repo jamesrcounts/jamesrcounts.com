@@ -108,54 +108,54 @@ Once I get these posts into the site, I'll be able to finish writing from within
   
 > *Note*: This series of posts started as one very long post which I later broke into pieces.  So if there seems to be some inconsistency between this migration process and what you see on the site today, that is the reason.  This is another reason that I like the idea of jekyll. I feel like it gives me enough control to easily go back and improve/refactor my writing.  Just like code!
 
-    1. Create a folder for drafts - [Working with drafts](https://jekyllrb.com/docs/drafts/)
-    
-        To start, I'll make this post into a draft.  Jekyll supports this concept, but I'll need to create the folder manually.
-                
-        Run this command in the site folder.
+1. Create a folder for drafts - [Working with drafts](https://jekyllrb.com/docs/drafts/)
+
+    To start, I'll make this post into a draft.  Jekyll supports this concept, but I'll need to create the folder manually.
             
-        ```bash
-        mkdir _drafts    
-        ```
-    
-    1. Next I'll copy this file from where the temporary folder where I have been writing to the `_drafts` folder.
-    
-        ```bash
-        cp ../../jamesrcounts.com/getting_started_serverless.md ./_drafts/
-        ```
+    Run this command in the site folder.
+        
+    ```bash
+    mkdir _drafts    
+    ```
+
+1. Next I'll copy this file from the temporary folder where I have been writing to the `_drafts` folder.
+
+    ```bash
+    cp ../../jamesrcounts.com/getting_started_serverless.md ./_drafts/
+    ```
              
-    1. Now I can switch over to editing and previewing the file in the new location.
+1. Now I can switch over to editing and previewing the file in the new location.
+
+    To launch the jekyll site with drafts enabled run this command:
     
-        To launch the jekyll site with drafts enabled run this command:
-        
-        ```bash
-        bundle exec jekyll serve --drafts
-        ```
-        The draft blog post shows up as if I had published it today.
+    ```bash
+    bundle exec jekyll serve --drafts
+    ```
+    The draft blog post shows up as if I had published it today.
+
+    ![Draft on Homepage](/media/2017/03/07/draft-on-homepage.png)
     
-        ![Draft on Homepage](/media/2017/03/07/draft-on-homepage.png)
-        
-        I can click into the post, but when I do I see that the theme is not applied, and the image links are missing.
-        
-        ![Initial view of post](/media/2017/03/07/initial-post-view.png)
-        
-    1. Add front matter to the post - [Front Matter](https://jekyllrb.com/docs/frontmatter/)
+    I can click into the post, but when I do I see that the theme is not applied, and the image links are missing.
     
-        Front matter is a chunk of YAML that you add to the top of your markdown file.  When you add front matter, you convert plain-old-markdown files into jekyll files.
+    ![Initial view of post](/media/2017/03/07/initial-post-view.png)
         
-        I'll add this chunk of front matter to the top of this file.
-        
-        ```yaml
-        ---
-        layout: post
-        title: Create a serverless blog with AWS and jekyll
-        ---
-        ```
-        
-        Now we can see a big improvement to the post styling, but media links are still broken.
-        
-        ![Broken Media Links](/media/2017/03/07/broken-media-links.png)
-        
+1. Add front matter to the post - [Front Matter](https://jekyllrb.com/docs/frontmatter/)
+
+    Front matter is a chunk of YAML that you add to the top of your markdown file.  When you add front matter, you convert plain-old-markdown files into jekyll files.
+    
+    I'll add this chunk of front matter to the top of this file.
+    
+    ```yaml
+    ---
+    layout: post
+    title: Create a serverless blog with AWS and jekyll
+    ---
+    ```
+    
+    Now we can see a big improvement to the post styling, but media links are still broken.
+    
+    ![Broken Media Links](/media/2017/03/07/broken-media-links.png)
+    
      1. Create a folder for media - [Writing Posts](https://jekyllrb.com/docs/posts/#including-images-and-resources)
      
         Jekyll's documentation points out that a common solution to including images and other blobs is to create a top-level folder like `assets` or `downloads`.  Jekyll is not very opinionated here.  Anything it sees in the root directory it will either copy to the `_site` directory as-is, or it will pre-process the input if it finds front matter in the file.  
