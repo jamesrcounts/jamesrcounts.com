@@ -1,6 +1,13 @@
 ---
 layout: post
-title: Create a serverless blog with AWS and jekyll
+title: Getting started with serverless
+categories:
+    - serverless
+    - guides
+tags:
+    - ruby
+    - homebrew
+    - jekyll
 ---
 # Introduction
 Although I'm a polyglot programmer and use both Windows and Mac in my professional work, I'll be using a Mac for writing this particular blog post.  All `commands` will be `bash` commands.  If you are working on a modern version of Windows you should be able to activate bash on your machine, but you still may need ruby or other tools.  I'm not going to cover getting ruby and bash working for windows in this post, but I will try to point out what tools are required for each command so that you can get them setup.
