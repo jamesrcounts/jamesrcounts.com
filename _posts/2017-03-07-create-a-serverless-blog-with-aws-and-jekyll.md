@@ -102,6 +102,6 @@ The following instructions work as the time of the writing.  I'll try to provide
             
 # Next Steps
 
-We've come pretty far in this post.  I got some tooling squared away and bootstrapped a new site.  Although I've worked in quite a few languages, I actually have relatively little experience with ruby.  So tools like RVM and bundler were new to me.  Of course, this was also my first experience with Jekyll but I like it so far. 
-
-I learned alot, but I still need to setup a deployment pipeline in order to get these posts into your hands.  To find out how I set that up, [read on]({% post_url 2017-03-16-bootstrapping-this-blog-with-jekyll %}).            
+We've gotten off to a good start in this post.  I got some tooling squared away and I'm ready to bootstrap a new site.
+  
+Although I've worked in quite a few languages, I actually have relatively little experience with ruby.  So tools like RVM and bundler were new to me.  I'm looking forward to trying out Jekyll in the [next post]({% post_url 2017-03-16-bootstrapping-this-blog-with-jekyll %}).            
