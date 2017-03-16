@@ -201,6 +201,8 @@ Once I get these posts into the site, I'll be able to finish writing from within
 
 # Next Steps
 
-We've come pretty far in this post.  I got some tooling squared away and bootstrapped a new site.  Although I've worked in quite a few languages, I actually have relatively little experience with ruby.  So tools like RVM and bundler were new to me.  Of course, this was also my first experience with Jekyll but I like it so far. 
+This was my first experience with Jekyll but I like it so far. Although Jekyll has more structure than I expected, I'm glad for it.  At the same time, there is a nice simplicity to the tool, which gives me a lot of options for hosting.  
 
-I learned alot, but I still need to setup a deployment pipeline in order to get these posts into your hands.  To find out how I set that up, [read on]({% post_url 2017-03-15-publish-jekyll-site-to-s3-with-circleci %}).            
+I've picked AWS S3 as my host.  I plan on writing about AWS and the other cloud providers on this blog, so it only seems fitting that I use this blog to show that a serverless app can be very easy to get going.
+
+Plus, hosting a website in S3 seems quite simple.  Although we may find that there are complexities once we dive into the [next post]({% post_url 2017-03-15-publish-jekyll-site-to-s3-with-circleci %}).            
