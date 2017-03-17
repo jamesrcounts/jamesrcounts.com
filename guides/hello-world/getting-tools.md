@@ -12,7 +12,7 @@ tags:
 
 This is part one of a three part guide where I document the process of getting this blog setup.  Here are some links to the other parts:
 
-   * [Introduction]()
+   * [Introduction]({% post_url 2017-03-16-getting-started-with-serverless %})
    
    * [Getting the tools you need](/guides/hello-world/getting-tools.html)
    
