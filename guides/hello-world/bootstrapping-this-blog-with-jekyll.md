@@ -1,16 +1,26 @@
 ---
-layout: post
-title: Bootstrapping this blog with jekyll
-categories: 
+layout: page
+tags:
     - serverless
     - guides
-tags:
     - jekyll
 ---
 
+## Bootstrapping this blog with jekyll
+
+This is part two of a three part guide where I document the process of getting this blog setup.  Here are some links to the other parts:
+
+   * [Introduction]()
+   
+   * [Getting the tools you need](/guides/hello-world/getting-tools.html)
+   
+   * [Bootstrapping this blog](/guides/hello-world/bootstrapping-this-blog-with-jekyll.html)
+   
+   * [Publishing to S3](/guides/hello-world/publish-jekyll-site-to-s3-with-circleci.html)
+
 I've been writing this series of posts on setting up my blog while I've been setting up this blog.  To get things started I just created a folder and put a markdown file in it, and started writing the first post.  
 
-The first step to setting up my blog was to get the required tools for running jekyll.  I covered that in [the first part of the series]({% post_url 2017-03-07-getting-started-with-serverless %}){:target="_blank"}.  
+The first step to setting up my blog was to get the required tools for running jekyll.  I covered that in [the first part of the series](/guides/hello-world/getting-tools.html){:target="_blank"}.  
 
 Now that I have the tools, I need to create the jekyll site, then move the content I've already written into it.  Then I can finish the series from within the site itself.
 
@@ -205,4 +215,4 @@ This was my first experience with Jekyll but I like it so far. Although Jekyll h
 
 I've picked AWS S3 as my host.  I plan on writing about AWS and the other cloud providers on this blog, so it only seems fitting that I use this blog to show that a serverless app can be very easy to get going.
 
-Plus, hosting a website in S3 seems quite simple.  I think we may find that there are complexities once we dive into the [next post]({% post_url 2017-03-15-publish-jekyll-site-to-s3-with-circleci %}).            
+Plus, hosting a website in S3 seems quite simple.  I think we may find that there are complexities once we dive into the [next post](/guides/hello-world/publish-jekyll-site-to-s3-with-circleci.html).            
