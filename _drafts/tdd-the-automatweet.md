@@ -63,7 +63,7 @@ I'm doing this for 2 reasons.  First I want to use the templates, second I want 
     
         ![Generated Files](/media/2017/03/23/generated-files.png)
     
-        * Note that in 2017 it still creates a project json.
+        * Note that in 2017 it still creates a project json in the test project.  Well, it's still in preview.
         
         * Also note that it creates a proper csproj.  Maybe the project json is just there for compatiblity?  Should be interesting to see if it gets used for anything.
         
@@ -77,9 +77,19 @@ I'm doing this for 2 reasons.  First I want to use the templates, second I want 
      
      * It has alot of razorburn
      
+        ![Razor Burn](/media/2017/03/23/razor-burn.png)
+
+     * It is more complex than i expected, but then again this is the first time i used a blueprint.
      
+     * It appears to actualy want to use the s3Client to interact with S3.  
      
+     * Lets see if we can deal with the razor burn by building.  Then we can examine what this complex test is trying to do.  If it passes we can refactor it.
     
+    * Build succeeds yet razor burn persists.
+    
+    * rebuild still works razor burn persists.
+    
+    * Lets see if there is a new version of the toolkit.
         
         
         
