@@ -58,9 +58,12 @@ I'm doing this for 2 reasons.  First I want to use the templates, second I want 
         ![Select Blueprint](/media/2017/03/23/select-blueprint.png)
         
         * Click finish
-        
 
+    * The project template creates a lambda project for us and a test project.
     
+        ![Generated Files](/media/2017/03/23/generated-files.png)
+    
+        * Note that in 2017 it still creates a project json.
         
         
         
