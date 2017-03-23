@@ -49,10 +49,18 @@ I'm doing this for 2 reasons.  First I want to use the templates, second I want 
         * Enter a name - I'll enter "TheAutoMaTweet"
         * Enter a location - I'll put my files at C:\git
         * Check the checkbox to create a git repository.
+        * Click OK
         
         ![New Project](/media/2017/03/23/new-project.png)
         
+    * Next you will see a blueprint section.  Interestingly these blueprints are not available online when you create a lambda in the AWS console.  I often pick "Empty Function" at this stage, but this time I'll pick "Simple S3 Function" because it looks appropriate for what the AutoMaTweet does.
+    
+        ![Select Blueprint](/media/2017/03/23/select-blueprint.png)
         
+        * Click finish
+        
+
+    
         
         
         
