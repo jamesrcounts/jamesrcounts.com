@@ -89,7 +89,13 @@ I'm doing this for 2 reasons.  First I want to use the templates, second I want 
     
     * rebuild still works razor burn persists.
     
-    * Lets see if there is a new version of the toolkit.
+    * Lets see if there is a new version of the toolkit. Nope.
+    
+    * Notice that there is no project.json in produciton project, and there is no razorburn/reference errors.  
+    
+        ![Bad Project Json](/media/2017/03/23/bad-project-json.png)
+
+    * Lets get rid of project json.
         
         
         
