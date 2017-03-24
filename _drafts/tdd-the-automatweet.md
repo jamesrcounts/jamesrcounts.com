@@ -110,7 +110,44 @@ I'm doing this for 2 reasons.  First I want to use the templates, second I want 
     * Build
     * Commit
     
-    Now
+    Now we can get serious about understanding this genereated test.
+    
+# The Test Cleanup
+
+First lets run [CodeMaid](http://www.codemaid.net/) to cleanup the file. 
+
+Aside - CodeMaid is a little tool i like for cleaning up and reorganizing code.  The main thing I like is that you can configure it to run cleanup on file save.  The types of cleanup it does incldues removing unused namespace imports and removing excessive blank lines and whitespace.
+
+The First thing I notice is that the test is rather long.  Lets try and figure out the AAA parts of it.
+
+## Arrange
+
+The test constructs an S3 Client in the USWest2 region.  Although I'm using the same region, this appears to just be a default in the template, since I never specified that during project setup.
+
+The test creates a new bucket in this region.
+
+Next put a simple text file in the bucket.
+
+Manually construct an S3 event that refers to the newly created item in the bucket.  This means the unit test does not rely on configuring the actual S3 notifications we use in production.  Nor does it create test files in our production bucket.  The event notification is simulated.  This is probably the most important part.  However, relying on an actual file in the bucket prevents this from being a pure unit test, assuming that item is used in any way.
+
+Next we construct the C# object which hosts the lambda entry point.  When constructing here, we pass in the s3Client we created at the top of the test.
+
+## Act
+
+To act, we invoke the "FunctionHandler" method on the "Function" class.  These default names are terrible, we'll change them soon.  We pass in the S3event which we created in the arrange section, the S3 event that describes the test file we put into the test bucket.
+
+Looks like this example function returns a result, which is stored in the test as a variable called "contentType"
+
+## Assert
+
+In the assertion section, we assert that the contentType returned by the function invocation is "text/plan".  This makes sense because that is what we put into the bucket moments ago.
+
+
+## Cleanup
+
+There is a `finally` block which removes the test bucket.
+
+TODO: Make a note about authentication, Lambda uses roles, test uses default credentials from the user profile.
         
         
         
