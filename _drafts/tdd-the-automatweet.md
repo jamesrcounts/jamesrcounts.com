@@ -96,6 +96,21 @@ I'm doing this for 2 reasons.  First I want to use the templates, second I want 
         ![Bad Project Json](/media/2017/03/23/bad-project-json.png)
 
     * Lets get rid of project json.
+    
+        * Close the visual studio solution.
+        
+        * Delete `TheAutoaMaTweet.Tests\project.json`
+        
+        * Open solution.
+        
+        * Razor burn is gone.
+        
+        ![Burn Free](/media/2017/03/23/burn-free.png)
+
+    * Build
+    * Commit
+    
+    Now
         
         
         
