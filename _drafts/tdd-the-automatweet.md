@@ -63,7 +63,7 @@ I'm doing this for 2 reasons.  First I want to use the templates, second I want 
     
         ![Generated Files](/media/2017/03/23/generated-files.png)
     
-        * Note that in 2017 it still creates a project json in the test project.  Well, it's still in preview.
+        * Note that in 2017 it still creates a project json in the test project.  Well, it's still in preview.  There is no project json in the produciton project.
         
         * Also note that it creates a proper csproj.  Maybe the project json is just there for compatiblity?  Should be interesting to see if it gets used for anything.
         
