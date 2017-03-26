@@ -203,5 +203,110 @@ The test runs and passes as written.  But it still looks like an integration tes
  
   "function-handler": "TheAutoMaTweet::TheAutoMaTweet.Function::TweetImageWithDescription"
   ```
+# Rename class
 
+Having a class named `Function` is also too weird for me. I'll call it `TweetBot`.
+
+Save and run tests, they still pass.  Next update `function-handler` again.
+
+ ```json
+ 
+  "function-handler": "TheAutoMaTweet::TheAutoMaTweet.TweetBot::TweetImageWithDescription"
+  ```
+  
+# Clean up comments
+
+I'll get rid of the remaning XML comments.
+
+So my current baseline looks like this 
+
+```csharp
+using System;
+using System.Threading.Tasks;
+using Amazon.Lambda.Core;
+using Amazon.Lambda.S3Events;
+using Amazon.Lambda.Serialization.Json;
+using Amazon.S3;
+
+[assembly: LambdaSerializer(typeof(JsonSerializer))]
+
+namespace TheAutoMaTweet
+{
+    public class TweetBot
+    {
+        public TweetBot() : this(new AmazonS3Client())
+        {
+        }
+
+        public TweetBot(IAmazonS3 s3Client)
+        {
+            S3Client = s3Client;
+        }
+
+        private IAmazonS3 S3Client { get; }
+
+        public async Task<string> TweetImageWithDescription(S3Event evnt, ILambdaContext context)
+        {
+            var s3Event = evnt.Records?[0].S3;
+            if (s3Event == null)
+                return null;
+
+            try
+            {
+                var response = await S3Client.GetObjectMetadataAsync(s3Event.Bucket.Name, s3Event.Object.Key);
+                return response.Headers.ContentType;
+            }
+            catch (Exception e)
+            {
+                context.Logger.LogLine(
+                    $"Error getting object {s3Event.Object.Key} from bucket {s3Event.Bucket.Name}. Make sure they exist and your bucket is in the same region as this function.");
+                context.Logger.LogLine(e.Message);
+                context.Logger.LogLine(e.StackTrace);
+                throw;
+            }
+        }
+    }
+}
+```
+# The challenge
+
+## Level 1: Trigger Lambda function from S3
+
+Now that we are up and running with a basic project.  Lets conquer level 1.  
+
+Level 1 is basically about setting up your infrastructure.  You ned an IAM role, and a bucket. 
+
+Of course you will need a lambda too, but the AWS toolkit will handle that for us when we deploy from visual studio.
+
+You need to create the pieces in order.  First, you create the IAM role, because you need to specify the role when deploying the lambda.
+
+Next you need to deploy the lambda, because you need to specify the lambda when you setup an event notificaion in S3.
+
+Finally you create the S3 bucket and setup event notifications to the lambda.
+
+### Create IAM role
+
+There are several ways to do this.  During the hackathon I used the AWS console, and one of my teammates used HashiCorp's terraform and CloudFormation.
+
+Here I'll use the AWS CLI.  Mostly because I think it will be the most succinct way to provide you with instructions (I can avoid telling you where to click and what info to enter into forms).
+
+I really like Terraform too, but I want to stay focused on the hackathon challenges for now.
+   
+*Requires*: AWS CLI
+
+So here is our process to create a new IAM Role and associate a policy.
+
+1. Create an assume role policy document.  This is a JSON file which contains a "trust policy"  The trust policy belongs to the *role* and describes what *entities* this role will trust.  Lets break that down.
+
+    * For our purposes the entity is going to be the AWS Lambda service.
+    * When a role has a trust relationship with Lambda, it means that AWS will allow lambda to use this role.
+    * A role is a bit like a user, but for services.  It has this trust relationship defined, and will also have policies attached to it.  
+    * When Lambda uses (aka assumes) this role, it will be able to perform actions as described by the the attached policies.
+    * So the trust policy is what AWS uses to ensure that "not just anybody" can assume the role and use the permissions granted by the attached policy.
+ 
+    Run these commands in `powershell`.
     
+    1. C
+
+```powershell
+```
