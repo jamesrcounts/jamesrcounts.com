@@ -306,7 +306,45 @@ So here is our process to create a new IAM Role and associate a policy.
  
     Run these commands in `powershell`.
     
-    1. C
-
-```powershell
-```
+    Tip, you can get this file from the challenge github repo [here](https://raw.githubusercontent.com/jamesrcounts/March2017-ImageTweeterChallenge/master/aws/policies/lambda_role_trust_relationship.json).
+    
+    1. Create a file called trust-policy.json
+        
+        ```powershell
+        notepad trust-policy.json
+        ```
+       When prompted, click "Yes" to create a new file. 
+       
+    2. Paste these contents into the file and save:
+    
+        ```json
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        }
+        ```
+    3. Close notepad and run this command:
+    
+        Note: the role name is not important as long as you are consistent when you deploy the lambda.  Also, the debug parameter is optional but it can give you a great idea about what's happening under the hood.  Basically there is no magic, the AWS CLI just creates a signed REST request and uses HTTPS to send the request to AWS.
+        
+        ```powershell
+        aws iam create-role --role-name automatweet_lambda_role --assume-role-policy-document file://.
+        /trust-policy.json --debug
+        ```
+    
+    1. Next, we need to associate a policy with our role.
+    
+        ```powershell
+        aws iam attach-role-policy --role-name automatweet_lambda_role --policy-arn arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+        ```
+    
+    
