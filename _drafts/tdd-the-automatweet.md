@@ -347,4 +347,10 @@ So here is our process to create a new IAM Role and associate a policy.
         aws iam attach-role-policy --role-name automatweet_lambda_role --policy-arn arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
         ```
     
+1. Now we can deploy our lambda from visual studio
+
+    I'll just deploy the example lambda first.  In the Visual Studio Solution Explorer, right click on the Lambda project.
+    
+    ![Deploy Lambda](/media/2017/03/23/deploy-lambda.png)
+    
     
