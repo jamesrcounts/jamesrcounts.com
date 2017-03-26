@@ -351,6 +351,10 @@ So here is our process to create a new IAM Role and associate a policy.
 
     I'll just deploy the example lambda first.  In the Visual Studio Solution Explorer, right click on the Lambda project.
     
+    1. Click "Publish Lambda"
+    
     ![Deploy Lambda](/media/2017/03/23/deploy-lambda.png)
     
+    1. The AWS Toolkit will launch a wizard.
     
+    ![Account Profile](/media/2017/03/23/account-profile.png)
