@@ -116,7 +116,7 @@ I'm doing this for 2 reasons.  First I want to use the templates, second I want 
 
 First lets run [CodeMaid](http://www.codemaid.net/) to cleanup the file. 
 
-Aside - CodeMaid is a little tool i like for cleaning up and reorganizing code.  The main thing I like is that you can configure it to run cleanup on file save.  The types of cleanup it does incldues removing unused namespace imports and removing excessive blank lines and whitespace.
+Aside - CodeMaid is a little tool i like for cleaning up and reorganizing code.  The main thing I like is that you can configure it to run cleanup on file save.  The types of cleanup it does includes removing unused namespace imports and removing excessive blank lines and whitespace.
 
 The First thing I notice is that the test is rather long.  Lets try and figure out the AAA parts of it.
 
@@ -149,6 +149,59 @@ There is a `finally` block which removes the test bucket.
 
 TODO: Make a note about authentication, Lambda uses roles, test uses default credentials from the user profile.
         
+## Running the test
+
+Note: Required Resharper 2017.1 (currently in EAP)
         
-        
+The test runs and passes as written.  But it still looks like an integration test because its interacting with S3.  This doesn't make it a bad test, but I'd like to look at the generated function to see why it was necessary to put a file in S3 for this test to work.
+
+
+# Implementation code
+
+* First cleanup with codemaid
+* run tests - still works
+* We have two constructers
+    * One constructs a S3client locally.
+    * One takes s3client as a parameter
+    * We use the parameterized one in the test.  This allows us to control how we pass in credentials, region, etc in the client.
+    * In production, the lambda will get its credentials from its role.
+    * Even in test we are using default credentials from `.aws/credentials`.
+    * But having the client in the constructor fits a performance optimization pattern I heard about on the AWS podcast.  In the podcast they recommended that service clients (like S3 client) are constructed outside the handler function.  This is because AWS will reuse the lambda for multiple invocations if possible, and by constructing the client outside the handler, you can save time on subsequent invocations.  It probably won't make or break any speed records to do this, but its an easy enough optimization.
+* Commit this code.
+* Slight refactoring: Chain Constructors; Rerun tests
+* Important! The test constructor takes an interface
+* Readonly property for the S3Client - Also `IS3Client`
+* Handler
+    * Uses null-safe access to retrieve the first S3 Record in the event.
+    * Exit if null
+    * Use the client to retrieve object metadata from S3 -- this is mockable.
+    * Return the content type header from the metadata
+    
+    * Take note of the error handler in the `catch` block.  Here, errors are logged to CloudWatch.  There are several ways to log to CloudWatch, `Console.WriteLine` works fine, but in the hackathon we used `LambdaLogger`.  Here we see a third method: `context.Logger`.  Context is passed in as an argument to the handler function.
+    
+    Ok so now we know how the initial test/implementation works and that we can safely mock the interaction with S3.  Lets do a couple simple refactorings.
+    
+ # Initial Refactorings
+ 
+ ## Rename Handler Method
+ 
+ I just hate the name `FunctionHandler`.  Ideally we give the method a descriptive verb name.  Lets do `TweetImageWithDescription`.
+ 
+ I'll also delete the XML doc comment.
+ 
+ I Run the unit test and it still works because the automated refactoring updated the test.  Note that there is an important config file `aws-lambda-tools-defaults.json` and that the automated refactoring did not update this file.
+ 
+ This line tells lambda where to find the entrypoint in the C# code we submit. 
+  
+  ```json
+  
+  "function-handler": "TheAutoMaTweet::TheAutoMaTweet.Function::FunctionHandler"
+  ```
+ We need to update it so that it reflects the new name.
+ 
+ ```json
+ 
+  "function-handler": "TheAutoMaTweet::TheAutoMaTweet.Function::TweetImageWithDescription"
+  ```
+
     
