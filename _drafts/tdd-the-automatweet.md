@@ -369,6 +369,14 @@ So here is our process to create a new IAM Role and associate a policy.
     
     Click ok when finished.
     
-    ![Account Profile](/media/2017/03/23/profile-settings.png)
+    ![Profile Settings](/media/2017/03/23/profile-settings.png)
     
-    1. Next choose your region, I 
+    1. Next choose your region, I will leave mine in Oregon, but you can pick a region near you where both Lambda and Rekognition are supported.
+    
+    1. Next give the function a name.  I'll call mine `automatweeter`
+    
+    1. The wizard prefills the rest of the information this page with info from the `aws-lambda-tools-defaults.json` file that we edited earlier.  Check the check box to "Save settings for future deployments" then click next.
+    
+     ![Function Details](/media/2017/03/23/function-details.png)
+
+    1. On the advanced function details page
