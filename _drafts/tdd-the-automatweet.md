@@ -358,3 +358,17 @@ So here is our process to create a new IAM Role and associate a policy.
     1. The AWS Toolkit will launch a wizard.   Start by clicking the little "Account Profile" dude.
     
     ![Account Profile](/media/2017/03/23/account-profile.png)
+    
+    1. Fill out this form completely.  Even though it says the Account Number is optional, you will need it in order to make the rest of the wizard work the way it should.        
+    
+    If you don't know your account number try running this command in powershell.
+    
+    ```powershell
+    aws sts get-caller-identity --output text --query 'Account'
+    ```
+    
+    Click ok when finished.
+    
+    ![Account Profile](/media/2017/03/23/profile-settings.png)
+    
+    1. Next choose your region, I 
