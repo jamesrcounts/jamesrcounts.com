@@ -379,4 +379,14 @@ So here is our process to create a new IAM Role and associate a policy.
     
      ![Function Details](/media/2017/03/23/function-details.png)
 
-    1. On the advanced function details page
+    1. On the advanced function details page you should be able to use the dropdown menu to pick the role we created earlier.  You could also create a new role here too.  In the past this dropdown has not always worked unless you entered your Account Number in the credentials profile.  Since we did that, it should work for you.
+    
+    1. Leave the memory and execution time at the default values for now.  We can revisit them once our application is complete and we have a realistic idea for the resources it consumes.
+    
+    1. We do not need to access any VPC resources, so leave these values at default.  
+    
+    1. For the moment we don't need any environment variables.  Although when we get to the stage of actually tweeting from our lambda, environment variables will be a good place to pass secrets to our function.
+    
+    1. Click Upload.
+    
+    ![Advanced Function Details](/media/2017/03/23/function-details-advanced.png)
