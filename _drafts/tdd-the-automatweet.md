@@ -355,6 +355,6 @@ So here is our process to create a new IAM Role and associate a policy.
     
     ![Deploy Lambda](/media/2017/03/23/deploy-lambda.png)
     
-    1. The AWS Toolkit will launch a wizard.
+    1. The AWS Toolkit will launch a wizard.   Start by clicking the little "Account Profile" dude.
     
     ![Account Profile](/media/2017/03/23/account-profile.png)
