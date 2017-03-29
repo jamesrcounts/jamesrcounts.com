@@ -476,4 +476,9 @@ Oh Noes!  We haz errors!
 
 ![I Can Haz Permission Errors](/media/2017/03/23/i-can-haz-errors.png)
 
+Although S3 has permission to invoke the lambda, the Lambda still executes in it's assigned role, and that role does not provide permission to access in S3.
+
+Normally at this stage of the challenge, we would not be reading from S3, only examining the S3Event.  However, the code blueprint provided by the AWS Toolkit includes an example of reading an S3Object, so we got to this permission problem a little sooner.
+
+Lets stick to the challenge goals, and just comment out the problem code for now.
 
