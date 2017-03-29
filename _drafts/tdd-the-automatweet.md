@@ -461,3 +461,9 @@ Lets do it.
 Navigate to your s3 bucket and drop an image file into it.
 
 ![Drag Image](/media/2017/03/23/drag-image.png)
+
+Click "Upload" in the dialog that appears.
+
+Now, navigate to your lambda function, then click the monitoring tab:
+
+![Monitoring Tab](/media/2017/03/23/monitoring-tab.png)
