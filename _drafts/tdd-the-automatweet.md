@@ -471,3 +471,9 @@ Now, navigate to your lambda function, then click the monitoring tab:
 Click the "View logs in CloudWatch" link.  This will take you to the CloudWatch log group for your lambda function.  Click the most recent stream from the list.
 
 ![Log Group](/media/2017/03/23/log-group.png)
+
+Oh Noes!  We haz errors!
+
+![I Can Haz Permission Errors](/media/2017/03/23/i-can-haz-errors.png)
+
+
