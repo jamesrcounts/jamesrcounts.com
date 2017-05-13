@@ -7,7 +7,7 @@ tags:
     - testing
     - dotnet
     - debugging
-title: On testing and debugging lambdas
+title: On testing and debugging Lambdas
 ---
 
 <style type="text/css">
@@ -18,7 +18,7 @@ a + em {
     }
 </style>
 
-When I am talking to friends and customers about actually using Lambdas to get real work done, we eventually come start talking about testing.  Many developers, myself included, spent the better part of our careers getting good at testing in all it's various forms (unit, integration, etc).  In fact, some of us have spent a good chunk of time online and in user groups and at work trying to convince others that they needed to get good at testing too because it is such an important part of ensuring quality and maintainability.  After all this, serverless comes along, so shiny and new, and we're supposed to forget everything we know about testing and abandon the practice?
+When I am talking to friends and customers about actually using Lambdas to get real work done, we eventually start talking about testing.  Many developers, myself included, spent the better part of our careers getting good at testing in all its various forms (unit, integration, etc).  In fact, some of us have spent a good chunk of time online and in user groups and at work trying to convince others that they needed to get good at testing too because it is such an important part of ensuring quality and maintainability.  After all this, serverless comes along, so shiny and new, and we're supposed to forget everything we know about testing and abandon the practice?
 
 We'll... no.
 
@@ -65,17 +65,17 @@ The simplest case is a pure logic Lambda that returns a value.  You will see non
 
 ### A Lambda that interacts with the world
 
-A slightly more complex and common scenario is that the Lambda needs to interact with other services, whether they are AWS services or public/private APIs.  As they did with `ILambdaContext`, AWS did a good job designing their client SDKs.  Each SDK client implements an interface, you can and should choose to depend on the interface instead of the concrete type.  Once you depend on the interfaces, you can us constructor injection to inject mocks and verify calls to the mocks as part of your assertions.
+A slightly more complex and common scenario is that the Lambda needs to interact with other services, whether they are AWS services or public/private APIs.  As they did with `ILambdaContext`, AWS did a good job designing their client SDKs.  Each SDK client implements an interface, you can and should choose to depend on the interface instead of the concrete type.  Once you depend on the interfaces, you can use constructor injection to inject mocks and verify calls to the mocks as part of your assertions.
 
 > Amazon does not provide you with a Dependency Injection framework for this, but I always like to tell people that Dependency Injection is a **principle** not a framework.
 
-> The same goes for Inversion of Control, its a pattern people, not a container.
+> The same goes for Inversion of Control--its a pattern, people, not a container.
 
 {:style="text-align: center;"}
 [![Test Rig by aacckk](/media/2017/05/13/test-rig-aacckk.jpg)](https://flic.kr/p/bskY6z){:target="_blank"}
 *Test Rig by aacckk (CC BY-SA 2.0)*
 
-In my opinion, if you have a strategy, any strategy, for replacing your dependencies with test doubles, congrats you've got enough dependency injection for testing.  The project "blueprints" Amazon provides use a common two-constructor strategy.  This example depends on interacting with S3:
+In my opinion, if you have a strategy, any strategy, for replacing your dependencies with test doubles, then congrats you've got enough dependency injection for testing.  The project "blueprints" Amazon provides use a common two-constructor strategy.  This example depends on interacting with S3:
 
 ```csharp
 IAmazonS3 S3Client { get; set; }
@@ -146,7 +146,7 @@ To make a long story short, a lambda **can** be executed in the AWS lambda servi
 
 Unit and integration testing are totally possible using common frameworks, but that's not the only option.  I recently worked on a project where I found it easier to write a console program and fire off the Lambda from `void Main()`.  
 
-Keep in mind that whatever route you choose, there is some configuration to do related to credentials. You need to provide credentials when running on your machine, and there are several ways to do this (machine config via `aws configure`, or credentials configured by the AWS toolkit for Visual Studio).  To get the closest experience to running in AWS, use an implicit set of credentials (described above) rather than hard-coding your credentials into the test code (never a good idea).  Also, your test will be more useful if the credentials you use belong to an IAM User that has the exact same set of-of permissions as the IAM Role which the Lambda will execute under. Don't just use your admin credentials and assume everything will work later.
+Keep in mind that whatever route you choose, there is some configuration to do related to credentials. You need to provide credentials when running on your machine, and there are several ways to do this (machine config via `aws configure`, or credentials configured by the AWS toolkit for Visual Studio).  To get the closest experience to running in AWS, use an implicit set of credentials (described above) rather than hard-coding your credentials into the test code (never a good idea).  Also, your test will be more useful if the credentials you use belong to an IAM User that has the exact same permissions as the IAM Role which the Lambda will execute under. Don't just use your admin credentials and assume everything will work later.
 
 {:style="text-align: center;"}
 [![Code by Tom Bech](/media/2017/05/13/code-tom-bech.jpg)](https://flic.kr/p/9BkXKV){:target="_blank"}
@@ -164,12 +164,12 @@ My first response is "Who the heck debugs in production?"
 
 The answer to the first question of "how" is simple.  Like a lot of what I've covered so far, debugging Lambdas in production is no different that debugging anything else in production: you read the logs.  
 
-> Most operations teams are not going to let you walk up to a production instance and attach your debugger to it!  The AWS operation team feels the same way.
+> Most operations teams are not going to let you walk up to a production instance and attach your debugger to it!  The AWS operations team feels the same way.
 
 You wouldn't normally attach your debugger to *anything* in production (I'm sure I'll hear from the guy who does it every day).   Lambda is no different in this regard, except perhaps that you don't even have the option to attach a debugger.  The answer to debugging in production is to have a well-thought-out logging strategy, use it consistently, and fetch your logs from CloudWatch when you need to figure out what's going on.
 
 
-I Hope this helps, feel free to reach out via twitter or email and let me know what you think.
+I hope this helps, feel free to reach out via twitter or email and let me know what you think.
  
  
  
