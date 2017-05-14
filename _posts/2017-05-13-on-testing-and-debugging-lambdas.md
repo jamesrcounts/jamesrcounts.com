@@ -20,7 +20,7 @@ a + em {
 
 When I am talking to friends and customers about actually using Lambdas to get real work done, we eventually start talking about testing.  Many developers, myself included, spent the better part of our careers getting good at testing in all its various forms (unit, integration, etc).  In fact, some of us have spent a good chunk of time online and in user groups and at work trying to convince others that they needed to get good at testing too because it is such an important part of ensuring quality and maintainability.  After all this, serverless comes along, so shiny and new, and we're supposed to forget everything we know about testing and abandon the practice?
 
-We'll... no.
+Well... no.
 
 I'll admit to being a little baffled at first when the conversation around Lambda turns in this direction.  Then I thought back to my first couple Lambdas and realized that I had the same questions.  It's not like anyone is out there saying "it's not possible to test Lambdas", but I think that people are uncertain how to do it, and this leads to doubts about how to test, and the fear that it isn't possible to test.  For myself, after implementing a couple Lambdas in node, python, and dotnet, I got comfortable with what a Lambda was, and realized that really there should be nothing stopping me from using the same testing tools I've been getting good at all these years.
 
