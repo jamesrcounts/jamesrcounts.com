@@ -50,9 +50,15 @@ jobs:
     docker:
       - image: circleci/python:3.7-stretch
     steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+
       - run:
           name: Install awscli
           command: sudo pip install awscli
+
+      
       - run:
           name: Deploy to S3
           command: aws s3 sync ./_site s3://jamesrcounts.com/ --delete
