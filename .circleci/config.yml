@@ -1,6 +1,4 @@
 version: 2
-orbs:
-  aws-cli: circleci/aws-cli@0.1.16
 jobs:
   build:
     docker:
@@ -49,17 +47,17 @@ jobs:
             - ./_site
 
   deploy:
-    executor: aws-cli/default
+    docker:
+      - image: circleci/python:3.7-stretch
     steps:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: .
 
-      # - run:
-      #     name: Install awscli
-      #     command: sudo pip install awscli
-      - aws-cli/setup:
-          profile-name: deploy-blog
+      - run:
+          name: Install awscli
+          command: sudo pip install awscli
+
       
       - run:
           name: Deploy to S3
@@ -71,7 +69,6 @@ workflows:
     jobs:
       - build
       - deploy:
-          context: aws
           requires:
             - build
           filters:
