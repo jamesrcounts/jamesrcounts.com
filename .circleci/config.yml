@@ -53,7 +53,7 @@ jobs:
       - attach_workspace:
           at: .
 
-      - awscli/install
+      - aws-cli/install
       
       - run:
           name: Deploy to S3
