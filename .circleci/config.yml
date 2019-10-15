@@ -1,17 +1,24 @@
-machine:
-  ruby:
-    version: ruby-2.4.0
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.4.2-jessie-node
 
-dependencies:
-  post:
-    - bundle exec jekyll build
+    steps:
+      - checkout
 
-test:
-  post:
-    - bundle exec htmlproofer ./_site --check-html --disable-external
 
-deployment:
-  prod:
-    branch: master
-    commands:
-      - aws s3 sync ./_site s3://jamesrcounts.com/ --delete
+
+# dependencies:
+#   post:
+#     - bundle exec jekyll build
+
+# test:
+#   post:
+#     - bundle exec htmlproofer ./_site --check-html --disable-external
+
+# deployment:
+#   prod:
+#     branch: master
+#     commands:
+#       - aws s3 sync ./_site s3://jamesrcounts.com/ --delete
