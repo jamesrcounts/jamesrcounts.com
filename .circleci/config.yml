@@ -29,9 +29,11 @@ jobs:
           paths:
             - vendor/bundle
 
-# dependencies:
-#   post:
-#     - bundle exec jekyll build
+      - run:
+          name: Jekyll Build
+          command: bundle exec jekyll build
+
+
 
 # test:
 #   post:
