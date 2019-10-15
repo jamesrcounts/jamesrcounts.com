@@ -33,11 +33,9 @@ jobs:
           name: Jekyll Build
           command: bundle exec jekyll build
 
-
-
-# test:
-#   post:
-#     - bundle exec htmlproofer ./_site --check-html --disable-external
+      - run:
+          name: Jekyll Proof
+          command: bundle exec htmlproofer ./_site --check-html --disable-external
 
 # deployment:
 #   prod:
