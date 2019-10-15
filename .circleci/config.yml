@@ -23,6 +23,12 @@ jobs:
           name: Bundle Install
           command: bundle check --path vendor/bundle || bundle install --deployment
 
+      # Store bundle cache for Ruby dependencies
+      - save_cache:
+          key: jekyll-bundle-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
 # dependencies:
 #   post:
 #     - bundle exec jekyll build
