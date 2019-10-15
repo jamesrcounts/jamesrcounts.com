@@ -37,8 +37,25 @@ jobs:
           name: Jekyll Proof
           command: bundle exec htmlproofer ./_site --check-html --disable-external
 
-# deployment:
-#   prod:
-#     branch: master
-#     commands:
-#       - aws s3 sync ./_site s3://jamesrcounts.com/ --delete
+  deploy:
+    docker:
+      - image: circleci/python:3.7-stretch
+    steps:
+      - run:
+          name: Install awscli
+          command: sudo pip install awscli
+      - run:
+          name: Deploy to S3
+          command: aws s3 sync ./_site s3://jamesrcounts.com/ --delete
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
