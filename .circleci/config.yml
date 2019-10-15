@@ -12,6 +12,17 @@ jobs:
           name: Which bundler?
           command: bundle -v
 
+      # Restore bundle cache
+      # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+      - restore_cache:
+          keys:
+            - jekyll-bundle-{{ checksum "Gemfile.lock" }}
+            - jekyll-bundle-
+
+      - run: # Install Ruby dependencies
+          name: Bundle Install
+          command: bundle check --path vendor/bundle || bundle install --deployment
+
 # dependencies:
 #   post:
 #     - bundle exec jekyll build
