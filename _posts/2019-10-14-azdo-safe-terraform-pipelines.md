@@ -55,7 +55,7 @@ This workflow is fine for a total newcomer. When I first started using Terraform
 
 Great as it was, the getting started guide is not a guide for operating Terraform in the real world. Any attempt to automate the simplified workflow, falls flat at the `apply` step. In the simplified workflow the `apply` step is interactive, and interactivity is simply a killer in an automated environment. The usual response to this problem seems to be to ask, "How do we make the `apply` command non-interactive?" I would argue that this is the wrong question. It's much better to understand _why_ `apply` is interactive by default.
 
-I summarized Terraform's steps for managing infrastructure. In the simplified workflow, Terraform compresses all actions into the single execution of the `apply` command. When invoking `apply` with default arguments, Terraform happily runs all the steps up until "creating a plan" and store the resulting plan _in memory_. Terraform then shows you the plan and asks you to confirm that you would like to use the plan to make changes to your infrastructure. Terraform's default safety mechanism is you, the DevOps person who just invoked the command. Terraform cannot review the plan, think it over, and make the right decision about whether the changes are safe. It relies on _you_ for that decision. To apply the plan, you type `yes` and hit enter, and Terraform begins the actual infrastructure changes.
+I summarized Terraform's steps for managing infrastructure. In the simplified workflow, Terraform compresses all actions into the single execution of the `apply` command. When invoking `apply` with default arguments, Terraform happily runs all the steps up until "creating a plan" and stores the resulting plan _in memory_. Terraform then shows you the plan and asks you to confirm that you would like to use the plan to make changes to your infrastructure. Terraform's default safety mechanism is you, the DevOps person who just invoked the command. Terraform cannot review the plan, think it over, and make the right decision about whether the changes are safe. It relies on _you_ for that decision. To apply the plan, you type `yes` and hit enter, and Terraform begins the actual infrastructure changes.
 
 To run Terraform in a pipeline in the real world, where screwing up your infrastructure has real-world consequences like bankruptcy and unemployment, you must solve for two constraints:
 
@@ -84,7 +84,7 @@ Now that we understand the importance of reviewing the Terraform plan and provid
 
 ### Setup Remote State
 
-To get this project ready for automation, we need to set it up to use a remote backend for storage. Terraform's ["Remote State"][5] feature provides a mechanism to allow multiple developers to collaborate on the same Terraform code base. Terraform automation requires a remote state store because the build agents are ephemeral, and the entire agent pool must share state changes. When using an Azure Storage Account for remote state storage, our workflow automatically benefits from encryption at rest, role-based access control, and locking mechanisms.
+To get this project ready for automation, we need to set it up to use a remote backend for state storage. Terraform's ["Remote State"][5] feature provides a mechanism to allow multiple developers to collaborate on the same Terraform code base. Terraform automation requires a remote state store because the build agents are ephemeral, and the entire agent pool must share state changes. When using an Azure Storage Account for remote state storage, our workflow automatically benefits from encryption at rest, role-based access control, and locking mechanisms.
 
 This script brings up a storage account with acceptable settings for a Terraform backend:
 
@@ -199,7 +199,7 @@ Hopefully self-explanatory. The pipeline needs to publish the tarball it just cr
 
 Our build stage has produced a plan file. We have the artifact that we need to make the `apply` command non-interactive. To also make the `apply` safe, we must stop `apply` from running until after we have had a chance to review and approve the plan. We use an Azure DevOps Environment for this purpose. While an [Environment][16] provides a few different features, Approvals are most important to this discussion. When a deployment stage targets an Environment, Azure DevOps evaluates all configured approval checks before allowing the deployment to proceed. To support a Terraform DevOps workflow with plan approval, configure an Environment with a manual approval check.
 
-If we target an Environment that doesn't exist, then Azure DevOps creates it automatically. However, we want to create it manually first to ensure that Azure DevOps applies the manual approval check every deployment. The `azure-pipelines.yaml` definition does not include the Environment configuration. To create an environment, login to Azure DevOps and choose `Environments` under pipelines, then choose `Create Environment`:
+If we target an Environment that doesn't exist, then Azure DevOps creates it automatically. However, we want to create it manually first to ensure that Azure DevOps applies the manual approval check to every deployment. The `azure-pipelines.yaml` definition does not include the Environment configuration. To create an environment, login to Azure DevOps and choose `Environments` under pipelines, then choose `Create Environment`:
 
 {:style="text-align: center;"}
 ![Azure DevOps view showing Environments under Pipelines, and highlighting the Create environment button][17]
@@ -240,7 +240,7 @@ Remember, we are building to a workflow to build a plan file, review and supply 
 
 ### Create Infrastructure Deployment Stage
 
-Now that we have an environment with an approval check configured, we in the home stretch. Shown below is the `azure-pipelines.yaml` file in its entirety, updated to include the deployment stage:
+Now that we have an environment with an approval check configured, we have reached the home stretch. Shown below is the `azure-pipelines.yaml` file in its entirety, updated to include the deployment stage:
 
 {% gist c854e1b2bcc2d7208ca2844a758d95ab azure-pipelines.complete.yaml %}
 
@@ -308,7 +308,7 @@ We review the plan, then approve and run the deployment stage:
   - Fetch build artifact
   - Apply the plan
 
-Changing infrastructure has real consequences. Infrastructure as Code gives us the tools needed to make this process safer and accelerate our ability to deliver platforms to run applications and, ultimately, the business. Terraform mitigates many sources of human error found in traditional infrastructure management techniques, but operating a powerful system at full speeds has its risks too. Continuous Delivery pipelines are lovely, but it is also ok to slow down and review before making changes. Ask yourself what is the more significant risk: downtime from bad deploys or delay from reviewing the plan?
+Changing infrastructure has real consequences. Infrastructure as Code gives us the tools needed to make this process safer and accelerate your ability to deliver platforms to run applications and, ultimately, the business. Terraform mitigates many sources of human error found in traditional infrastructure management techniques, but operating a powerful system at full speeds has its risks too. Continuous Delivery pipelines are lovely, but it is also ok to slow down and review before making changes. Ask yourself what is the more significant risk: downtime from bad deploys or delay from reviewing the plan?
 
 Slow down, create a gate, and read your plan before clicking "Approve."
 
