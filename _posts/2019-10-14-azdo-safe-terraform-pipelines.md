@@ -43,7 +43,7 @@ You might already know how Terraform works. Still, it pays to think about how Te
 - Applying the plan
 - Saving off the new state
 
-There are a few ways to tell Terraform to go through these steps. However, with few exceptions, the way you invoke Terraform does not alter this workflow. One way or another, Terraform executes these steps to change infrastructure. This perhaps leads to some confusion and bad habits as teams adopt the tool because there is a simplified workflow/series of commands that hides some complexity. The simplified workflow is useful for demos and learning Terraform development. A more sophisticated workflow is suitable for operating Terraform in the real world.
+There are a few ways to tell Terraform to go through these steps. However, with few exceptions, the way you invoke Terraform does not alter this workflow. One way or another, Terraform executes these steps to change infrastructure. There is a simplified workflow/series of commands that hides some complexity, and this perhaps leads to some confusion and bad habits as teams adopt the tool. The simplified workflow is useful for demos and learning Terraform development. A more sophisticated workflow is suitable for operating Terraform in the real world.
 
 Terraform has great documentation, and the [getting started guide][1] is no exception. The second step of the guide introduces newcomers to the most [simplified Terraform workflow][2]. The simplified Terraform workflow looks like this:
 
@@ -53,9 +53,9 @@ Terraform has great documentation, and the [getting started guide][1] is no exce
 
 This workflow is fine for a total newcomer. When I first started using Terraform, I primarily wanted to learn to write the code to create resources. For me, using (a much older version of) this guide helped keep the focus on learning the HashiCorp Configuration Language (HCL) Terraform uses. Although the workflow was simplified (which I didn't realize at the time), I still managed to see infrastructure running in the cloud within minutes. It was great.
 
-Great as it was, the getting started guide is not a guide for operating Terraform in the real world. Any attempt to automate the simplified workflow falls flat at the `apply` step. In the simplified workflow the `apply` step is interactive, and interactivity is simply a killer in an automated environment. The usual response to this problem seems to be to ask, "How do we make the `apply` command non-interactive?" I would argue that this is the wrong question. It's much better to understand _why_ `apply` is interactive by default.
+Great as it was, the getting started guide is not a guide for operating Terraform in the real world. Any attempt to automate the simplified workflow, falls flat at the `apply` step. In the simplified workflow the `apply` step is interactive, and interactivity is simply a killer in an automated environment. The usual response to this problem seems to be to ask, "How do we make the `apply` command non-interactive?" I would argue that this is the wrong question. It's much better to understand _why_ `apply` is interactive by default.
 
-I summarized Terraform's steps for managing infrastructure. In the simplified workflow, Terraform compresses all actions into the single execution of `terraform apply`. When invoking `apply` with default arguments, Terraform happily runs all the steps up until "creating a plan" and store the resulting plan _in memory_. Terraform then shows you the plan and asks you to confirm that you would like to use the plan to make changes to your infrastructure. Terraform's default safety mechanism is you, the DevOps person who just invoked the command. Terraform cannot review the plan, think it over, and make the right decision about whether the changes are safe. It relies on _you_ for that decision. To apply the plan, you type `yes` and hit enter, and Terraform begins the actual infrastructure changes.
+I summarized Terraform's steps for managing infrastructure. In the simplified workflow, Terraform compresses all actions into the single execution of the `apply` command. When invoking `apply` with default arguments, Terraform happily runs all the steps up until "creating a plan" and store the resulting plan _in memory_. Terraform then shows you the plan and asks you to confirm that you would like to use the plan to make changes to your infrastructure. Terraform's default safety mechanism is you, the DevOps person who just invoked the command. Terraform cannot review the plan, think it over, and make the right decision about whether the changes are safe. It relies on _you_ for that decision. To apply the plan, you type `yes` and hit enter, and Terraform begins the actual infrastructure changes.
 
 To run Terraform in a pipeline in the real world, where screwing up your infrastructure has real-world consequences like bankruptcy and unemployment, you must solve for two constraints:
 
@@ -96,7 +96,7 @@ This script does not address any security features like the storage account fire
 
 With this least-common-denominator configuration, we are still much better off than we are when we keep our state file on our local machine. With Remote State in an Azure Storage Account, our state file is backed up, versioned, encrypted and password protected. That's pretty cool, but we have to configure Terraform to use the storage account we just created.
 
-In older versions of Terraform (before Terraform 12), configuring the backend storage provider to use Azure Storage Accounts required providing the storage account access key. Terraform added new authentication methods for Azure in Terraform 12. We can now access our Remote State using our user principal when logged into the Azure CLI on our local machine. We have one less secret to manage! It makes configuring the Terraform backend super simple:
+In older versions of Terraform (before Terraform 12), configuring the backend storage provider to use Azure Storage Accounts required providing the storage account access key. Terraform added new authentication methods for Azure in Terraform 12. We can now access our Remote State using our user principal when logged into the Azure CLI on our local machine. It makes configuring the Terraform backend super simple:
 
 {% gist c854e1b2bcc2d7208ca2844a758d95ab terraform-backend.tf %}
 
@@ -118,7 +118,7 @@ Now that our remote state is set up, we are ready to create an `azure-pipelines.
 
 ### Create Infrastructure Build Stage
 
-When it comes to creating a safe Terraform pipeline, the most critical design consideration is choosing to call Terraform's `plan` command with the right arguments. In the simplified getting-started workflow, we did not even call `plan`--not explicitly at least. The workflow still works because `apply` implicitly calls `plan` when no plan is available. When calling `plan`, Terraform prints output identical to the `apply` output, up until the prompt to review and approve. The prompt to approve does not appear when you call `plan`, `plan` just exits.
+When it comes to creating a safe Terraform pipeline, the most critical design consideration is choosing to call Terraform's `plan` command with the right arguments. In the simplified getting-started workflow, we did not even call `plan`--not explicitly at least. The workflow still works because the `apply` command implicitly calls `plan` when no plan is available. When calling `plan`, Terraform prints output identical to the `apply` output, up until the prompt to review and approve. The prompt to approve does not appear when you call `plan`, `plan` just exits.
 
 This default behavior is okay as a debugging tool. Terraform's `plan` command allows us to double-check our intention against what Terraform thinks our code is trying to say. Terraform always wins any disagreement. If we don't like the plan, we need to change our code. Outside debugging, the default behavior of the `plan` command does not help us make our workflow any safer. Even if we like what we see in the `plan` command output, Terraform only keeps this plan in memory. Terraform generates a new plan during `apply` and asks for approval. We can change this behavior by using the [`-out` parameter][10] when calling `plan`. The default invocation of `plan` nags you if you fail to use this parameter:
 
@@ -129,7 +129,7 @@ When using the `-out` parameter, you get all the same debugging goodness of `pla
 
 > Explicit execution plans files can be used to split plan and apply into separate steps within automation systems.
 
-Automated build pipelines are precisely the type of "automation systems" the documentation is referring to. From now on, if you are reviewing a proposed Terraform automation pipeline that doesn't split `plan` and `apply`, that is a design smell worth investigating. Now that we understand the purpose of creating an explicit saved plan, we begin to understand that the build artifact for our pipeline should be the saved plan. In between build and deployment, there should be a review and approval step. Finally, the deployment should consume the explicit, saved, approved plan.
+Automated build pipelines are precisely the type of "automation systems" the documentation is referring to. From now on, if you are reviewing a proposed Terraform automation pipeline that doesn't split `plan` and `apply`, that is a design smell worth investigating. Now that we understand the purpose of creating an saved plan file, we begin to understand that the build artifact for our pipeline should be the saved plan. In between build and deployment, there should be a review and approval step. Finally, the deployment should consume the explicit, saved, approved plan.
 
 With these theoretical underpinnings, let us write our pipeline YAML. Here are the build stage steps:
 
@@ -185,7 +185,7 @@ Now we read the code, compare it to the deployed infrastructure, and save Terraf
 
 {% gist c854e1b2bcc2d7208ca2844a758d95ab terraform-plan.sh %}
 
-This script follows the same pattern as the init script. Terraform receives credentials from the injected environment secrets, suppresses interactive input, and calls `plan` with an `-out` parameter to save the plan to a local file. Terraform has now calculated an specific plan--this is the crucial build artifact. The remainder of the pipeline packages this artifact into a format usable by the deployment stage.
+This script follows the same pattern as the init script. Terraform receives credentials from the injected environment secrets, suppresses interactive input, and calls `plan` with an `-out` parameter to save the plan to a local file. Terraform has now calculated a specific plan--this is the crucial build artifact. The remainder of the pipeline packages this artifact into a format usable by the deployment stage.
 
 #### Package the Terraform config folder
 
@@ -209,7 +209,7 @@ Next, type an environment name and click the `Create` button. You do not need to
 {:style="text-align: center;"}
 ![Azure DevOps view showing New Environment dialog, name is filled out with the value dev and None is selected for resource][18]
 
-We can now use the Environment, but we want to configure a manual approval check before continuing to configuring the deployment stage.
+While we can now use the Environment, we first want to configure a manual approval check before continuing to configuring the deployment stage.
 
 {:style="text-align: center;"}
 ![Azure DevOps view showing the "Get Started!" message, indicating the environment configuration is complete][19]
@@ -240,7 +240,7 @@ Remember, we are building to a workflow to build a plan file, review and supply 
 
 ### Create Infrastructure Deployment Stage
 
-Now that we have an environment with an approval check configured, we in the home stretch. Here is the `azure-pipelines.yaml` file in its entirety, updated to include the deployment stage:
+Now that we have an environment with an approval check configured, we in the home stretch. Shown below is the `azure-pipelines.yaml` file in its entirety, updated to include the deployment stage:
 
 {% gist c854e1b2bcc2d7208ca2844a758d95ab azure-pipelines.complete.yaml %}
 
@@ -263,7 +263,7 @@ Our plan file is part of the build artifact created during the build stage. We m
 
 #### Extract artifact files
 
-The build artifact itself is a gzipped tar archive, and we must extract it before we can access the plan file and use it. The Terraform documentation mentions to use the _exact_ matching absolute path as the location on the build agent when unpacking this archive. However, in practice, I've found that matching the relative path to `System.DefaultWorkingDirectory` works fine when dealing with the `azurerm` provider.
+The build artifact itself is a gzipped tar archive, and we must extract it before we can access the plan file and use it. The Terraform documentation mentions using the _exact_ matching absolute path as the location on the build agent when unpacking this archive. However, in practice, I've found that matching the relative path to `System.DefaultWorkingDirectory` works fine when dealing with the `azurerm` provider.
 
 #### Download a specific version of `terraform`
 
@@ -271,7 +271,7 @@ Since this job runs on a new build agent, we must repeat this step to ensure the
 
 #### Add credentials to the environment
 
-Terraform `apply` uses the same type of credentials as `init` and `plan` in the build stage. Once again, we reuse the script to perform the same task on the deployment agent.
+Terraform's `apply` command uses the same type of credentials as `init` and `plan` in the build stage. Once again, we reuse the script to perform the same task on the deployment agent.
 
 #### Run `terraform apply`
 
@@ -283,7 +283,7 @@ This script follows the same pattern as the other terraform scripts. Terraform r
 
 ## Review the Plan
 
-The pipeline we've designed can build an explicit Terraform plan, prompt for approval to deploy the plan, and finally, deploy it once we provide approval. To approve the deployment, we must review the plan, and nothing in the pipeline itself explains how to do that. It turns out to be a simple task in Azure DevOps.
+The pipeline we've designed can build a Terraform plan file, prompt for approval to deploy the plan, and finally, deploy it once we provide approval. To approve the deployment, we must review the plan, and nothing in the pipeline itself explains how to do that. It turns out to be a simple task in Azure DevOps.
 
 Although our build stage stored the plan file in the build artifact, we do not need to download the artifact, unpack it, and read it. The plan file is not designed to be human-readable. Terraform does provide a command ([`show`][24]) to convert the plan into a human-readable format, but this step is still extra work. In Azure DevOps, we have a more accessible option: the build log.
 
