@@ -33,6 +33,7 @@ tags:
     - [Initialize Helm](#initialize-helm-1)
     - [Add ACR to Helm Repository List](#add-acr-to-helm-repository-list)
     - [Deploy Helm Chart](#deploy-helm-chart)
+  - [The Deployment Pipeline](#the-deployment-pipeline)
 - [Building and Testing The App (only if needed)](#building-and-testing-the-app-only-if-needed)
   - [Caching Nuget Packages](#caching-nuget-packages)
 - [Create Docker Image](#create-docker-image)
@@ -258,7 +259,7 @@ Like build stages, a deployment stage specifies one or more jobs. Each job speci
 
 Before specifying the deployment steps, we declare which deployment strategy to use: run once or canary. This pipeline uses the straightforward run once strategy for both environments.
 
-Each deployment stage includes similar steps. First, this section examines the deployment of the development environment. The next section discusses the production environment deployment.
+Each deployment stage includes similar steps.  This section examines the deployment of the development environment.  The production environment deployment and the development environment deployment are identical other than a few variables indicating where to deploy.
 
 These are the development environment steps:
 
@@ -280,7 +281,7 @@ Like the Helm build job, the deployment job pins a specific version of Helm to t
 
 #### Initialize Helm
 
-To install a Helm chart from ACR, we need to add the ACR to the build agent's repository list. Before doing that, we need to initialize Helm locally, and the previous Helm install step did that. To ensure the best possible compatibility with Helm's tiller pod running in Kubernetes, this task initializes the server-side component with the same version.
+To install a Helm chart from ACR, we need to add the ACR to the build agent's repository list. Before doing that, we need to initialize Helm locally, and the previous Helm install step did that. Initializing the server-side tiller component with the same version as the Helm client ensures the best possible compatibility. This task assures both are in sync.
 
 {% gist e6b138e489a2d60ba2204e5344520a94 initialize-tiller.yaml %}
 
@@ -300,6 +301,37 @@ To configure the Helm deployment task, provide the service connection to use, th
 
 After configuring the Kubernetes details, configure the task with details about the chart to deploy and any environment-specific overrides. These include the name of the chart to deploy, what release name to track this deployment by, and the specific tagged docker image to pull for ACR.
 
+### The Deployment Pipeline
+
+Once we put everything together and deploy to Azure DevOps, we can see an end-to-end view of our deployment pipeline:
+
+{:style="text-align: center;"}
+![Full Pipeline][13]
+
+On one screen, we can see that the pipeline created both the Docker image and Helm chart artifacts successfully. All configured tests passed and that the new version of the parrot application is already running in the development environment.  As for the production environment, Azure DevOps shows us that approval is needed before it runs this stage.
+
+When we choose "Review," Azure DevOps shows us the approval view.
+
+IMAGE
+
+Once we choose "Approve" here, this release is rolling to production!
+
+Once the application deployment completes, we can visit the environments in Azure DevOps and see the history of deployments, and where each version of the application is running.
+
+IMAGE
+
+We can choose the production environment to see the "apps" namespace.
+
+IMAGE
+
+In the namespace, we can see all the running workloads in that namespace, including our application!
+
+IMAGE
+
+Of course, we can see the parrot application running in the browser too. Still, as noted in the beginning, it doesn't do anything interesting.
+
+IMAGE
+
 [1]: /media/2019/11/01/test-results-azure-devops.png
 [2]: https://marketplace.visualstudio.com/search?target=AzureDevOps&category=Azure%20Pipelines&sortBy=Installs
 [3]: /media/2019/11/01/cache-packages.png
@@ -312,6 +344,7 @@ After configuring the Kubernetes details, configure the task with details about 
 [10]: /media/2019/11/01/create-approval.png
 [11]: /media/2019/11/01/manual-approval-configuration.png
 [12]: /media/2019/11/01/configured-approval.png
+[13]: /media/2019/11/01/full-pipeline-view.png
 
 -- TODO, link to phippy and friends
 
