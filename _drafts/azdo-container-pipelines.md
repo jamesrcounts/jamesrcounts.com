@@ -173,38 +173,38 @@ The new job, called "Helm" because it builds and pushes a Helm chart to ACR. Lik
 
 #### Checkout
 
-Just like the dotnet and Docker build steps, the helm chart does not need the full git history to build the chart.  So, we execute a shallow clone in the Helm job to retrieve only the latest working copy.
+Just like the dotnet and Docker build steps, the helm chart does not need the full git history to build the chart. So, we execute a shallow clone in the Helm job to retrieve only the latest working copy.
 
 #### Initialize Helm
 
-The pipeline uses the Helm installer task to pin a specific version of Helm to use when building our chart.  We pin the Helm version for the same reasons we pinned the dotnet version earlier--to control as many inputs into our build process as possible.
+The pipeline uses the Helm installer task to pin a specific version of Helm to use when building our chart. We pin the Helm version for the same reasons we pinned the dotnet version earlier--to control as many inputs into our build process as possible.
 
 {% gist e6b138e489a2d60ba2204e5344520a94 initialize-helm.yaml %}
 
 #### Package Helm Chart
 
-After getting our code and tooling in place, the next step in the pipeline uses a Helm deploy task to package the Helm chart.  The Helm deployment task needs to know where the chart source is, and what version to assign the chart, to package the Helm chart.  The final property "save" is set to false because we do not need to install the chart on the local build agent. 
+After getting our code and tooling in place, the next step in the pipeline uses a Helm deploy task to package the Helm chart. The Helm deployment task needs to know where the chart source is, and what version to assign the chart, to package the Helm chart. The final property "save" is set to false because we do not need to install the chart on the local build agent.
 
 {% gist e6b138e489a2d60ba2204e5344520a94 helm-package.yaml %}
 
 #### Push Helm Chart
 
-Unlike the Docker task, the HelmDeploy task includes no push command to move the local package into ACR.  The pipeline finishes with an Azure CLI task to push the chart into the registry.  The Azure CLI task requires configuration to provide a service connection to an Azure subscription.  This service connection should connect to a subscription containing an ACR instance.  
+Unlike the Docker task, the HelmDeploy task includes no push command to move the local package into ACR. The pipeline finishes with an Azure CLI task to push the chart into the registry. The Azure CLI task requires configuration to provide a service connection to an Azure subscription. This service connection should connect to a subscription containing an ACR instance.
 
 {% gist e6b138e489a2d60ba2204e5344520a94 helm-push.yaml %}
 
-Once we provide an appropriate connection, we also provide the Azure CLI task with a script to execute.  In this case, our script uses the Azure CLI's "acr helm push" command to store the Helm package in our registry.  When the Azure CLI task executes, it logs in to Azure  with the provided service connection, executes our script, then logs out automatically.
+Once we provide an appropriate connection, we also provide the Azure CLI task with a script to execute. In this case, our script uses the Azure CLI's "acr helm push" command to store the Helm package in our registry. When the Azure CLI task executes, it logs in to Azure with the provided service connection, executes our script, then logs out automatically.
 
 {:style="text-align: center;"}
 ![Az CLI pushing Helm chart to ACR][4]
 
 ### Deployment Environments
 
-So far, this post assumed we had created an Azure Container Registry in an Azure subscription.  Now that we have placed our build artifacts into the ACR, we need to think about where we want to deploy them.  Our example environment includes two Kubernetes environments, both hosted by Azure Kubernetes Service (AKS). This section shows how to configure Azure DevOps with information about these environments before we set up our Azure pipeline to perform deployments.
+So far, this post assumed we had created an Azure Container Registry in an Azure subscription. Now that we have placed our build artifacts into the ACR, we need to think about where we want to deploy them. Our example environment includes two Kubernetes environments, both hosted by Azure Kubernetes Service (AKS). This section shows how to configure Azure DevOps with information about these environments before we set up our Azure pipeline to perform deployments.
 
-Azure DevOps environments allow us to track deployments to each of our clusters. The development requirement allows continuous delivery--code is released to development as soon as builds complete. The production environment requires manual approval before releasing code.  The manual approval check allows developers to perform further tests and validations before putting new code in front of customers.
+Azure DevOps environments allow us to track deployments to each of our clusters. The development requirement allows continuous delivery--code is released to development as soon as builds complete. The production environment requires manual approval before releasing code. The manual approval check allows developers to perform further tests and validations before putting new code in front of customers.
 
-Our pipeline definition does not include Environments configuration.  Although the YAML targets an environment, the pipeline is a separate object in Azure DevOps.  This separation allows teams to manage governance requirements, like the manual approval check for the production environment, outside source control.  Permission to write and configure pipelines can be kept separate from permission to deploy to environments.
+Our pipeline definition does not include Environments configuration. Although the YAML targets an environment, the pipeline is a separate object in Azure DevOps. This separation allows teams to manage governance requirements, like the manual approval check for the production environment, outside source control. Permission to write and configure pipelines can be kept separate from permission to deploy to environments.
 
 To create each environment, login to Azure DevOps and choose "Environments" under pipelines, then choose "Create Environment":
 
@@ -216,27 +216,27 @@ Next, type the environment name "dev" and choose "Kubernetes" as the resource.
 {:style="text-align: center;"}
 ![Create a Kubernetes environment][6]
 
-Choose "Next," then wait a moment for Azure DevOps to prompt you for your Azure credentials.  Enter your authentication information.  Choose "Azure Kubernetes Service" as the provider, then choose your subscription from the "Azure subscription" dropdown.  Pick the development AKS cluster from the "Cluster" dropdown.  As the final step, choose or create a namespace in which to deploy applications.  In this case, the namespace is "apps."
+Choose "Next," then wait a moment for Azure DevOps to prompt you for your Azure credentials. Enter your authentication information. Choose "Azure Kubernetes Service" as the provider, then choose your subscription from the "Azure subscription" dropdown. Pick the development AKS cluster from the "Cluster" dropdown. As the final step, choose or create a namespace in which to deploy applications. In this case, the namespace is "apps."
 
 {:style="text-align: center;"}
 ![Configure a Kubernetes environment][7]
 
-Choose "Validate and create."  On success, Azure DevOps displays the newly created environment.
+Choose "Validate and create." On success, Azure DevOps displays the newly created environment.
 
 {:style="text-align: center;"}
 ![Completed development environment][8]
 
-Next, follow a similar set of steps to create a production environment.  To configure the manual approval, use the vertical ellipsis menu to access the "Approvals and checks" menu item.
+Next, follow a similar set of steps to create a production environment. To configure the manual approval, use the vertical ellipsis menu to access the "Approvals and checks" menu item.
 
 {:style="text-align: center;"}
 ![Approvals and checks menu item][9]
 
-Choose "Approvals" to create  manual approval check.
+Choose "Approvals" to create manual approval check.
 
 {:style="text-align: center;"}
 ![Create manual approval][10]
 
-Add an appropriate approver and instructions.  I added myself as an approver.  Then choose "Create."
+Add an appropriate approver and instructions. I added myself as an approver. Then choose "Create."
 
 {:style="text-align: center;"}
 ![Manual approval configuration][11]
@@ -246,7 +246,7 @@ On success, Azure DevOps displays the configured Approval.
 {:style="text-align: center;"}
 ![Configured Approval][12]
 
-These Azure DevOps environments are now configured to use with deployment stages in our container pipeline.  The next section covers how to setup deployment stages to target these environments.  
+These Azure DevOps environments are now configured to use with deployment stages in our container pipeline. The next section covers how to setup deployment stages to target these environments.
 
 ### The Deployment Stages
 
@@ -254,29 +254,51 @@ With environments now configured, here is the final pipeline YAML with both depl
 
 {% gist e6b138e489a2d60ba2204e5344520a94 azure-pipelines.complete.yaml %}
 
-Like build stages, a deployment stage specifies one or more jobs.  Each job specifies the agent VM type to use and an environment to target.  When a job targets and environment, Azure DevOps evaluates all deployment checks configured on the environment before executing the job.  The development environment requires no deployment checks.  However, in the case of the production environment, we configured a manual approval check--production deployments require manual approval before running.
+Like build stages, a deployment stage specifies one or more jobs. Each job specifies the agent VM type to use and an environment to target. When a job targets and environment, Azure DevOps evaluates all deployment checks configured on the environment before executing the job. The development environment requires no deployment checks. However, in the case of the production environment, we configured a manual approval check--production deployments require manual approval before running.
 
-Before specifying the deployment steps, we declare which deployment strategy to use: run once or canary.  This pipeline uses the straightforward run once strategy for both environments.  
+Before specifying the deployment steps, we declare which deployment strategy to use: run once or canary. This pipeline uses the straightforward run once strategy for both environments.
 
-Each deployment stage includes similar steps.  First, this section examines the deployment of the development environment.  The next section discusses the production environment deployment. 
+Each deployment stage includes similar steps. First, this section examines the deployment of the development environment. The next section discusses the production environment deployment.
 
 These are the development environment steps:
 
-* Disable Checkout
-* Install Helm
-* Initialize Helm
-* Add ACR to Helm Repository List
-* Deploy Helm Chart
+- Disable Checkout
+- Install Helm
+- Initialize Helm
+- Add ACR to Helm Repository List
+- Deploy Helm Chart
 
 #### Disable Checkout
 
+The deployment stages only interact with the ACR and the AKS clusters. They build stages only needed the latest working copy to build the Docker image and the Helm chart. Those stages used shallow clones to avoid downloading unnecessary history. The deployment stages don't need any history at all. So we disable the default checkout behavior to prevent Azure DevOps from downloading any code at all.
+
+{% gist e6b138e489a2d60ba2204e5344520a94 checkout-none.yaml %}
+
 #### Install Helm
+
+Like the Helm build job, the deployment job pins a specific version of Helm to the build agent. At the time of this writing, it is especially important to choose your Helm version, as Helm 3 recently released and requires a migration step before use in an existing cluster.
 
 #### Initialize Helm
 
+To install a Helm chart from ACR, we need to add the ACR to the build agent's repository list. Before doing that, we need to initialize Helm locally, and the previous Helm install step did that. To ensure the best possible compatibility with Helm's tiller pod running in Kubernetes, this task initializes the server-side component with the same version.
+
+{% gist e6b138e489a2d60ba2204e5344520a94 initialize-tiller.yaml %}
+
 #### Add ACR to Helm Repository List
 
+An Azure CLI task executes Azure log in, then adds the ACR instance to the local helm repository list.
+
+{% gist e6b138e489a2d60ba2204e5344520a94 helm-repo-add.yaml %}
+
 #### Deploy Helm Chart
+
+Now the build agent is configured to deploy our Helm package. We only need to deploy the Helm package. Our AKS cluster pulls the appropriate container image from ACR when it processes the Helm chart.
+
+{% gist e6b138e489a2d60ba2204e5344520a94 helm-deploy.yaml %}
+
+To configure the Helm deployment task, provide the service connection to use, the AKS cluster's resource group, the name of the AKS cluster, and the name of the namespace in which to deploy the application. That feels like many details to configure, but think of it as an address. The mail carrier needs to know more than the country the recipient is in to deliver a letter, but also the city, zip code, and street.
+
+After configuring the Kubernetes details, configure the task with details about the chart to deploy and any environment-specific overrides. These include the name of the chart to deploy, what release name to track this deployment by, and the specific tagged docker image to pull for ACR.
 
 [1]: /media/2019/11/01/test-results-azure-devops.png
 [2]: https://marketplace.visualstudio.com/search?target=AzureDevOps&category=Azure%20Pipelines&sortBy=Installs
