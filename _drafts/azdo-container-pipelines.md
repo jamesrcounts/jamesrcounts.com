@@ -26,6 +26,13 @@ tags:
     - [Initialize Helm](#initialize-helm)
     - [Package Helm Chart](#package-helm-chart)
     - [Push Helm Chart](#push-helm-chart)
+  - [Deployment Environments](#deployment-environments)
+  - [The Deployment Stages](#the-deployment-stages)
+    - [Disable Checkout](#disable-checkout)
+    - [Install Helm](#install-helm)
+    - [Initialize Helm](#initialize-helm-1)
+    - [Add ACR to Helm Repository List](#add-acr-to-helm-repository-list)
+    - [Deploy Helm Chart](#deploy-helm-chart)
 - [Building and Testing The App (only if needed)](#building-and-testing-the-app-only-if-needed)
   - [Caching Nuget Packages](#caching-nuget-packages)
 - [Create Docker Image](#create-docker-image)
@@ -191,13 +198,99 @@ Once we provide an appropriate connection, we also provide the Azure CLI task wi
 {:style="text-align: center;"}
 ![Az CLI pushing Helm chart to ACR][4]
 
+### Deployment Environments
+
+So far, this post assumed we had created an Azure Container Registry in an Azure subscription.  Now that we have placed our build artifacts into the ACR, we need to think about where we want to deploy them.  Our example environment includes two Kubernetes environments, both hosted by Azure Kubernetes Service (AKS). This section shows how to configure Azure DevOps with information about these environments before we set up our Azure pipeline to perform deployments.
+
+Azure DevOps environments allow us to track deployments to each of our clusters. The development requirement allows continuous delivery--code is released to development as soon as builds complete. The production environment requires manual approval before releasing code.  The manual approval check allows developers to perform further tests and validations before putting new code in front of customers.
+
+Our pipeline definition does not include Environments configuration.  Although the YAML targets an environment, the pipeline is a separate object in Azure DevOps.  This separation allows teams to manage governance requirements, like the manual approval check for the production environment, outside source control.  Permission to write and configure pipelines can be kept separate from permission to deploy to environments.
+
+To create each environment, login to Azure DevOps and choose "Environments" under pipelines, then choose "Create Environment":
+
+{:style="text-align: center;"}
+![Create a new environment][5]
+
+Next, type the environment name "dev" and choose "Kubernetes" as the resource.
+
+{:style="text-align: center;"}
+![Create a Kubernetes environment][6]
+
+Choose "Next," then wait a moment for Azure DevOps to prompt you for your Azure credentials.  Enter your authentication information.  Choose "Azure Kubernetes Service" as the provider, then choose your subscription from the "Azure subscription" dropdown.  Pick the development AKS cluster from the "Cluster" dropdown.  As the final step, choose or create a namespace in which to deploy applications.  In this case, the namespace is "apps."
+
+{:style="text-align: center;"}
+![Configure a Kubernetes environment][7]
+
+Choose "Validate and create."  On success, Azure DevOps displays the newly created environment.
+
+{:style="text-align: center;"}
+![Completed development environment][8]
+
+Next, follow a similar set of steps to create a production environment.  To configure the manual approval, use the vertical ellipsis menu to access the "Approvals and checks" menu item.
+
+{:style="text-align: center;"}
+![Approvals and checks menu item][9]
+
+Choose "Approvals" to create  manual approval check.
+
+{:style="text-align: center;"}
+![Create manual approval][10]
+
+Add an appropriate approver and instructions.  I added myself as an approver.  Then choose "Create."
+
+{:style="text-align: center;"}
+![Manual approval configuration][11]
+
+On success, Azure DevOps displays the configured Approval.
+
+{:style="text-align: center;"}
+![Configured Approval][12]
+
+These Azure DevOps environments are now configured to use with deployment stages in our container pipeline.  The next section covers how to setup deployment stages to target these environments.  
+
+### The Deployment Stages
+
+With environments now configured, here is the final pipeline YAML with both deployment stages in place:
+
+{% gist e6b138e489a2d60ba2204e5344520a94 azure-pipelines.complete.yaml %}
+
+Like build stages, a deployment stage specifies one or more jobs.  Each job specifies the agent VM type to use and an environment to target.  When a job targets and environment, Azure DevOps evaluates all deployment checks configured on the environment before executing the job.  The development environment requires no deployment checks.  However, in the case of the production environment, we configured a manual approval check--production deployments require manual approval before running.
+
+Before specifying the deployment steps, we declare which deployment strategy to use: run once or canary.  This pipeline uses the straightforward run once strategy for both environments.  
+
+Each deployment stage includes similar steps.  First, this section examines the deployment of the development environment.  The next section discusses the production environment deployment. 
+
+These are the development environment steps:
+
+* Disable Checkout
+* Install Helm
+* Initialize Helm
+* Add ACR to Helm Repository List
+* Deploy Helm Chart
+
+#### Disable Checkout
+
+#### Install Helm
+
+#### Initialize Helm
+
+#### Add ACR to Helm Repository List
+
+#### Deploy Helm Chart
 
 [1]: /media/2019/11/01/test-results-azure-devops.png
 [2]: https://marketplace.visualstudio.com/search?target=AzureDevOps&category=Azure%20Pipelines&sortBy=Installs
 [3]: /media/2019/11/01/cache-packages.png
 [4]: /media/2019/11/01/azure-cli.png
+[5]: /media/2019/09/01/create-environment.png
+[6]: /media/2019/11/01/create-kubernetes-environment.png
+[7]: /media/2019/11/01/configure-kubernetes-environment.png
+[8]: /media/2019/11/01/completed-dev-environment.png
+[9]: /media/2019/11/01/approvals-and-checks.png
+[10]: /media/2019/11/01/create-approval.png
+[11]: /media/2019/11/01/manual-approval-configuration.png
+[12]: /media/2019/11/01/configured-approval.png
 
--- TODO, caching
 -- TODO, link to phippy and friends
 
 > The source code for these artifacts are often stored with each other in the same source code repository. However, their lifecycles are often different. It is not necessary to rebuild the Helm chart package every time the application source code changes. It is only necessary to rebuild the Helm chart package when the chart definition changes (for example when the application defines a new configuration value that the chart must now support). Likewise, the same is true of the Docker image. When we update the Helm chart to change supported configuation or defaults (for example when we change the default number of pod replicas) we haven't changed any application code, so we do not need to rebuild the Docker image.
