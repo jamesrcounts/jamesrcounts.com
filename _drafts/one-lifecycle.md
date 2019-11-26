@@ -16,3 +16,5 @@ An artifact's lifecycle means "when should this artifact be built."  When all ar
 However, the pipeline also unnecessarily rebuilds the parrot application.  The parrot application should only rebuild when the .Net source code changes, and the infrastructure should only refresh when the Terraform scripts change.  These two pieces of the solution are unlikely to change at the same time for the same reasons, and so they have different lifecycles.  
 
 In my previous post, I didn't follow this guideline, and I created a single pipeline to produce a Docker image and a Helm chart.  This post will refactor that pipeline into three separate pipelines.   The first pipeline will build the Docker image, the next will build the Helm chart, and the final pipeline will handle deployment.
+
+s
