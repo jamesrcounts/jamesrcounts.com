@@ -12,7 +12,7 @@ tags:
 <!-- TOC -->
 
 - [Initial Pipeline](#initial-pipeline)
-- [Container Pipeline](#container-pipeline)
+- [Separate Build and Deploy](#separate-build-and-deploy)
 - [Helm Chart Pipeline](#helm-chart-pipeline)
 - [Deployment Pipeline](#deployment-pipeline)
   <!-- /TOC -->
@@ -37,7 +37,15 @@ However, in the build stage, we have two jobs, one to build the container image,
 1. The Helm package should only occur when the chart changes.
 1. The application should deploy when either artifact changes.
 
-## Container Pipeline
+## Separate Build and Deploy
+
+As a first step, separate the deploy stage into a new pipeline.  Do this by copying the "azure-pipelines.yml" as "azure-pipelines.deploy.yml." Then remove the build stage from the deploy pipeline and the deploy stage from the build pipeline.  The build pipeline needs a little cleanup to remove extra variables afterward, and the deploy pipeline needs additional setup to trigger when the build pipeline completes.
+
+{% gist 56df043b6a49ef2f59c1396b1dc50fcb azure-pipelines.build.yml %}
+
+The most significant difference between the build pipeline and the original "complete" pipeline is that the new pipeline does not contain the stages to deploy to the development or production environments.  This file is much shorter because those stages are gone now.  Also, note that the trigger block now ignores changes to the new deploy pipeline.  We have no reason to rebuild our container image or helm chart when the pipeline definition for deployment changes.  This exclusion is our first example of where the lifecycles for the different pipelines diverge.
+
+The remaining changes to the build pipeline relate to cleanup.  The build pipeline jobs do not need the variables defining the AKS hosts.  Other than an update to the Helm version and normalizing the NuGet package path variable name, removing the unnecessary variables were the only changes needed to clean up the build pipeline.
 
 ## Helm Chart Pipeline
 
