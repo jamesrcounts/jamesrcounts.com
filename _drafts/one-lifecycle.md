@@ -13,8 +13,7 @@ tags:
 
 - [Initial Pipeline](#initial-pipeline)
 - [Separate Build and Deploy](#separate-build-and-deploy)
-- [Helm Chart Pipeline](#helm-chart-pipeline)
-- [Deployment Pipeline](#deployment-pipeline)
+- [Separate Docker and Helm Builds](#separate-docker-and-helm-builds)
   <!-- /TOC -->
 
 I often tell people that each Azure DevOps pipeline they create should "build one thing." In practice, people tend to create a single pipeline to handle everything their application needs. I see pipelines that build infrastructure, compile applications, create docker images, and package helm charts, all in one. When I tell people to refactor these pipelines to "build one thing," I mean that each pipeline should manage one lifecycle. If certain artifacts share the same lifecycle, they can go into the same pipeline. If the lifecycles are different, they should be separated.
@@ -47,6 +46,12 @@ The most significant difference between the build pipeline and the original "com
 
 The remaining changes to the build pipeline relate to cleanup.  The build pipeline jobs do not need the variables defining the AKS hosts.  Other than an update to the Helm version and normalizing the NuGet package path variable name, removing the unnecessary variables were the only changes needed to clean up the build pipeline.
 
-## Helm Chart Pipeline
+{% gist 56df043b6a49ef2f59c1396b1dc50fcb azure-pipelines.deploy.yml %}
 
-## Deployment Pipeline
+The deploy pipeline includes a new block: "resources."  This block defines any resource used by the pipeline created by a source other than the pipeline itself.  In this case, the resource block creates a reference to the build pipeline. It indicates that the build pipeline triggers the deployment pipeline on completion.  The deploy pipeline also triggers when the deployment YAML file changes, so this file is listed in the included trigger paths (rather than excluded as it was in the build pipeline).
+
+Remember that this pipeline started as a copy of the original combined pipeline.  The build stage is no longer needed, and the variables supporting those jobs are removable at this point.  Instead, this pipeline includes a new variable: "imageTag."  The "imageTag" variable captures the "runName" variable from the pipeline resource that triggered the deploy pipeline.  In the build pipeline, Azure DevOps used the run name (aka Build Number) to tag the container images when pushing to the Azure Container Registry.  The deploy pipeline uses the same tag during Helm deployment to specify the correct image version.  
+
+As in the build pipeline, the remaining updates to the deployment pipeline are to support the upgrade to Helm 3.
+
+## Separate Docker and Helm Builds
