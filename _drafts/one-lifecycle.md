@@ -55,3 +55,24 @@ Remember that this pipeline started as a copy of the original combined pipeline.
 As in the build pipeline, the remaining updates to the deployment pipeline are to support the upgrade to Helm 3.
 
 ## Separate Docker and Helm Builds
+
+The original build and deploy pipeline managed three lifecycles as one: docker image build, helm chart packaging, and deployment.  The previous section separated deployment from builds.  Next, I'll decompose the build pipeline to manage docker image build and helm chart packaging lifecycles separately.  As in the last section, start by copying the build pipeline YAML file to create "azure-pipelines.helm.yml."
+
+Update the trigger to focus on chart folder and build yaml
+Cleanup variables
+Update display name
+Remove Docker Job
+Update docker pipeline to ignore
+Update display name
+Remove helm job from docker pipeline
+Rename file to azure-pipelines.docker.yml
+Commit
+Go to pipeline settings, update file name
+Edit pipeline
+Choose triggers
+Change name to lifecycle-demo-docker
+Save and queue
+Create new pipeline for lifecycle-demo-helm
+Run it
+Deploy is broken due to pipeline rename
+Update triggers
