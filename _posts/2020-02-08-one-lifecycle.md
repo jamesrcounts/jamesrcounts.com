@@ -19,7 +19,7 @@ tags:
 
 I often tell people that each Azure DevOps pipeline they create should "build one thing." In practice, people tend to create a single pipeline to handle everything their application needs. I see pipelines that build infrastructure, compile applications, create docker images, and package helm charts, all in one. When I tell people to refactor these pipelines to "build one thing," I mean that each pipeline should manage one lifecycle. If certain artifacts share the same lifecycle, they can go into the same pipeline. If the lifecycles are different, they should be separated.
 
-An artifact's lifecycle means "when should this artifact be built." When all artifacts are in the same pipeline, they are all built when any of the sources change. Your source repository may include a folder for Terraform scripts, one for the helm chart definition, and several for your application source code. The "phippyandfriends" repository from my previous post is a good example. Suppose we have one pipeline for the "parrot" application, and I make a change to the Kubernetes cluster configuration in the Terraform script. When I run this (theoretical) pipeline, the pipeline picks up the Terraform changes as it should.
+An artifact's lifecycle means "when should this artifact be built." When all artifacts are in the same pipeline, they are all built when any of the sources change. Your source repository may include a folder for Terraform scripts, one for the helm chart definition, and several for your application source code. The "[phippyandfriends][phippy]" repository from my [previous post][container-dev] is a good example. Suppose we have one pipeline for the "parrot" application, and I make a change to the Kubernetes cluster configuration in the Terraform script. When I run this (theoretical) pipeline, the pipeline picks up the Terraform changes as it should.
 
 However, building the pipeline this way also unnecessarily rebuilds the parrot application. The parrot application should only rebuild when the .Net source code changes, and the infrastructure should only refresh when the Terraform scripts change. These two pieces of the solution are unlikely to change at the same time for the same reasons, and so they have different lifecycles.
 
@@ -36,6 +36,11 @@ However, in the build stage, we have two jobs, one to build the container image,
 1. The container image should only build when its content (the dotnet application) changes.
 1. The Helm package should only occur when the chart changes.
 1. The application should deploy when either artifact changes.
+
+{:style="text-align: center;"}
+![Pipeline flow diagram.  Shows a single source repository triggering multiple build pipelines.  The build pipelines fan into a single deploy pipeline.  The deploy pipeline deploys to multiple cloud environments.][0]
+
+To make each pipeline manage just one lifecycle, we need three pipelines then.  Also, to satisfy the requirements for the deployment pipeline's lifecycle, we need to make the deployment pipeline trigger when either of the other pipelines complete.  Attack this problem by first separating build and deployment pipelines, then break apart the container image build from the Helm chart build.
 
 ## Separate Build and Deploy
 
@@ -110,8 +115,9 @@ Finally, all pipelines are wired up and working as expected!
 {:style="text-align: center;"}
 ![Azure DevOps pipelines view. The deploy pipeline shows an error icon.][7]
 
-This article shows how to decompose a single pipeline into three pipelines that manage single lifecycles.  Many smaller projects could get by without worrying about this, and many do.  Some developers prefer having everything in one place and don't want "too many" pipelines.  However, for businesses where changing an artifact require recertifying that artifact, pointlessly rebuilding artifacts that don't change comes at a real cost.  In my research, this was the only way I found in Azure DevOps to trigger the various builds separately.  It would be nice if triggers could scope to individual stages rather than complete pipelines.  This change would make it unnecessary to decompose the pipeline definition while still allowing us to manage each artifact lifecycle separately. 
+This article shows how to decompose a single pipeline into three pipelines that manage single lifecycles.  Many smaller projects could get by without worrying about this, and many do.  Some developers prefer having everything in one place and don't want "too many" pipelines.  However, for businesses where changing an artifact requires recertifying that artifact, pointlessly rebuilding artifacts that don't change comes at a real cost.  In my research, this was the only way I found in Azure DevOps to trigger the various builds separately.  It would be nice if triggers could scope to individual stages rather than complete pipelines.  This change would make it unnecessary to decompose the pipeline definition while still allowing us to manage each artifact lifecycle separately. 
 
+[0]: /media/2020/02/01/ADO-pipeline-flow.png
 [1]: /media/2020/02/01/ADO-pipeline-settings.png
 [2]: /media/2020/02/01/ADO-pipeline-settings-path.png
 [3]: /media/2020/02/01/ADO-edit-pipeline-triggers.png
@@ -119,3 +125,5 @@ This article shows how to decompose a single pipeline into three pipelines that 
 [5]: /media/2020/02/01/ADO-pipelines-broken-deploy.png
 [6]: /media/2020/02/01/ADO-deploy-pipeline-update.png
 [7]: /media/2020/02/01/ADO-pipelines-fixed.png
+[phippy]: https://github.com/jamesrcounts/phippyandfriends.git
+[container-dev]: http://jamesrcounts.com/2019/11/18/azdo-container-pipelines.html
