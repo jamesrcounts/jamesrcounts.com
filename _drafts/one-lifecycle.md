@@ -14,6 +14,7 @@ tags:
 - [Initial Pipeline](#initial-pipeline)
 - [Separate Build and Deploy](#separate-build-and-deploy)
 - [Separate Docker and Helm Builds](#separate-docker-and-helm-builds)
+- [Tying Everything Together](#tying-everything-together)
   <!-- /TOC -->
 
 I often tell people that each Azure DevOps pipeline they create should "build one thing." In practice, people tend to create a single pipeline to handle everything their application needs. I see pipelines that build infrastructure, compile applications, create docker images, and package helm charts, all in one. When I tell people to refactor these pipelines to "build one thing," I mean that each pipeline should manage one lifecycle. If certain artifacts share the same lifecycle, they can go into the same pipeline. If the lifecycles are different, they should be separated.
@@ -58,21 +59,63 @@ As in the build pipeline, the remaining updates to the deployment pipeline are t
 
 The original build and deploy pipeline managed three lifecycles as one: docker image build, helm chart packaging, and deployment.  The previous section separated deployment from builds.  Next, I'll decompose the build pipeline to manage docker image build and helm chart packaging lifecycles separately.  As in the last section, start by copying the build pipeline YAML file to create "azure-pipelines.helm.yml."
 
-Update the trigger to focus on chart folder and build yaml
-Cleanup variables
-Update display name
-Remove Docker Job
-Update docker pipeline to ignore
-Update display name
-Remove helm job from docker pipeline
-Rename file to azure-pipelines.docker.yml
-Commit
-Go to pipeline settings, update file name
-Edit pipeline
-Choose triggers
-Change name to lifecycle-demo-docker
-Save and queue
-Create new pipeline for lifecycle-demo-helm
-Run it
-Deploy is broken due to pipeline rename
-Update triggers
+{% gist 56df043b6a49ef2f59c1396b1dc50fcb azure-pipelines.helm.yml %}
+
+To update the pipeline to focus only on building Helm charts, update the trigger to only include the parrot "charts" folder, and the pipeline definition itself.  Some people do not like to include the pipeline definition as a trigger.  I find it more convenient because the first thing I usually want to do after updating the pipeline is to verify that the pipeline still works.  The Helm packaging job does not build any dotnet code, so remove the variables related to release configuration and NuGet packages.
+
+In the build stage, remove the "Docker" job entirely.  The Helm job remains as the only job in the pipeline and should work without further modification.
+
+Next, update the original build pipeline so that it no longer supports Helm.  
+
+{% gist 56df043b6a49ef2f59c1396b1dc50fcb azure-pipelines.docker.yml %}
+
+Update the trigger exclusion paths to ignore changes to the Helm pipeline and the "charts" folder.  Remove the Helm job.  Rename the file to "azure-pipelines.docker.yml."  That's it!
+
+## Tying Everything Together
+
+This example starts with a single build pipeline that performs both build and deploy tasks.  Now, with the pipeline broken up into several pieces, each dedicated to one lifecycle, Azure DevOps needs updating as well.  Azure DevOps does not automatically detect new pipelines and does not run them unless we ask it to do so.  Furthermore, Azure DevOps does not detect the rename from "azure-pipelines.yml" to "azure-pipelines.docker.yml."
+
+After committing the new pipeline definitions, visit the existing pipeline in Azure DevOps, and access the Settings.
+
+{:style="text-align: center;"}
+![Azure DevOps context menu. An arrow points at the Settings item][1]
+
+From settings, update the YAML file path setting to use the new name of the "original" build pipeline "azure-pipelines.docker.yml."
+
+{:style="text-align: center;"}
+![Azure DevOps settings dialog. The YAML file path shows the updated name][2]
+
+To prevent confusion, update the pipeline display name in Azure DevOps.  As the time of this writing, updating the display name can be tricky if you have certain preview features enabled (as I do).  Start by selecting "Edit" on the pipeline view.  Then select "Triggers" from the context menu.
+
+{:style="text-align: center;"}
+![Azure DevOps context menu. An arrow points at the 'Triggers' item][3]
+
+The Triggers view brings up the "classic" pipeline editor, and you can edit the pipeline name to "lifecycle-demo-docker" directly on this screen.
+
+{:style="text-align: center;"}
+![Azure DevOps triggers view. The pipeline name field shows the updated name][4]
+
+Next, use the New Pipeline wizard to setup pipelines for the Helm build and the deploy pipeline.  The docker and Helm pipelines should work right away, but the deploy pipeline shows an error.
+
+{:style="text-align: center;"}
+![Azure DevOps pipelines view. The deploy pipeline shows an error icon.][5]
+
+The deploy pipeline references the "original" build pipeline by its old name.  To fix, update the pipeline resource for the docker build pipeline to reflect the new name, and add a resource for the helm pipeline.
+
+{:style="text-align: center;"}
+![Azure DevOps pipeline edit view. A box highlights the updated resources section.][6]
+
+Finally, all pipelines are wired up and working as expected!
+
+{:style="text-align: center;"}
+![Azure DevOps pipelines view. The deploy pipeline shows an error icon.][7]
+
+This article shows how to decompose a single pipeline into three pipelines that manage single lifecycles.  Many smaller projects could get by without worrying about this, and many do.  Some developers prefer having everything in one place and don't want "too many" pipelines.  However, for businesses where changing an artifact require recertifying that artifact, pointlessly rebuilding artifacts that don't change comes at a real cost.  In my research, this was the only way I found in Azure DevOps to trigger the various builds separately.  It would be nice if triggers could scope to individual stages rather than complete pipelines.  This change would make it unnecessary to decompose the pipeline definition while still allowing us to manage each artifact lifecycle separately. 
+
+[1]: /media/2020/02/01/ADO-pipeline-settings.png
+[2]: /media/2020/02/01/ADO-pipeline-settings-path.png
+[3]: /media/2020/02/01/ADO-edit-pipeline-triggers.png
+[4]: /media/2020/02/01/ADO-pipeline-rename.png
+[5]: /media/2020/02/01/ADO-pipelines-broken-deploy.png
+[6]: /media/2020/02/01/ADO-deploy-pipeline-update.png
+[7]: /media/2020/02/01/ADO-pipelines-fixed.png
