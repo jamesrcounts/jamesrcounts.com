@@ -1,12 +1,16 @@
 version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@0.1.16
+  ruby: circleci/ruby@1.1.2
 jobs:
   build:
     docker:
       - image: circleci/ruby:2.4.2-jessie-node
 
     steps:
+      - ruby/install:
+          version: '2.7'
+          
       - checkout
 
       - run:
