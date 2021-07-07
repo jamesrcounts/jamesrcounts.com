@@ -30,3 +30,5 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'html-proofer'
 
 gem "nokogiri", ">= 1.8.5"
+
+gem "kramdown-parser-gfm"
