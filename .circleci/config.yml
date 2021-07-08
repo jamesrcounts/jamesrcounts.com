@@ -5,7 +5,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: circleci/ruby:2.4.2-jessie-node
+      - image: circleci/ruby:2.7.3-node
 
     steps:
       - ruby/install:
