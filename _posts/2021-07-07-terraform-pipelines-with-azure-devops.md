@@ -279,7 +279,7 @@ implemented them as templates. The following sections explain each step.
 
 #### Shallow Clone
 
-[infrastructure/azure-pipelines.yml:]("https://github.com/jamesrcounts/terraform-getting-started-azure/blob/b1dd7ea36a633330fbdc52b356cca76c5a8d9f03/infrastructure/azure-pipelines.yml#L35")
+[infrastructure/azure-pipelines.yml:](https://github.com/jamesrcounts/terraform-getting-started-azure/blob/b1dd7ea36a633330fbdc52b356cca76c5a8d9f03/infrastructure/azure-pipelines.yml#L35)
 ```yaml
 - checkout: self
   fetchDepth: 1
