@@ -7,6 +7,9 @@ tags:
   - Terraform
 ---
 
+{:style="text-align:center"}
+![Terraform Pipelines with Azure DevOps: Getting Started](/media/2021/07/07/hero.png){:style="text-align:center;border-radius:5px"}
+
 In 2019 I became frustrated with articles about integrating Terraform
 and Azure DevOps. None of the examples looked safe because they skipped
 what I feel is the most critical part of working with Terraform:
