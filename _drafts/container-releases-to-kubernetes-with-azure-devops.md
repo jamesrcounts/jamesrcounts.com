@@ -39,6 +39,14 @@ than before.
     - [Build Docker Image](#build-docker-image)
     - [Scan Docker Image](#scan-docker-image)
     - [Push Docker Image](#push-docker-image)
+- [Build Stage: Package Helm Chart](#build-stage-package-helm-chart)
+  - [Pipeline Trigger](#pipeline-trigger-1)
+  - [Pipeline Stage](#pipeline-stage-1)
+    - [Shallow Clone](#shallow-clone-1)
+    - [Pin Helm Version](#pin-helm-version)
+    - [Check Helm Chart](#check-helm-chart)
+    - [Save Helm Chart](#save-helm-chart)
+    - [Push Helm Chart](#push-helm-chart)
 
 ## Create CI/CD Plan
 
@@ -495,11 +503,10 @@ tab. By default, the template will terminate the build pipeline when
 trivy detects vulnerabilities. The template includes an option to run in
 “report-only” mode without failing the build.
 
-{:style="text-align:center;font-style: italic;background: lightsteelblue;border-radius: 24px;padding: 20px;"}
-Trivy has options to enable fine-grained [vulnerability
-filtering](https://aquasecurity.github.io/trivy/v0.18.3/examples/filter/),
-including a “.trivyignore” file where teams can accept the risk for
-each vulnerability.
+> Trivy has options to enable fine-grained [vulnerability
+> filtering](https://aquasecurity.github.io/trivy/v0.18.3/examples/filter/),
+> including a “.trivyignore” file where teams can accept the risk for
+> each vulnerability.
 
 #### Push Docker Image
 
@@ -516,3 +523,197 @@ each vulnerability.
 
 After the vulnerability scan completes, the pipeline sends the container
 image to ACR. This step completes the container image build pipeline.
+
+## Build Stage: Package Helm Chart
+
+### Pipeline Trigger
+
+[parrot/azure-pipelines.helm.yaml:](https://github.com/jamesrcounts/phippyandfriends/blob/2021.06/parrot/azure-pipelines.helm.yaml#L3-L14)
+```yaml
+trigger:
+  batch: true
+  paths:
+    include:
+      - parrot/src/parrot/charts
+      - parrot/azure-pipelines.helm.yaml
+  branches:
+    include:
+      - main
+```
+
+The stage trigger includes the “charts” folder but no other sources
+besides the pipeline definition itself. Exclusions are not needed in
+this case because the contents of the charts folder only change when the
+chart definition changes.
+
+### Pipeline Stage
+
+[pipeline-templates/helm-package.yml:](https://github.com/jamesrcounts/phippyandfriends/blob/2021.06/pipeline-templates/helm-package.yml)
+
+```yaml
+stages:
+  - stage: package
+    displayName: 'Package Helm Chart'
+    jobs:
+      - job: Helm
+        displayName: 'Build and Push Helm Chart'
+        pool:
+          vmImage: 'ubuntu-latest'
+
+        steps:
+          - checkout: self
+            fetchDepth: 1
+
+          - task: HelmInstaller@1
+            displayName: 'Initialize Helm'
+            inputs:
+              helmVersionToInstall: 'latest'
+
+          - task: Bash@3
+            displayName: 'Check Helm Chart'
+            inputs:
+              targetType: 'inline'
+              script: |
+                set -euo pipefail
+
+                helm lint $(chart_path) --strict
+
+          - task: Bash@3
+            displayName: 'Save Helm Chart'
+            inputs:
+              targetType: 'inline'
+              script: |
+                set -euo pipefail
+
+                helm chart save $(chart_path) $(artifact)
+
+          - task: AzureCLI@2
+            condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+            displayName: 'Push Helm Chart'
+            inputs:
+              addSpnToEnvironment: true
+              azureSubscription: 'Azure'
+              scriptLocation: 'inlineScript'
+              scriptType: 'bash'
+              inlineScript: |
+                set -euo pipefail
+
+                echo $servicePrincipalKey | \
+                  helm registry login $(LOGIN_SERVER) \
+                    --username $servicePrincipalId \
+                    --password-stdin
+
+                helm chart push $(artifact)
+```
+
+The stage has these steps:
+
+-   Shallow Clone
+-   Pin Helm Version
+-   Check Helm Chart
+-   Save Helm Chart
+-   Push Helm Chart
+  
+#### Shallow Clone
+
+The pipeline does not need the entire commit history to create the Helm
+package, so this stage executes a shallow clone, as described
+[above](#shallow-clone).
+
+#### Pin Helm Version
+
+[pipeline-templates/helm-package.yml:](https://github.com/jamesrcounts/phippyandfriends/blob/2021.06/pipeline-templates/helm-package.yml#L14-L17)
+
+```yaml
+- task: HelmInstaller@1
+  displayName: 'Pin Helm Version'
+  inputs:
+    helmVersionToInstall: '3.6.0'
+```
+
+The Helm installer task pins a specific Helm version on the agent. The
+Helm version is an input to our build process, just like the versions of
+.Net and node.
+
+#### Check Helm Chart
+
+[pipeline-templates/helm-package.yml:](https://github.com/jamesrcounts/phippyandfriends/blob/2021.06/pipeline-templates/helm-package.yml#L19-L26)
+
+```yaml
+- task: Bash@3
+  displayName: 'Check Helm Chart'
+  inputs:
+    targetType: 'inline'
+    script: |
+      set -euo pipefail
+
+      helm lint $(chart_path) --strict
+```
+
+Helm’s lint command checks charts for possible issues and emits errors
+and warnings if it finds any problems. With strict mode enabled, both
+errors and warnings cause the check (and therefore the build) to fail.
+This early failure creates an opportunity to correct problems with the
+chart before attempting a deployment.
+
+> The check helps find both simple typos and subtler problems like a
+> mismatch between a Kubernetes API schema and the properties in the
+> template.
+
+#### Save Helm Chart
+
+[pipeline-templates/helm-package.yml:](https://github.com/jamesrcounts/phippyandfriends/blob/2021.06/pipeline-templates/helm-package.yml#L28-L35)
+```yaml
+- task: Bash@3
+  displayName: 'Save Helm Chart'
+  inputs:
+    targetType: 'inline'
+    script: |
+      set -euo pipefail
+
+      helm chart save $(chart_path) $(artifact)
+```
+
+Helm 3 introduced OCI integration as an [experimental
+feature](https://github.com/helm/community/blob/5e8bcded7ed93ce7112ab898aabda527cf82bb78/hips/hip-0006.md).
+This support allows ACR users to store Helm charts in the same registry
+as their container images using the same conventions. Because the
+capability is still considered experimental, [the pipeline must set a
+flag
+(HELM_EXPERIMENTAL_OCI)](https://github.com/jamesrcounts/phippyandfriends/blob/2021.06/phippy/azure-pipelines.helm.yml#L21-L22)
+to enable support.
+
+> Saving a chart with the Helm CLI will create a single-layer OCI
+> artifact (the same format container images use) in the agent’s cache.
+> The contents of the layer are just the YAML files forming the Helm
+> chart.
+
+#### Push Helm Chart
+
+[pipeline-templates/helm-package.yml:](https://github.com/jamesrcounts/phippyandfriends/blob/2021.06/pipeline-templates/helm-package.yml#L37-L53)
+
+```yaml
+- task: AzureCLI@2
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  displayName: 'Push Helm Chart'
+  inputs:
+    addSpnToEnvironment: true
+    azureSubscription: 'Azure'
+    scriptLocation: 'inlineScript'
+    scriptType: 'bash'
+    inlineScript: |
+      set -euo pipefail
+
+      echo $servicePrincipalKey | \
+        helm registry login $(LOGIN_SERVER) \
+          --username $servicePrincipalId \
+          --password-stdin
+
+      helm chart push $(artifact)
+```
+
+The pipeline uses an Azure CLI to push our chart artifact to ACR. The
+“addSpnToEnvironment” option injects the service principal credentials
+into the script process so that the script can log in to ACR using
+Helm’s registry login support (also experimental). Once logged into the
+registry, Helm can send our chart to ACR using the push command.
