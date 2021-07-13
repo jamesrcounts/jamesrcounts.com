@@ -47,6 +47,21 @@ than before.
     - [Check Helm Chart](#check-helm-chart)
     - [Save Helm Chart](#save-helm-chart)
     - [Push Helm Chart](#push-helm-chart)
+- [Setup Deployment Environments](#setup-deployment-environments)
+  - [Development Environment](#development-environment)
+  - [Production Environment](#production-environment)
+- [Deployment Pipeline](#deployment-pipeline)
+  - [Deployment Trigger](#deployment-trigger)
+  - [Deployment Stages](#deployment-stages)
+  - [Deployment Template](#deployment-template)
+    - [Disable Checkout](#disable-checkout)
+    - [Pin Helm Version](#pin-helm-version-1)
+    - [Prepare Deployment](#prepare-deployment)
+    - [Deploy Helm Chart](#deploy-helm-chart)
+- [CI/CD in Action](#cicd-in-action)
+  - [Change Deployment Configuration](#change-deployment-configuration)
+  - [Change Application Code](#change-application-code)
+- [Review](#review)
 
 ## Create CI/CD Plan
 
@@ -376,8 +391,7 @@ all-in-one Dockerfile approach is elegant, I’ve worked with more than
 one team that abandoned its advantages to enable more advanced testing
 scenarios.
 
-{:style="text-align:center;font-style: italic;background: lightsteelblue;border-radius: 24px;padding: 20px;"}
-Tests are one way to build trust in the artifacts we intend to
+> Tests are one way to build trust in the artifacts we intend to
 release. Code that passes our tests is more likely to work in
 production than code that fails our tests. Achieving truly
 “continuous” integration and deployment flows means creating
@@ -717,3 +731,427 @@ The pipeline uses an Azure CLI to push our chart artifact to ACR. The
 into the script process so that the script can log in to ACR using
 Helm’s registry login support (also experimental). Once logged into the
 registry, Helm can send our chart to ACR using the push command.
+
+## Setup Deployment Environments
+
+The demo environment includes two AKS clusters. The development cluster
+should allow complete CI/CD, but we will configure the production
+environment to require manual approval before deployment. Azure DevOps
+Environments separate the logical definition of an environment and its
+governance from the pipeline definition. The deployment pipeline will
+reference the configured environment, and any permissions and checks
+configured on the environment then apply to the pipeline.
+
+### Development Environment
+
+First, log in to Azure DevOps and choose Environments under pipelines,
+then select Create Environment:
+
+![Create Azure DevOps Environment.](/media/2021/07/11/create-environment.png)
+
+Next, type an environment name and choose “Kubernetes” as the resource,
+then select “Next.” I named the first environment dev.
+
+{:.img-wrapper}
+![New Environment Dialog.](/media/2021/07/11/new-environment.png){:style="width:3.49in;height:4.25in"}
+
+Next, choose your cluster and namespace and select “Validate and
+create.”
+
+{:.img-wrapper}
+![New Environment Kubernetes configuration.](/media/2021/07/11/new-environment-k8s.png){:style="width:3.53in;height:3.71in"}
+
+Because we do not want a manual deployment gate on the development
+cluster, the development environment configuration is now ready.
+
+### Production Environment
+
+To create the production environment, follow the same initial steps to
+create an environment called “prd” for the production AKS instance.
+Next, use the top-right menu to select “Approvals and checks.”
+
+{:.img-wrapper}
+![Approvals and Checks menu item.](/media/2021/07/11/approvals-and-checks.png)
+
+Select “Approvals.” Then enter an appropriate user or group to supply
+approvals. Next, choose “Create.”
+
+{:.img-wrapper}
+![Manual Approval Dialog.](/media/2021/07/11/manual-approval.png)
+
+Deployments that target the production environment will now request
+approval before making changes.
+
+{:.img-wrapper}
+![Configured Manual Approval.](/media/2021/07/11/configured-approval.png)
+
+## Deployment Pipeline
+
+### Deployment Trigger
+
+[parrot/azure-pipelines.deploy.yaml:](https://github.com/jamesrcounts/phippyandfriends/blob/2021.06/parrot/azure-pipelines.deploy.yaml#L3-L21)
+```yaml 
+resources:
+  pipelines:
+    - pipeline: build
+      source: 'parrot-docker'
+      trigger: true
+      branch: main
+    - pipeline: helm
+      source: 'parrot-helm'
+      trigger: true
+      branch: main
+
+trigger:
+  batch: true
+  paths:
+    include:
+      - parrot/azure-pipelines.deploy.yaml
+  branches:
+    include:
+      - main
+```
+
+Our CI/CD flow requires the deployment pipeline should trigger any time
+the application or deployment configuration artifacts change. The
+resource block connects pipelines in Azure DevOps by specifying the
+names of the build pipelines and whether each build pipeline should
+trigger the deployment pipeline. The deployment pipeline declares both
+the “parrot-docker” and the “parrot-helm” pipelines as triggers to meet
+the requirement.
+
+> If you want to consume artifacts from another pipeline without
+> triggering a run, set the “trigger” property to false.
+
+### Deployment Stages
+
+[parrot/azure-pipelines.deploy.yaml:](https://github.com/jamesrcounts/phippyandfriends/blob/2021.06/parrot/azure-pipelines.deploy.yaml#L43-L54)
+```yaml
+stages:
+  - template: '../pipeline-templates/helm-deployment.yml'
+    parameters:
+      baseDomain: boss-crawdad-dev.$(aksHost)
+      environment: dev.apps
+      kubernetesCluster: aks-boss-crawdad-dev
+
+  - template: '../pipeline-templates/helm-deployment.yml'
+    parameters:
+      baseDomain: boss-crawdad-prd.$(aksHost)
+      environment: prd.apps
+      kubernetesCluster: aks-boss-crawdad-prd
+```
+
+Like the helm packaging step, the helm deployment steps are identical
+except for a few variables, so I’ve implemented the stage as a shared
+template. The environment name is one of the template parameters,
+ensuring that the development deployment uses continuous delivery and
+the production deployment pauses for approval.
+
+### Deployment Template
+
+[pipeline-templates/helm-deployment.yml:](https://github.com/jamesrcounts/phippyandfriends/blob/2021.06/pipeline-templates/helm-deployment.yml)
+```yaml
+parameters:
+- name: baseDomain 
+  type: string
+  default: ""
+- name: environment
+  type: string
+- name: kubernetesCluster
+  type: string
+
+stages:
+  - stage:
+    variables:
+      ${{if parameters.baseDomain}}:
+        overrideValues: 'ingress.basedomain=${{ parameters.basedomain }},image.tag=$(imageTag),image.repository=$(LOGIN_SERVER)/$(containerRepository)'
+      ${{if not(parameters.baseDomain)}}:
+        overrideValues: 'image.tag=$(imageTag),image.repository=$(LOGIN_SERVER)/$(containerRepository)'
+    displayName: Helm Deploy
+    jobs:
+      - deployment: 
+        displayName: ${{ parameters.environment }} Deployment
+        pool:
+          vmImage: 'ubuntu-latest'
+        environment: ${{ parameters.environment }}
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: none
+
+                - task: HelmInstaller@1
+                  displayName: 'Pin Helm Version'
+                  inputs:
+                    helmVersionToInstall: '3.6.0'
+
+                - task: AzureCLI@2
+                  displayName: 'Prepare Deployment'
+                  env:
+                    AKS_RG: $(AZURE_ENV_RG)
+                    REGISTRY_SERVER: $(LOGIN_SERVER)
+                    CHART_PATH: $(local_chart_path)
+                  inputs:
+                    addSpnToEnvironment: true
+                    azureSubscription: 'Azure'
+                    failOnStandardError: true
+                    scriptLocation: 'inlineScript'
+                    scriptType: 'bash'
+                    inlineScript: |
+                      set -euo pipefail
+
+                      helm version
+
+                      echo "Login to AKS"
+                      az aks get-credentials \
+                        --resource-group ${AKS_RG} \
+                        --name '${{ parameters.kubernetesCluster }}' \
+                        --admin \
+                        --overwrite-existing
+
+                      echo "Sanity Check"
+                      helm list -A
+
+                      echo "Registry Login"
+                      echo $servicePrincipalKey | \
+                        helm registry login ${REGISTRY_SERVER} \
+                          --username $servicePrincipalId \
+                          --password-stdin
+
+                      echo "Retrieve Artifact"
+                      helm chart pull $(artifact)
+
+                      echo "Unpack Artifact"
+                      helm chart export "$(artifact)" --destination ./${CHART_PATH}
+
+                      echo "Sanity Check"
+                      helm show chart ./${CHART_PATH}/$(containerRepository)
+
+                - task: HelmDeploy@0
+                  displayName: 'Deploy Helm Chart'
+                  inputs:
+                    connectionType: 'Azure Resource Manager'
+                    azureSubscription: 'Azure'
+                    azureResourceGroup: $(AZURE_ENV_RG)
+                    kubernetesCluster: '${{ parameters.kubernetesCluster }}'
+                    useClusterAdmin: true
+                    namespace: 'apps'
+                    command: 'upgrade'
+                    chartType: 'FilePath'
+                    chartPath: './$(local_chart_path)/$(containerRepository)'
+                    releaseName: '$(containerRepository)'
+                    overrideValues: $(overrideValues)
+```
+
+The deployment template has the following steps:
+
+-   Disable Checkout
+-   Pin Helm Version
+-   Prepare Deployment
+-   Deploy Helm Chart
+
+#### Disable Checkout
+
+[pipeline-templates/helm-deployment.yml:](https://github.com/jamesrcounts/phippyandfriends/blob/2021.06/pipeline-templates/helm-deployment.yml#L28)
+```yaml
+- checkout: none
+```                                                                                                                         
+The deployment stage inputs are the build pipeline artifacts, not the
+source code. The template disables checkout because it doesn’t need any
+data from the git repository to do its job.
+
+#### Pin Helm Version
+
+The deployment stage pins the Helm version for the same reasons as the
+packaging stage shown [above](#pin-helm-version).
+
+#### Prepare Deployment
+
+[pipeline-templates/helm-deployment.yml:](https://github.com/jamesrcounts/phippyandfriends/blob/2021.06/pipeline-templates/helm-deployment.yml#L35-L75)
+```yaml
+- task: AzureCLI@2
+  displayName: 'Prepare Deployment'
+  env:
+    AKS_RG: $(AZURE_ENV_RG)
+    REGISTRY_SERVER: $(LOGIN_SERVER)
+    CHART_PATH: $(local_chart_path)
+  inputs:
+    addSpnToEnvironment: true
+    azureSubscription: 'Azure'
+    failOnStandardError: true
+    scriptLocation: 'inlineScript'
+    scriptType: 'bash'
+    inlineScript: |
+      set -euo pipefail
+
+      helm version
+
+      echo "Login to AKS"
+      az aks get-credentials \
+        --resource-group ${AKS_RG} \
+        --name '${{ parameters.kubernetesCluster }}' \
+        --admin \
+        --overwrite-existing
+
+      echo "Sanity Check"
+      helm list -A
+
+      echo "Registry Login"
+      echo $servicePrincipalKey | \
+        helm registry login ${REGISTRY_SERVER} \
+          --username $servicePrincipalId \
+          --password-stdin
+
+      echo "Retrieve Artifact"
+      helm chart pull $(artifact)
+
+      echo "Unpack Artifact"
+      helm chart export "$(artifact)" --destination ./${CHART_PATH}
+
+      echo "Sanity Check"
+      helm show chart ./${CHART_PATH}/$(containerRepository)
+```
+
+This step prepares the agent for deployment by fetching credentials for
+the Kubernetes cluster, pulling the OCI artifact from ACR, and unpacking
+it to a local directory.
+
+> As OCI support in Helm matures, the steps for deploying an OCI
+> artifact should become less involved.
+
+#### Deploy Helm Chart
+
+[pipeline-templates/helm-deployment.yml:](https://github.com/jamesrcounts/phippyandfriends/blob/2021.06/pipeline-templates/helm-deployment.yml#L77-L90)
+```yaml
+- task: HelmDeploy@0
+  displayName: 'Deploy Helm Chart'
+  inputs:
+    connectionType: 'Azure Resource Manager'
+    azureSubscription: 'Azure'
+    azureResourceGroup: $(AZURE_ENV_RG)
+    kubernetesCluster: '${{ parameters.kubernetesCluster }}'
+    useClusterAdmin: true
+    namespace: 'apps'
+    command: 'upgrade'
+    chartType: 'FilePath'
+    chartPath: './$(local_chart_path)/$(containerRepository)'
+    releaseName: '$(containerRepository)'
+    overrideValues: $(overrideValues)
+```
+
+With the build agent configured with the prerequisites, this helm deploy
+task releases the application to the AKS cluster. When AKS receives the
+chart for deployment and schedules the parrot pods, the cluster node
+will pull the appropriate container image from our ACR instance.
+
+## CI/CD in Action
+
+After completing the pipeline configurations, we can change the source
+code to ensure they work as intended. Before making any changes, we can
+see that the Helm package is at version 0.1.8, the container image is at
+version 0.2.5, and the deployment number is at 0.2.14.
+
+{:.img-wrapper}
+![Screenshot showing pipeline starting state.](/media/2021/07/11/pipelines-starting-state.png){:style="max-width:90%"}
+
+### Change Deployment Configuration
+
+{:.img-wrapper}
+![Pull request 4 changes number of replicas.](/media/2021/07/11/pr-4.png){:style="max-width:90%"}
+
+This pull request changes the Helm chart by updating the default number
+of parrot replicas in the deployment.
+
+{:.img-wrapper}
+![Helm pipeline running.](/media/2021/07/11/run-helm-pipeline.png){:style="max-width:90%"}
+
+When merged, the “parrot-helm” pipeline triggers detect the change and
+queue a build. In contrast, the “parrot-docker” pipeline detects no
+changes, and Azure DevOps does not schedule a build for the container
+image.
+
+{:.img-wrapper}
+![Deployment pipeline running.](/media/2021/07/11/run-deploy.png){:style="max-width:90%"}
+
+The “parrot-helm” pipeline completes quickly and triggers the
+“parrot-deploy” pipeline.
+
+> We shortened the time until we can deploy the new deployment by
+> skipping the application and container image build.
+
+{:.img-wrapper}
+![Pipeline waits for approval before production.](/media/2021/07/11/production-approval-wait.png){:style="max-width:90%"}
+
+The pipeline deploys the new configuration to the development cluster
+immediately because we configured no approval checks on the development
+environment. The pipeline waits to deploy to the production environment,
+which has a manual approval requirement.
+
+{:.img-wrapper}
+![Deployment triggered by Helm pipeline.](/media/2021/07/11/deployment-trigger.png){:style="max-width:90%"}
+
+We can confirm that the Helm build pipeline triggered the deployment by
+reviewing the summary information for the deployment.
+
+{:.img-wrapper}
+![Manual approval dialog.](/media/2021/07/11/approval-dialog.png){:style="max-width:50%"}
+
+An authorized user (in this case, me) can provide approval for the
+production deployment using the Azure DevOps user interface.
+
+{:.img-wrapper}
+![All pipelines completed.](/media/2021/07/11/post-deployment-state.png){:style="max-width:90%"}
+
+After the deployment to production, we can review the pipelines and see
+that Azure DevOps has completed all pipeline runs.
+
+{:.img-wrapper}
+![Parrot replica change confirmed.](/media/2021/07/11/parrot-replicas.png){:style="max-width:90%"}
+
+By reviewing the AKS workloads, I can confirm that the parrot deployment
+now has two replicas.
+
+### Change Application Code
+
+{:.img-wrapper}
+![PR to update parrot header text.](/media/2021/07/11/pr-5.png){:style="max-width:90%"}
+
+By submitting this pull request to make a trivial change to the
+application code, we’ll see a similar process play out.
+
+{:.img-wrapper}
+![Docker pipeline running.](/media/2021/07/11/run-docker-pipeline.png){:style="max-width:90%"}
+
+The change to application code triggers the container image build, but
+not the Helm package build.
+
+{:.img-wrapper}
+![Deployment triggered by Docker pipeline.](/media/2021/07/11/deployment-trigger-2.png){:style="max-width:90%"}
+
+On completion, the container image build triggers the deployment.
+
+{:.img-wrapper}
+![All pipelines completed.](/media/2021/07/11/post-deployment-state-2.png){:style="max-width:90%"}
+
+After I approve the production deployment, we can see that all pipeline
+runs have been completed.
+
+## Review
+
+This article shows how to develop a CI/CD flow that handles multiple
+environments with differing approval requirements. By considering the
+environments we needed to deploy to and the application to deploy, we
+identified which build artifacts we required and created separate
+pipelines to handle each artifact. Each pipeline trigger has appropriate
+filters to ensure that artifacts only change when their source files
+change. This pattern makes it easier to reason about each deployment's
+changes because the CI/CD flow reuses unchanged artifacts. As a bonus,
+reusing artifacts speeds up the time to deployment.
+
+Azure DevOps Environments have gained some nice features since my last
+review. Unfortunately, the feature set lags behind classic release
+pipelines even after a couple of years of development. Given Microsoft’s
+GitHub acquisition in June 2018, it is fair to speculate that attention
+and focus have shifted to driving innovation in GitHub Actions instead.
+Building the same CI/CD flow in GitHub actions would be an interesting
+exercise for a future article!
