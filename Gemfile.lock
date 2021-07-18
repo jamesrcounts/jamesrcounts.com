@@ -128,7 +128,6 @@ DEPENDENCIES
   kramdown-parser-gfm
   minima (~> 2.0)
   nokogiri (>= 1.8.5)
-  tzinfo-data
 
 RUBY VERSION
    ruby 2.7.3p183
