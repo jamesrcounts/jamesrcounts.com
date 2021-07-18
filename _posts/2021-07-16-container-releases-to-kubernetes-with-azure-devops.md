@@ -8,8 +8,8 @@ tags:
   - Kubernetes
 ---
 
-{:style="text-align:center"}
-![Container Releases to Kubernetes with Azure DevOps](/media/2021/07/11/container-hero.png){:style="text-align:center;border-radius:5px"}
+{:.img-wrapper}
+{% responsive_image path: media/2021/07/11/container-hero.png alt: "Container Releases to Kubernetes with Azure DevOps." %}
 
 Over the past couple of years, I've continued to work with teams using
 Azure DevOps pipelines to automate their Kubernetes deployments. The
@@ -86,8 +86,8 @@ For this example, I’ll focus on one of the apps from
 parrot. Parrot is a .Net application and provides the user interface
 that displays the other applications detected by captainkube.
 
-{:style="text-align:center"}
-![Screenshot of Parrot application in the browser.](/media/2021/07/11/parrot-and-phippy.png){:style="text-align:center;border-radius:10px"}
+{:.img-wrapper}
+{% responsive_image path: media/2021/07/11/parrot-and-phippy.png alt: "Screenshot of Parrot application in the browser." %}
 
 ### Environment
 
@@ -98,8 +98,8 @@ sandbox and a production environment. Apart from necessary differences
 like hostnames and certificates, each tier will have the same
 configuration.
 
-{:style="text-align:center"}
-![Hosting environment topology.](/media/2021/07/11/environment-topology.png){:style="text-align:center;border-radius:10px"}
+{:.img-wrapper}
+{% responsive_image path: media/2021/07/11/environment-topology.png alt: "Hosting environment topology." %}
 
 ### Artifacts
 
@@ -119,8 +119,7 @@ changes (without any application or Dockerfile changes), rebuilding the
 container image is a waste of compute cycles. Likewise, repackaging the
 helm chart when only the application has changed is a waste.
 
-{:style="text-align:center;font-style: italic;background: lightsteelblue;border-radius: 24px;padding: 20px;"}
-Build artifacts should only change when the inputs that define them
+> Build artifacts should only change when the inputs that define them
 have changed. A change in any input artifact should trigger
 deployment.
 
@@ -129,8 +128,8 @@ deployment.
 After reviewing everything, we can sketch a CI/CD flow that looks like
 this:
 
-{:style="text-align:center"}
-![CI/CD Plan.](/media/2021/07/11/ci-cd-plan.png){:style="text-align:center;border-radius:10px"}
+{:.img-wrapper}
+{% responsive_image path: media/2021/07/11/ci-cd-plan.png alt: "CI/CD Plan." %}
 
 Because the container image and helm chart do not necessarily change
 together for the same reasons simultaneously, they have separate
@@ -747,19 +746,20 @@ configured on the environment then apply to the pipeline.
 First, log in to Azure DevOps and choose Environments under pipelines,
 then select Create Environment:
 
-![Create Azure DevOps Environment.](/media/2021/07/11/create-environment.png)
+{:.img-wrapper}
+{% responsive_image path: media/2021/07/11/create-environment.png alt: "Create Azure DevOps Environment." %}
 
 Next, type an environment name and choose “Kubernetes” as the resource,
 then select “Next.” I named the first environment dev.
 
 {:.img-wrapper}
-![New Environment Dialog.](/media/2021/07/11/new-environment.png){:style="width:3.49in;height:4.25in"}
+{% responsive_image path: media/2021/07/11/new-environment.png alt: "New Environment Dialog." %}{:style="max-width:45%"}
 
 Next, choose your cluster and namespace and select “Validate and
 create.”
 
 {:.img-wrapper}
-![New Environment Kubernetes configuration.](/media/2021/07/11/new-environment-k8s.png){:style="width:3.53in;height:3.71in"}
+{% responsive_image path: media/2021/07/11/new-environment-k8s.png alt: "New Environment Kubernetes configuration." %}{:style="max-width:45%"}
 
 Because we do not want a manual deployment gate on the development
 cluster, the development environment configuration is now ready.
@@ -771,19 +771,19 @@ create an environment called “prd” for the production AKS instance.
 Next, use the top-right menu to select “Approvals and checks.”
 
 {:.img-wrapper}
-![Approvals and Checks menu item.](/media/2021/07/11/approvals-and-checks.png)
+{% responsive_image path: media/2021/07/11/approvals-and-checks.png alt: "Approvals and Checks menu item." %}
 
 Select “Approvals.” Then enter an appropriate user or group to supply
 approvals. Next, choose “Create.”
 
 {:.img-wrapper}
-![Manual Approval Dialog.](/media/2021/07/11/manual-approval.png)
+{% responsive_image path: media/2021/07/11/manual-approval.png alt: "Manual Approval Dialog." %}
 
 Deployments that target the production environment will now request
 approval before making changes.
 
 {:.img-wrapper}
-![Configured Manual Approval.](/media/2021/07/11/configured-approval.png)
+{% responsive_image path: media/2021/07/11/configured-approval.png alt: "Configured Manual Approval." %}
 
 ## Deployment Pipeline
 
@@ -1052,18 +1052,18 @@ see that the Helm package is at version 0.1.8, the container image is at
 version 0.2.5, and the deployment number is at 0.2.14.
 
 {:.img-wrapper}
-![Screenshot showing pipeline starting state.](/media/2021/07/11/pipelines-starting-state.png){:style="max-width:90%"}
+{% responsive_image path: media/2021/07/11/pipelines-starting-state.png alt: "Screenshot showing pipeline starting state." %}{:style="max-width:90%"}
 
 ### Change Deployment Configuration
 
 {:.img-wrapper}
-![Pull request 4 changes number of replicas.](/media/2021/07/11/pr-4.png){:style="max-width:90%"}
+{% responsive_image path: media/2021/07/11/pr-4.png alt: "Pull request 4 changes number of replicas." %}{:style="max-width:90%"}
 
 This pull request changes the Helm chart by updating the default number
 of parrot replicas in the deployment.
 
 {:.img-wrapper}
-![Helm pipeline running.](/media/2021/07/11/run-helm-pipeline.png){:style="max-width:90%"}
+{% responsive_image path: media/2021/07/11/run-helm-pipeline.png alt: "Helm pipeline running." %}{:style="max-width:90%"}
 
 When merged, the “parrot-helm” pipeline triggers detect the change and
 queue a build. In contrast, the “parrot-docker” pipeline detects no
@@ -1071,7 +1071,7 @@ changes, and Azure DevOps does not schedule a build for the container
 image.
 
 {:.img-wrapper}
-![Deployment pipeline running.](/media/2021/07/11/run-deploy.png){:style="max-width:90%"}
+{% responsive_image path: media/2021/07/11/run-deploy.png alt: "Deployment pipeline running." %}{:style="max-width:90%"}
 
 The “parrot-helm” pipeline completes quickly and triggers the
 “parrot-deploy” pipeline.
@@ -1080,7 +1080,7 @@ The “parrot-helm” pipeline completes quickly and triggers the
 > skipping the application and container image build.
 
 {:.img-wrapper}
-![Pipeline waits for approval before production.](/media/2021/07/11/production-approval-wait.png){:style="max-width:90%"}
+{% responsive_image path: media/2021/07/11/production-approval-wait.png alt: "Pipeline waits for approval before production." %}{:style="max-width:90%"}
 
 The pipeline deploys the new configuration to the development cluster
 immediately because we configured no approval checks on the development
@@ -1088,25 +1088,25 @@ environment. The pipeline waits to deploy to the production environment,
 which has a manual approval requirement.
 
 {:.img-wrapper}
-![Deployment triggered by Helm pipeline.](/media/2021/07/11/deployment-trigger.png){:style="max-width:90%"}
+{% responsive_image path: media/2021/07/11/deployment-trigger.png alt: "Deployment triggered by Helm pipeline." %}{:style="max-width:90%"}
 
 We can confirm that the Helm build pipeline triggered the deployment by
 reviewing the summary information for the deployment.
 
 {:.img-wrapper}
-![Manual approval dialog.](/media/2021/07/11/approval-dialog.png){:style="max-width:50%"}
+{% responsive_image path: media/2021/07/11/approval-dialog.png alt: "Manual approval dialog." %}{:style="max-width:50%"}
 
 An authorized user (in this case, me) can provide approval for the
 production deployment using the Azure DevOps user interface.
 
 {:.img-wrapper}
-![All pipelines completed.](/media/2021/07/11/post-deployment-state.png){:style="max-width:90%"}
+{% responsive_image path: media/2021/07/11/post-deployment-state.png alt: "All pipelines completed." %}{:style="max-width:90%"}
 
 After the deployment to production, we can review the pipelines and see
 that Azure DevOps has completed all pipeline runs.
 
 {:.img-wrapper}
-![Parrot replica change confirmed.](/media/2021/07/11/parrot-replicas.png){:style="max-width:90%"}
+{% responsive_image path: media/2021/07/11/parrot-replicas.png alt: "Parrot replica change confirmed." %}{:style="max-width:90%"}
 
 By reviewing the AKS workloads, I can confirm that the parrot deployment
 now has two replicas.
@@ -1114,24 +1114,24 @@ now has two replicas.
 ### Change Application Code
 
 {:.img-wrapper}
-![PR to update parrot header text.](/media/2021/07/11/pr-5.png){:style="max-width:90%"}
+{% responsive_image path: media/2021/07/11/pr-5.png alt: "PR to update parrot header text." %}{:style="max-width:90%"}
 
 By submitting this pull request to make a trivial change to the
 application code, we’ll see a similar process play out.
 
 {:.img-wrapper}
-![Docker pipeline running.](/media/2021/07/11/run-docker-pipeline.png){:style="max-width:90%"}
+{% responsive_image path: media/2021/07/11/run-docker-pipeline.png alt: "Docker pipeline running." %}{:style="max-width:90%"}
 
 The change to application code triggers the container image build, but
 not the Helm package build.
 
 {:.img-wrapper}
-![Deployment triggered by Docker pipeline.](/media/2021/07/11/deployment-trigger-2.png){:style="max-width:90%"}
+{% responsive_image path: media/2021/07/11/deployment-trigger-2.png alt: "Deployment triggered by Docker pipeline." %}{:style="max-width:90%"}
 
 On completion, the container image build triggers the deployment.
 
 {:.img-wrapper}
-![All pipelines completed.](/media/2021/07/11/post-deployment-state-2.png){:style="max-width:90%"}
+{% responsive_image path: media/2021/07/11/post-deployment-state-2.png alt: "All pipelines completed." %}{:style="max-width:90%"}
 
 After I approve the production deployment, we can see that all pipeline
 runs have been completed.
