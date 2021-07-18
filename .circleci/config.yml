@@ -10,6 +10,13 @@ jobs:
       - checkout
 
       - run:
+          name: Install ImageMagick
+          command: |
+            sudo apt-get update && \
+            sudo export DEBIAN_FRONTEND=noninteractive && \
+            sudo apt-get -y install --no-install-recommends libmagickwand-dev
+
+      - run:
           name: Which bundler?
           command: bundle -v
 
