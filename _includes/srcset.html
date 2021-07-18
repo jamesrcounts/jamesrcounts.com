@@ -1,8 +1,8 @@
 {% assign largest = resized | sort: 'width' | last %}
-{% capture srcset %}
-{% for i in resized %}
-    /{{ i.path }} {{ i.width }}w,
-{% endfor %}
-{% endcapture %}
-
-<img src="/{{ largest.path }}" alt="{{ alt }}" srcset="{{ srcset | strip_newlines }} /{{ path }} {{ original.width }}w">
+<picture>
+    <source media="(min-width: {{ largest.width }}px)" srcset="/{{ path | replace: 'png', 'webp' }}">
+    {% for i in resized reversed %}
+    <source media="(min-width: {{ i.width }}px)" srcset="/{{ i.path }}">
+    {% endfor %}
+    <img src="/{{ largest.path }}" alt="{{ alt }}">
+</picture>
