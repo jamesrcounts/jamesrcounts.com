@@ -39,7 +39,10 @@ jobs:
 
       - run:
           name: Jekyll Build
-          command: bundle exec jekyll build
+          command: |
+            bundle exec jekyll build
+            # 2nd pass to generate webp
+            bundle exec jekyll build
 
       - run:
           name: Jekyll Proof
