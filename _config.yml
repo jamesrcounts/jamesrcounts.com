@@ -66,3 +66,4 @@ webp:
   # Default transforms `image.png` to `image.webp`, while changing to true transforms `image.png` to `image.png.webp`
   append_ext: false
 ############################################################
+
