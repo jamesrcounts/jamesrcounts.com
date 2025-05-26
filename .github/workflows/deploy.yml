@@ -24,6 +24,11 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install ImageMagick
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install --no-install-recommends libmagickwand-dev
+
       - name: Show bundler version
         run: bundle -v
 
@@ -38,8 +43,10 @@ jobs:
       - name: Bundle install
         run: bundle check --path vendor/bundle || bundle install --deployment
 
-      - name: Jekyll build
-        run: bundle exec jekyll build
+      - name: Jekyll double build (for webp etc.)
+        run: |
+          bundle exec jekyll build
+          bundle exec jekyll build
 
       - name: HTMLProofer check
         run: bundle exec htmlproofer ./_site --check-html --disable-external
