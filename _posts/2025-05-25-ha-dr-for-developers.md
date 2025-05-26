@@ -155,11 +155,11 @@ But when your architecture *must* remain available across a wider blast radius�
 
 **🛑 Don't sleep on your passive region—test it or regret it.**
 
-| Topology                | Description                                    | Recovery Time | Cost |
-|-------------------------|------------------------------------------------|----------------|------|
-| **Active/Active**       | Traffic split across regions                   | Seconds        | $$$  |
-| **Active/Passive (Warm)** | Standby is provisioned and synced             | Minutes        | $$   |
-| **Active/Passive (Cold)** | Standby is defined but not deployed           | Hours+         | $    |
+| Topology                  | Description                         | Recovery Time | Cost |
+| ------------------------- | ----------------------------------- | ------------- | ---- |
+| **Active/Active**         | Traffic split across regions        | Seconds       | $$$  |
+| **Active/Passive (Warm)** | Standby is provisioned and synced   | Minutes       | $$   |
+| **Active/Passive (Cold)** | Standby is defined but not deployed | Hours+        | $    |
 
 ## 🔗 HA/DR Combinations: Which Combo Solves the Most Pain?
 
@@ -204,8 +204,13 @@ When you combine High Availability topologies with Disaster Recovery strategies,
 
 ## 🏆 My Recommendation: Active/Active with Hot/Hot
 
-{:.img-wrapper}
-{% responsive_image path: media/2025/05/25/ha-dr-combinations-grid.png alt: "HA/DR combinations grid comparing Active/Active and Active/Passive deployments across Hot/Hot, Hot/Warm, and Hot/Cold DR strategies" %}
+### HA/DR Combinations
+
+|              | **Active/Active**                             | **Active/Passive**                                        |
+| ------------ | --------------------------------------------- | --------------------------------------------------------- |
+| **Hot/Hot**  | 👑 Best resilience  <br> Live validation daily | 😑 Wasted capacity  <br> Simple failover <br> 💰 High cost  |
+| **Hot/Warm** | *N/A*                                         | 👍 Good enough <br> Slower failover <br> 🔁 Requires drills |
+| **Hot/Cold** | *N/A*                                         | 💰 Cheapest <br> Manual recovery <br> 😩 Risky if neglected |
 
 Of all the combinations, **Active/Active with Hot/Hot** provides the highest level of resilience—and the most peace of mind.
 
