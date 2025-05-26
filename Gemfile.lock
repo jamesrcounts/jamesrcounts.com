@@ -132,7 +132,7 @@ DEPENDENCIES
   nokogiri (>= 1.8.5)
 
 RUBY VERSION
-   ruby 2.7.3p183
+   ruby 2.7.8p225
 
 BUNDLED WITH
-   2.1.2
+   2.4.22

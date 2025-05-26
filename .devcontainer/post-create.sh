@@ -1,15 +1,17 @@
 #!/bin/sh
 
-# Install the version of Bundler.
+# Install the version of Bundler listed in Gemfile.lock, if present
 if [ -f Gemfile.lock ] && grep "BUNDLED WITH" Gemfile.lock > /dev/null; then
-    cat Gemfile.lock | tail -n 2 | grep -C2 "BUNDLED WITH" | tail -n 1 | xargs gem install bundler -v
+    BUNDLER_VERSION=$(tail -n 2 Gemfile.lock | tail -n 1)
+    echo "Installing bundler version $BUNDLER_VERSION"
+    gem install bundler -v "$BUNDLER_VERSION"
 fi
 
-# If there's a Gemfile, then run `bundle install`
-# It's assumed that the Gemfile will install Jekyll too
+# Run bundle install if Gemfile is present, otherwise install Jekyll
 if [ -f Gemfile ]; then
+    bundle config set path 'vendor/bundle'
+    bundle config set force_ruby_platform true
     bundle install
 else
-    # If there's no Gemfile, install Jekyll
-    sudo gem install jekyll
+    gem install jekyll
 fi
