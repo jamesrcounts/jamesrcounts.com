@@ -10,44 +10,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout source
         uses: actions/checkout@v4
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7.3
-          bundler-cache: true
+          bundler-cache: false
 
-      - name: Install Node.js (for Jekyll plugins if needed)
+      - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install ImageMagick
-        run: |
-          sudo apt-get update
-          sudo apt-get -y install --no-install-recommends libmagickwand-dev
-
-      - name: Which Bundler?
+      - name: Show bundler version
         run: bundle -v
 
-      - name: Bundle Install
-        run: |
-          bundle check --path vendor/bundle || bundle install --deployment
+      - name: Cache Ruby bundle
+        uses: actions/cache@v4
+        with:
+          path: vendor/bundle
+          key: jekyll-bundle-${{ hashFiles('Gemfile.lock') }}
+          restore-keys: |
+            jekyll-bundle-
 
-      - name: Jekyll Build
-        run: |
-          bundle exec jekyll build
-          bundle exec jekyll build # 2nd pass for webp
+      - name: Bundle install
+        run: bundle check --path vendor/bundle || bundle install --deployment
 
-      - name: HTML Proof
+      - name: Jekyll build
+        run: bundle exec jekyll build
+
+      - name: HTMLProofer check
         run: bundle exec htmlproofer ./_site --check-html --disable-external
 
-      - name: Upload build artifacts
+      - name: Upload _site
         uses: actions/upload-artifact@v4
         with:
-          name: site
+          name: jekyll-site
           path: _site
 
   deploy:
@@ -56,10 +56,10 @@ jobs:
     environment: production
 
     steps:
-      - name: Download build artifacts
+      - name: Download _site artifact
         uses: actions/download-artifact@v4
         with:
-          name: site
+          name: jekyll-site
           path: _site
 
       - name: Configure AWS credentials
@@ -69,5 +69,5 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Deploy to S3
+      - name: Sync to S3
         run: aws s3 sync ./_site s3://jamesrcounts.com/ --delete
