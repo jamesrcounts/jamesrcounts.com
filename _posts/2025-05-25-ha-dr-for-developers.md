@@ -8,8 +8,6 @@ image: /media/2025/05/25/family-laptop-sunset.png
 excerpt: "Your system will fail. But that doesn’t mean your weekend plans have to. Learn how to build peace of mind into your architecture with practical HA/DR strategies—especially in Azure."
 ---
 
-# HA/DR for Developers: Building Resilient Systems Without Losing Sleep
-
 **TL;DR:** Your system *will* fail. But that doesn’t mean your weekend plans have to.
 
 ## The Day I Missed Knott’s Berry Farm
