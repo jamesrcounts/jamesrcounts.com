@@ -10,7 +10,10 @@
 <meta name="author" content="{{ author }}">
 
 <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}">
+
+{% if site.static_files | where: "path", "/favicon.ico" | size > 0 %}
 <link rel="icon" href="{{ '/favicon.ico' | relative_url }}">
+{% endif %}
 
 {%- if page.image -%}
 <meta property="og:image" content="{{ page.image | relative_url }}">
