@@ -1,0 +1,73 @@
+name: Build and Deploy Jekyll Site
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.3
+          bundler-cache: true
+
+      - name: Install Node.js (for Jekyll plugins if needed)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install ImageMagick
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install --no-install-recommends libmagickwand-dev
+
+      - name: Which Bundler?
+        run: bundle -v
+
+      - name: Bundle Install
+        run: |
+          bundle check --path vendor/bundle || bundle install --deployment
+
+      - name: Jekyll Build
+        run: |
+          bundle exec jekyll build
+          bundle exec jekyll build # 2nd pass for webp
+
+      - name: HTML Proof
+        run: bundle exec htmlproofer ./_site --check-html --disable-external
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: _site
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Deploy to S3
+        run: aws s3 sync ./_site s3://jamesrcounts.com/ --delete
