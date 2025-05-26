@@ -1,0 +1,26 @@
+{%- assign title = page.title | default: site.title -%}
+{%- assign description = page.description | default: site.description -%}
+{%- assign author = page.author | default: site.author -%}
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>{{ title }}</title>
+<meta name="description" content="{{ description }}">
+<meta name="author" content="{{ author }}">
+
+<link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}">
+<link rel="icon" href="{{ '/favicon.ico' | relative_url }}">
+
+{%- if page.image -%}
+<meta property="og:image" content="{{ page.image | relative_url }}">
+{%- endif -%}
+
+{%- if site.feed -%}
+  {% feed_meta %}
+{%- endif -%}
+
+{%- if jekyll.environment == "production" %}
+<script data-goatcounter="https://jamesrcounts.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+{%- endif %}
