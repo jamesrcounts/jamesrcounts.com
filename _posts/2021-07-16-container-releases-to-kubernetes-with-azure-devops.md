@@ -171,7 +171,7 @@ the helm packaging pipeline and the deployment stage. With these filters
 in place, the container image build pipeline should only run if the
 application or Dockerfile changes.
 
-### Pipeline Stage 
+### Pipeline Stage
 
 [parrot/azure-pipelines.docker.yaml:](https://github.com/jamesrcounts/phippyandfriends/blob/2021.06/parrot/azure-pipelines.docker.yaml#L30)
 ```yaml
@@ -464,10 +464,11 @@ validated them before reaching this step.
 #### Scan Docker Image
 
 [pipeline-templates/trivy-scan.yml:](https://github.com/jamesrcounts/phippyandfriends/blob/2021.06/pipeline-templates/trivy-scan.yml)
+{% raw %}
 ```yaml
 - task: Bash@3
   displayName: 'Pin Trivy'
-  env: 
+  env:
     TRIVY_VERSION: ${{ parameters.trivyVersion }}
   inputs:
     targetType: 'inline'
@@ -485,7 +486,7 @@ validated them before reaching this step.
       targetType: 'inline'
       script: |
         set -euo pipefail
-        
+
         trivy image \
           --ignore-unfixed \
           --format template \
@@ -496,12 +497,13 @@ validated them before reaching this step.
 - task: PublishTestResults@2
   displayName: 'Publish Trivy Scan Results'
   inputs:
-      testResultsFormat: 'JUnit' 
-      testResultsFiles: 'junit-report.xml' 
+      testResultsFormat: 'JUnit'
+      testResultsFiles: 'junit-report.xml'
       failTaskOnFailedTests: ${{ parameters.failTaskOnFailedScan }}
       testRunTitle: 'Trivy Image Scan'
 
 ```
+{% endraw %}
 
 Before pushing the container image to the registry for use, this
 pipeline scans the image using a free scanner called
@@ -626,7 +628,7 @@ The stage has these steps:
 -   Check Helm Chart
 -   Save Helm Chart
 -   Push Helm Chart
-  
+
 #### Shallow Clone
 
 The pipeline does not need the entire commit history to create the Helm
@@ -790,7 +792,7 @@ approval before making changes.
 ### Deployment Trigger
 
 [parrot/azure-pipelines.deploy.yaml:](https://github.com/jamesrcounts/phippyandfriends/blob/2021.06/parrot/azure-pipelines.deploy.yaml#L3-L21)
-```yaml 
+```yaml
 resources:
   pipelines:
     - pipeline: build
@@ -852,7 +854,7 @@ the production deployment pauses for approval.
 [pipeline-templates/helm-deployment.yml:](https://github.com/jamesrcounts/phippyandfriends/blob/2021.06/pipeline-templates/helm-deployment.yml)
 ```yaml
 parameters:
-- name: baseDomain 
+- name: baseDomain
   type: string
   default: ""
 - name: environment
@@ -869,7 +871,7 @@ stages:
         overrideValues: 'image.tag=$(imageTag),image.repository=$(LOGIN_SERVER)/$(containerRepository)'
     displayName: Helm Deploy
     jobs:
-      - deployment: 
+      - deployment:
         displayName: ${{ parameters.environment }} Deployment
         pool:
           vmImage: 'ubuntu-latest'
@@ -955,7 +957,7 @@ The deployment template has the following steps:
 [pipeline-templates/helm-deployment.yml:](https://github.com/jamesrcounts/phippyandfriends/blob/2021.06/pipeline-templates/helm-deployment.yml#L28)
 ```yaml
 - checkout: none
-```                                                                                                                         
+```
 The deployment stage inputs are the build pipeline artifacts, not the
 source code. The template disables checkout because it doesn’t need any
 data from the git repository to do its job.
