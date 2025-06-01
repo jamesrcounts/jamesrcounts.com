@@ -9,8 +9,6 @@ canonical_url: https://jamesrcounts.com/2025/05/31/how-i-use-chatgpt-to-intervie
 image: /media/2025/05/31/chatgpt-interview-inspiration.png
 ---
 
-# How I Use ChatGPT to Interview Myself (and Why You Should Too)
-
 Most people treat ChatGPT like a search engine. I treat it like a collaborator. What started as a tool to summarize chat logs evolved into something more powerful: a thinking partner that interviews me. It's how I beat blank-page syndrome, uncover ideas I hadn't consciously considered, and stay focused when the stakes feel high.
 
 {:.img-wrapper}
