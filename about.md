@@ -1,15 +1,22 @@
 ---
 layout: page
-title: About
+title: "About"
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
+{:.img-wrapper}
+{% responsive_image path: media/jim-counts-headshot.png alt: "Jim Counts smiling in a floral shirt, friendly and professional headshot" %}
 
-You can find the source code for the Jekyll new theme at:
-{% include icon-github.html username="jekyll" %} /
-[minima](https://github.com/jekyll/minima)
+I'm **Jim Counts**, an independent DevOps and cloud engineer. I specialize in **Azure**, **Terraform**, **CI/CD**, and building **secure, automated infrastructure** that helps teams ship faster—and sleep better.
 
-You can find the source code for Jekyll at
-{% include icon-github.html username="jekyll" %} /
-[jekyll](https://github.com/jekyll/jekyll)
+This blog, **Cloud as Code**, is where I share what I’ve learned building and operating cloud-native systems. Expect practical tips, deep dives, and the occasional rant about configuration drift.
+
+When I'm not writing code or infrastructure policies, I'm probably writing about them.
+
+---
+
+### Elsewhere
+
+- 📧 [jamesrcounts@outlook.com](mailto:jamesrcounts@outlook.com)
+- 🐙 [github.com/jamesrcounts](https://github.com/jamesrcounts)
+- 🔗 [linkedin.com/in/jamesrcounts](https://www.linkedin.com/in/jamesrcounts)
