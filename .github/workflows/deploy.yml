@@ -27,12 +27,6 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.2'
-          bundler-cache: true
-
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
@@ -60,11 +54,14 @@ jobs:
         run: |
           sudo sed -i 's/<policy domain="coder" rights="none" pattern="PDF" \/>/<policy domain="coder" rights="read|write" pattern="PDF" \/>/' /etc/ImageMagick-6/policy.xml
 
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
       - name: Show bundler version
         run: bundle -v
-
-      - name: Bundle install
-        run: bundle check || bundle install --deployment
 
       - name: Jekyll double build (for webp etc.)
         run: |
