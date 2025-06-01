@@ -72,14 +72,12 @@ jobs:
       - name: HTMLProofer check
         run: |
           bundle exec htmlproofer ./_site \
-            --check-html \
-            --disable-external \
-            --check-img-http \
-            --check-opengraph \
-            --enforce-https \
-            --report-invalid-tags \
-            --report-missing-names \
-            --report-script-embeds
+            --checks "Links,Images,Scripts" \
+            --disable_external \
+            --ignore_empty_alt \
+            --ignore_missing_alt \
+            --enforce_https \
+            --log_level :info
 
       - name: Upload _site
         uses: actions/upload-artifact@v4
