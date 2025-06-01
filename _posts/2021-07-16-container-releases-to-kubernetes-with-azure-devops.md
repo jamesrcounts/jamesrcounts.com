@@ -15,10 +15,10 @@ Over the past couple of years, I've continued to work with teams using
 Azure DevOps pipelines to automate their Kubernetes deployments. The
 ecosystem around Azure DevOps, Kubernetes, and .Net continue to evolve.
 While my previous articles on [container
-pipelines](http://jamesrcounts.com/2019/11/18/azdo-container-pipelines.html)
+pipelines](https://jamesrcounts.com/2019/11/18/azdo-container-pipelines.html)
 and refactoring to [separate build artifacts by
-lifecycle](http://jamesrcounts.com/2020/02/08/one-lifecycle.html) still
-contain a lot of great info, the examples have gone stale. It’s time to
+lifecycle](https://jamesrcounts.com/2020/02/08/one-lifecycle.html) still
+contain a lot of great info, the examples have gone stale. It's time to
 refresh and to see if we can take our pipeline game a little further
 than before.
 
@@ -76,12 +76,12 @@ Start by answering the following questions:
 -   Where do I need to deploy it?
 -   What artifacts do I need for deployment?
 
-If you don’t yet have all the answers, that’s ok. Hopefully, by the end
+If you don't yet have all the answers, that's ok. Hopefully, by the end
 of this example, you will have a better idea.
 
 ### Application(s) to Deploy
 
-For this example, I’ll focus on one of the apps from
+For this example, I'll focus on one of the apps from
 [phippyandfriends](https://github.com/jamesrcounts/phippyandfriends/tree/2021.06):
 parrot. Parrot is a .Net application and provides the user interface
 that displays the other applications detected by captainkube.
@@ -91,8 +91,8 @@ that displays the other applications detected by captainkube.
 
 ### Environment
 
-Since this is an article about deploying to Kubernetes, we’ll deploy to
-an Azure Kubernetes Cluster instance. For demonstration purposes, I’ll
+Since this is an article about deploying to Kubernetes, we'll deploy to
+an Azure Kubernetes Cluster instance. For demonstration purposes, I'll
 show how to deploy parrot to multiple environments: a development
 sandbox and a production environment. Apart from necessary differences
 like hostnames and certificates, each tier will have the same
@@ -114,7 +114,7 @@ to:
 -   Package the helm chart templates
 
 We'll want to rebuild our container image if either the parrot
-application or parrot’s Dockerfile change. However, if the helm chart
+application or parrot's Dockerfile change. However, if the helm chart
 changes (without any application or Dockerfile changes), rebuilding the
 container image is a waste of compute cycles. Likewise, repackaging the
 helm chart when only the application has changed is a waste.
@@ -165,8 +165,8 @@ trigger:
 ```
 
 The CI Trigger runs anytime that a commit contains changes to files in
-the “parrot” folder, except for changes in the exclusion list. The
-excluded files are the “charts” folder and the pipeline definitions for
+the "parrot" folder, except for changes in the exclusion list. The
+excluded files are the "charts" folder and the pipeline definitions for
 the helm packaging pipeline and the deployment stage. With these filters
 in place, the container image build pipeline should only run if the
 application or Dockerfile changes.
@@ -381,20 +381,20 @@ the cache. Otherwise, .Net will restore the binaries in the usual way,
 and an automatically generated post-build task will save them in Azure
 DevOps for later use.
 
-Shouldn’t this all be done in the Dockerfile? Multi-stage container
+Shouldn't this all be done in the Dockerfile? Multi-stage container
 image build definitions can handle many of these steps without polluting
 the runtime image with build SDKs and artifacts. The choice to place
 build and test steps outside the container image build step provides
 additional flexibility for the types of tests to run. Even though the
-all-in-one Dockerfile approach is elegant, I’ve worked with more than
+all-in-one Dockerfile approach is elegant, I've worked with more than
 one team that abandoned its advantages to enable more advanced testing
 scenarios.
 
 > Tests are one way to build trust in the artifacts we intend to
 release. Code that passes our tests is more likely to work in
 production than code that fails our tests. Achieving truly
-“continuous” integration and deployment flows means creating
-automation to demonstrate that the artifact's “trust level” is high.
+"continuous" integration and deployment flows means creating
+automation to demonstrate that the artifact's "trust level" is high.
 Given a choice between elegance and showing the code is trustworthy,
 choose to establish trust.
 
@@ -516,11 +516,11 @@ This shared template contains all the steps needed to download trivy,
 scan the image, and report the results to the Azure DevOps test results
 tab. By default, the template will terminate the build pipeline when
 trivy detects vulnerabilities. The template includes an option to run in
-“report-only” mode without failing the build.
+"report-only" mode without failing the build.
 
 > Trivy has options to enable fine-grained [vulnerability
 > filtering](https://aquasecurity.github.io/trivy/v0.18.3/examples/filter/),
-> including a “.trivyignore” file where teams can accept the risk for
+> including a ".trivyignore" file where teams can accept the risk for
 > each vulnerability.
 
 #### Push Docker Image
@@ -556,7 +556,7 @@ trigger:
       - main
 ```
 
-The stage trigger includes the “charts” folder but no other sources
+The stage trigger includes the "charts" folder but no other sources
 besides the pipeline definition itself. Exclusions are not needed in
 this case because the contents of the charts folder only change when the
 chart definition changes.
@@ -665,7 +665,7 @@ Helm version is an input to our build process, just like the versions of
       helm lint $(chart_path) --strict
 ```
 
-Helm’s lint command checks charts for possible issues and emits errors
+Helm's lint command checks charts for possible issues and emits errors
 and warnings if it finds any problems. With strict mode enabled, both
 errors and warnings cause the check (and therefore the build) to fail.
 This early failure creates an opportunity to correct problems with the
@@ -699,7 +699,7 @@ flag
 to enable support.
 
 > Saving a chart with the Helm CLI will create a single-layer OCI
-> artifact (the same format container images use) in the agent’s cache.
+> artifact (the same format container images use) in the agent's cache.
 > The contents of the layer are just the YAML files forming the Helm
 > chart.
 
@@ -728,9 +728,9 @@ to enable support.
 ```
 
 The pipeline uses an Azure CLI to push our chart artifact to ACR. The
-“addSpnToEnvironment” option injects the service principal credentials
+"addSpnToEnvironment" option injects the service principal credentials
 into the script process so that the script can log in to ACR using
-Helm’s registry login support (also experimental). Once logged into the
+Helm's registry login support (also experimental). Once logged into the
 registry, Helm can send our chart to ACR using the push command.
 
 ## Setup Deployment Environments
@@ -751,14 +751,14 @@ then select Create Environment:
 {:.img-wrapper}
 {% responsive_image path: media/2021/07/11/create-environment.png alt: "Create Azure DevOps Environment." %}
 
-Next, type an environment name and choose “Kubernetes” as the resource,
-then select “Next.” I named the first environment dev.
+Next, type an environment name and choose "Kubernetes" as the resource,
+then select "Next." I named the first environment dev.
 
 {:.img-wrapper}
 {% responsive_image path: media/2021/07/11/new-environment.png alt: "New Environment Dialog." %}{:style="max-width:45%"}
 
-Next, choose your cluster and namespace and select “Validate and
-create.”
+Next, choose your cluster and namespace and select "Validate and
+create."
 
 {:.img-wrapper}
 {% responsive_image path: media/2021/07/11/new-environment-k8s.png alt: "New Environment Kubernetes configuration." %}{:style="max-width:45%"}
@@ -769,14 +769,14 @@ cluster, the development environment configuration is now ready.
 ### Production Environment
 
 To create the production environment, follow the same initial steps to
-create an environment called “prd” for the production AKS instance.
-Next, use the top-right menu to select “Approvals and checks.”
+create an environment called "prd" for the production AKS instance.
+Next, use the top-right menu to select "Approvals and checks."
 
 {:.img-wrapper}
 {% responsive_image path: media/2021/07/11/approvals-and-checks.png alt: "Approvals and Checks menu item." %}
 
-Select “Approvals.” Then enter an appropriate user or group to supply
-approvals. Next, choose “Create.”
+Select "Approvals." Then enter an appropriate user or group to supply
+approvals. Next, choose "Create."
 
 {:.img-wrapper}
 {% responsive_image path: media/2021/07/11/manual-approval.png alt: "Manual Approval Dialog." %}
@@ -819,11 +819,11 @@ the application or deployment configuration artifacts change. The
 resource block connects pipelines in Azure DevOps by specifying the
 names of the build pipelines and whether each build pipeline should
 trigger the deployment pipeline. The deployment pipeline declares both
-the “parrot-docker” and the “parrot-helm” pipelines as triggers to meet
+the "parrot-docker" and the "parrot-helm" pipelines as triggers to meet
 the requirement.
 
 > If you want to consume artifacts from another pipeline without
-> triggering a run, set the “trigger” property to false.
+> triggering a run, set the "trigger" property to false.
 
 ### Deployment Stages
 
@@ -844,7 +844,7 @@ stages:
 ```
 
 Like the helm packaging step, the helm deployment steps are identical
-except for a few variables, so I’ve implemented the stage as a shared
+except for a few variables, so I've implemented the stage as a shared
 template. The environment name is one of the template parameters,
 ensuring that the development deployment uses continuous delivery and
 the production deployment pauses for approval.
@@ -959,7 +959,7 @@ The deployment template has the following steps:
 - checkout: none
 ```
 The deployment stage inputs are the build pipeline artifacts, not the
-source code. The template disables checkout because it doesn’t need any
+source code. The template disables checkout because it doesn't need any
 data from the git repository to do its job.
 
 #### Pin Helm Version
@@ -1067,16 +1067,16 @@ of parrot replicas in the deployment.
 {:.img-wrapper}
 {% responsive_image path: media/2021/07/11/run-helm-pipeline.png alt: "Helm pipeline running." %}{:style="max-width:90%"}
 
-When merged, the “parrot-helm” pipeline triggers detect the change and
-queue a build. In contrast, the “parrot-docker” pipeline detects no
+When merged, the "parrot-helm" pipeline triggers detect the change and
+queue a build. In contrast, the "parrot-docker" pipeline detects no
 changes, and Azure DevOps does not schedule a build for the container
 image.
 
 {:.img-wrapper}
 {% responsive_image path: media/2021/07/11/run-deploy.png alt: "Deployment pipeline running." %}{:style="max-width:90%"}
 
-The “parrot-helm” pipeline completes quickly and triggers the
-“parrot-deploy” pipeline.
+The "parrot-helm" pipeline completes quickly and triggers the
+"parrot-deploy" pipeline.
 
 > We shortened the time until we can deploy the new deployment by
 > skipping the application and container image build.
@@ -1119,7 +1119,7 @@ now has two replicas.
 {% responsive_image path: media/2021/07/11/pr-5.png alt: "PR to update parrot header text." %}{:style="max-width:90%"}
 
 By submitting this pull request to make a trivial change to the
-application code, we’ll see a similar process play out.
+application code, we'll see a similar process play out.
 
 {:.img-wrapper}
 {% responsive_image path: media/2021/07/11/run-docker-pipeline.png alt: "Docker pipeline running." %}{:style="max-width:90%"}
@@ -1152,7 +1152,7 @@ reusing artifacts speeds up the time to deployment.
 
 Azure DevOps Environments have gained some nice features since my last
 review. Unfortunately, the feature set lags behind classic release
-pipelines even after a couple of years of development. Given Microsoft’s
+pipelines even after a couple of years of development. Given Microsoft's
 GitHub acquisition in June 2018, it is fair to speculate that attention
 and focus have shifted to driving innovation in GitHub Actions instead.
 Building the same CI/CD flow in GitHub actions would be an interesting

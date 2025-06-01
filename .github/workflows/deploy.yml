@@ -76,6 +76,7 @@ jobs:
             --disable_external \
             --ignore_empty_alt \
             --ignore_missing_alt \
+            --ignore_urls "/localhost:4000/,/http:\/\/localhost:4000/" \
             --enforce_https \
             --log_level :info
 

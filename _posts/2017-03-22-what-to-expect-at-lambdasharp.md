@@ -1,7 +1,7 @@
 ---
 layout: post
 tags:
-    - serverless    
+    - serverless
     - lambda
     - AWS
     - S3
@@ -19,15 +19,15 @@ Last night was my first time going to the meeting, so I didn't quite know what t
 
 After a meet and greet (pizza, soda, beer!), we gathered together for a short intro to the challenge at hand.  Then we split into random teams by counting off group numbers.  My friend [@Paul](https://twitter.com/paulwhitmer) and I ended up in different groups.  ProTip: if you came with a friend you *might* be able to game the system by sitting far away from them.  I briefly considered this but decided to play along with the whole idea of "meeting new people".  After picking teams, we took our laptops to separate areas of the very nice MindTouch break area and offices (my team snagged the board room).
 
-The challenge of the month was to build a Twitter Bot that automatically posts images we upload to an S3 bucket.  You can read all the challenge details on [GitHub](https://github.com/LambdaSharp/March2017-ImageTweeterChallenge). Although we could use any tools we felt comfortable with, the challenge mentors were there to provide help with the recommended tools: Visual Studio Code and .NET Core 1.0.  The challenge has four levels.  
+The challenge of the month was to build a Twitter Bot that automatically posts images we upload to an S3 bucket.  You can read all the challenge details on [GitHub](https://github.com/LambdaSharp/March2017-ImageTweeterChallenge). Although we could use any tools we felt comfortable with, the challenge mentors were there to provide help with the recommended tools: Visual Studio Code and .NET Core 1.0.  The challenge has four levels.
 
-* The first level simply involved setting up your infrastructure: S3 bucket, IAM policy, IAM role, and "Hello World" lambda.   Once we setup our infrastructure and wired-up the lambda to the S3 bucket event, level one was complete when we showed (via CloudWatch logs) that the lambda ran after we uploaded an image to the bucket.  
+* The first level simply involved setting up your infrastructure: S3 bucket, IAM policy, IAM role, and "Hello World" lambda.   Once we setup our infrastructure and wired-up the lambda to the S3 bucket event, level one was complete when we showed (via CloudWatch logs) that the lambda ran after we uploaded an image to the bucket.
 
 * The second level allowed us to get our feet wet handling the data in the S3Event received by lambda when the image arrived.  We completed this step by logging the bucket name and object key to CloudWatch and moved on to level 3.
 
 * The real fun begins at level 3, where we posted the image as a Tweet.  The organizers provided us with temporary credentials to the [@The AutoMaTweet](https://twitter.com/the_automatweet) account, and we used [tweetinvi](https://github.com/linvi/tweetinvi) as our twitter SDK.  The S3Event only contains metadata about the object in S3, not the contents.  So, we read the contents using the [AWS .net S3 client](https://www.nuget.org/packages/AWSSDK.S3/), then provided the bytes to tweetinvi so that it could post them to twitter.
 
-* Finally to achieve "Boss" level, we needed to analyze the image with Amazon Rekognition.  Rekognition is a relatively new service from AWS, which can provide face detection, emotional analysis, or object labels.  This was my first time using the service, but AWS provides [a .net Rekognition client](https://www.nuget.org/packages/AWSSDK.Rekognition/) which follows the same patterns as the other clients in the SDK, so it was super easy to figure it out (the [API reference](http://docs.aws.amazon.com/sdkfornet/v3/apidocs/items/Rekognition/NRekognition.html) is always helpful in these situations, too).  The hardest part about Rekognition is spelling Rekognition.
+* Finally to achieve "Boss" level, we needed to analyze the image with Amazon Rekognition.  Rekognition is a relatively new service from AWS, which can provide face detection, emotional analysis, or object labels.  This was my first time using the service, but AWS provides [a .net Rekognition client](https://www.nuget.org/packages/AWSSDK.Rekognition/) which follows the same patterns as the other clients in the SDK, so it was super easy to figure it out (the [API reference](https://docs.aws.amazon.com/sdkfornet/v3/apidocs/items/Rekognition/NRekognition.html) is always helpful in these situations, too).  The hardest part about Rekognition is spelling Rekognition.
 
 {:style="text-align: center;"}
 ![Truck Labels](/media/2017/03/22/truck-labels.png)

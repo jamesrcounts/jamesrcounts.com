@@ -14,7 +14,7 @@ In 2019 I became frustrated with articles about integrating Terraform
 and Azure DevOps. None of the examples looked safe because they skipped
 what I feel is the most critical part of working with Terraform:
 reviewing the plan before deployment. So, I [wrote my
-guide](http://jamesrcounts.com/2019/10/14/azdo-safe-terraform-pipelines.html)
+guide](https://jamesrcounts.com/2019/10/14/azdo-safe-terraform-pipelines.html)
 to show how I would (and how I do) integrate Terraform with Azure DevOps
 pipelines.
 
@@ -171,7 +171,7 @@ terraform {
 
 This backend block supports variables that specify the resource group,
 account, container and blob name. However, rather than specify them as
-hardcoded values I’ve created an external file for these values.
+hardcoded values I've created an external file for these values.
 
 infrastructure/azurerm.backend.tfvars:
 ```javascript
@@ -222,8 +222,8 @@ According to the Terraform docs: Explicit execution plan files can be
 used to split plan and apply into separate steps within automation
 systems.
 
-The execution plan doesn’t solve the requirement to review the plan.
-We’ll see how to do that soon. For now, let's look at the build stage
+The execution plan doesn't solve the requirement to review the plan.
+We'll see how to do that soon. For now, let's look at the build stage
 steps.
 
 [infrastructure/azure-pipelines.yml:](https://github.com/jamesrcounts/terraform-getting-started-azure/blob/b1dd7ea36a633330fbdc52b356cca76c5a8d9f03/infrastructure/azure-pipelines.yml#L29)
@@ -264,7 +264,7 @@ steps.
                   -input=false \
                   -var="resource_group_name=${AZURE_ENV_RG}" \
                   -out ${BUILD_BUILDNUMBER}.tfplan
-	
+
           - template: '../pipeline-templates/publish-plan.yml'
 ```
 
@@ -277,7 +277,7 @@ This stage has these steps:
 -   Terraform plan
 -   Publish the Terraform configuration and plan file
 
-Several setup steps are shared between build and deploy stages, so I’ve
+Several setup steps are shared between build and deploy stages, so I've
 implemented them as templates. The following sections explain each step.
 
 #### Shallow Clone
@@ -377,18 +377,18 @@ steps:
       workingDirectory: $(project_folder)
       script: |
         set -euo pipefail
-        
+
         echo "Initialize"
         terraform init \
             -input=false \
             -backend-config="resource_group_name=${TF_STORAGE_RG}" \
             -backend-config="storage_account_name=${TF_STORAGE_ACCOUNT}" \
             -backend-config="container_name=${TF_STORAGE_BLOB_CONTAINER}" \
-            -backend-config="key=${TF_STORAGE_BLOB_NAME}" 
-    
+            -backend-config="key=${TF_STORAGE_BLOB_NAME}"
+
         echo "Sanity Check"
         terraform validate
-    
+
         echo "Show Terraform Version and Providers"
         terraform -v
         terraform providers
@@ -398,7 +398,7 @@ Our build agent will start with a clean slate on each build, so this
 script initializes our Terraform project so that planning can succeed.
 Because Azure DevOps encrypts pipeline secrets, we the env block to
 reference the Azure credentials in our bash task so that Azure DevOps
-knows to decrypt and inject the values into the script’s process.
+knows to decrypt and inject the values into the script's process.
 
 Besides the credentials, we need to pass the backend config variables.
 In local execution, we used a variable file. Here in the pipeline, we
@@ -503,7 +503,7 @@ artifact.
 Azure DevOps Environments give us a chance to review the Terraform plan
 before the deploy stage runs. When a deployment stage targets an
 environment, all the configured approvals and checks must pass before
-the deployment stage runs. To simulate Terraform’s interactive approval
+the deployment stage runs. To simulate Terraform's interactive approval
 flow from the command line, we only need to create an environment, set
 up an approval check, and ensure our pipeline stage references the new
 environment.
@@ -524,13 +524,13 @@ need to add a resource. Choose `None`. I named my environment `dev`:
 {:style="text-align:center"}
 ![Azure DevOps new environment dialog](/media/2021/07/07/new-environment-dialog.png){:style="text-align:center;width:3.54in;height:4.61in"}
 
-Next, use the top-right menu to select “Approvals and checks.”
+Next, use the top-right menu to select "Approvals and checks."
 
 {:style="text-align:center"}
 ![Approvals and Checks menu item](/media/2021/07/07/approvals-and-checks.png){:style="text-align:center;"}
 
-Select “Approvals.” Then enter an appropriate user or group to supply
-approvals. Next, choose “Create.”
+Select "Approvals." Then enter an appropriate user or group to supply
+approvals. Next, choose "Create."
 
 {:style="text-align:center"}
 ![Configure manual approval](/media/2021/07/07/configure-approval.png){:style="text-align:center;"}
@@ -540,7 +540,7 @@ Azure DevOps displays the gate for you on success.
 {:style="text-align:center"}
 ![Manual approval gate](/media/2021/07/07/manual-approval-gate.png){:style="text-align:center;"}
 
-That’s it. This Azure DevOps environment is now ready for use with our
+That's it. This Azure DevOps environment is now ready for use with our
 Terraform deployment stage.
 
 ### Create Infrastructure Deployment Stage
@@ -579,7 +579,7 @@ definition (visit the complete file on GitHub for context).
                   workingDirectory: $(project_folder)
                   script: |
                     set -euo pipefail
-    
+
                     terraform apply \
                       -input=false \
                       ${BUILD_BUILDNUMBER}.tfplan
@@ -671,7 +671,7 @@ would find when running Terraform interactively from a local machine.
 
 I always feel that it's worth repeating that Terraform is a fantastic
 tool, but by itself, it is not capable of evaluating changes for safety.
-If you’re using Terraform in the real world, then your business depends
+If you're using Terraform in the real world, then your business depends
 on you to be the last and best safety mechanism. I hope you enjoyed
 learning how to build an Azure DevOps pipeline that supports the safe
 application of infrastructure changes using Terraform.

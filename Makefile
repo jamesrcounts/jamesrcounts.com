@@ -13,3 +13,16 @@ rebuild: clean build
 
 debug: clean
 	bundle exec jekyll build --trace
+
+htmlproofer:
+	bundle exec htmlproofer ./_site \
+		--checks "Links,Images,Scripts" \
+		--disable_external \
+		--ignore_empty_alt \
+		--ignore_missing_alt \
+		--ignore_urls "/localhost:4000/,/http:\/\/localhost:4000/" \
+		--log_level :info
+
+test: clean build htmlproofer
+
+quicktest: build htmlproofer
