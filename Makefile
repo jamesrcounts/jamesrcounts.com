@@ -6,6 +6,9 @@ serve:
 build:
 	bundle exec jekyll build --incremental --drafts
 
+production-build:
+	JEKYLL_ENV=production bundle exec jekyll build --incremental --drafts
+
 clean:
 	bundle exec jekyll clean
 
@@ -23,6 +26,6 @@ htmlproofer:
 		--ignore_urls "/localhost:4000/,/http:\/\/localhost:4000/" \
 		--log_level :info
 
-test: clean build htmlproofer
+test: clean production-build htmlproofer
 
-quicktest: build htmlproofer
+quicktest: production-build htmlproofer
