@@ -4,10 +4,24 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'README.md'
+      - '.gitignore'
+      - 'LICENSE'
+      - '**.md'  # Ignore all markdown files except those in _posts
+      - '!_posts/**.md'  # Don't ignore posts
+      - '!about.md'
+      - '!index.md'
+  workflow_dispatch:  # Allow manual triggers
+
+permissions:
+  contents: read
+  actions: read    # For artifact upload/download
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15  # Prevent runaway builds
 
     steps:
       - name: Checkout source
@@ -16,46 +30,59 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7.3
-          bundler-cache: false
+          ruby-version: '3.2'
+          bundler-cache: true
 
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
+      # Add apt cache
+      - name: Cache apt packages
+        uses: actions/cache@v4
+        with:
+          path: /var/cache/apt
+          key: ${{ runner.os }}-apt-${{ hashFiles('**/package-lock.json') }}
+
       - name: Install ImageMagick
         run: |
           sudo apt-get update
           sudo apt-get -y install --no-install-recommends libmagickwand-dev
+        env:
+          DEBIAN_FRONTEND: noninteractive
 
       - name: Show bundler version
         run: bundle -v
 
-      - name: Cache Ruby bundle
-        uses: actions/cache@v4
-        with:
-          path: vendor/bundle
-          key: jekyll-bundle-${{ hashFiles('Gemfile.lock') }}
-          restore-keys: |
-            jekyll-bundle-
-
       - name: Bundle install
-        run: bundle check --path vendor/bundle || bundle install --deployment
+        run: bundle check || bundle install --deployment
 
       - name: Jekyll double build (for webp etc.)
         run: |
-          JEKYLL_ENV=production bundle exec jekyll build
-          JEKYLL_ENV=production bundle exec jekyll build
+          set -e  # Exit on error
+          JEKYLL_ENV=production bundle exec jekyll build --trace
+          JEKYLL_ENV=production bundle exec jekyll build --trace
 
       - name: HTMLProofer check
-        run: bundle exec htmlproofer ./_site --check-html --disable-external
+        run: |
+          bundle exec htmlproofer ./_site \
+            --check-html \
+            --disable-external \
+            --check-img-http \
+            --check-opengraph \
+            --enforce-https \
+            --report-invalid-tags \
+            --report-missing-names \
+            --report-script-embeds
 
       - name: Upload _site
         uses: actions/upload-artifact@v4
         with:
           name: jekyll-site
           path: _site
+          retention-days: 1  # Only keep for 1 day since this is temporary
+          if-no-files-found: error  # Fail if _site is empty
 
   deploy:
     needs: build
@@ -76,5 +103,27 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Sync to S3
-        run: aws s3 sync ./_site s3://jamesrcounts.com/ --delete
+      - name: Sync static assets to S3
+        run: |
+          aws s3 sync ./_site s3://jamesrcounts.com/ \
+            --delete \
+            --cache-control "max-age=3600" \
+            --exclude "*.html" \
+            --metadata-directive REPLACE
+
+      - name: Sync HTML files to S3
+        run: |
+          aws s3 sync ./_site s3://jamesrcounts.com/ \
+            --delete \
+            --cache-control "no-cache" \
+            --include "*.html" \
+            --content-type "text/html; charset=utf-8" \
+            --metadata-directive REPLACE
+
+      - name: Verify deployment
+        run: |
+          # Wait a few seconds for S3 propagation
+          sleep 5
+          # Check if the site is accessible
+          curl -sSf https://jamesrcounts.com > /dev/null || exit 1
+        continue-on-error: true

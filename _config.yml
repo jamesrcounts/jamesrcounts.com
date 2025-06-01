@@ -3,23 +3,62 @@ email: jamesrcounts@outlook.com
 description: >
   I'm Jim Counts. DevOps & cloud engineer. Writing about Azure, Terraform, CI/CD, and secure infra. Automating all the things so you can ship faster (and sleep better).
 baseurl: ""
-url: ""
-github_username:  jamesrcounts
+url: "https://jamesrcounts.com"  # Set the production URL
+author: Jim Counts
+timezone: America/Los_Angeles  # Set your timezone
+lang: en  # Set default language
+
+# Social and Professional
+github_username: jamesrcounts
 linkedin_username: jamesrcounts
+
+# SEO settings
+# logo: /assets/images/logo.png  # Add if you have a logo
+social:
+  name: Jim Counts
+  links:
+    - https://github.com/jamesrcounts
+    - https://linkedin.com/in/jamesrcounts
 
 # Build settings
 markdown: kramdown
 theme: minima
+future: false  # Don't publish future dated posts
+show_drafts: false
+permalink: /:year/:month/:day/:title/
+excerpt_separator: <!--more-->
+
+# Plugin settings
 plugins:
   - jekyll-feed
   - jekyll-responsive-image
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-redirect-from
 
+# Feed settings
+feed:
+  path: feed.xml
+  posts_limit: 20
+  excerpt_only: true
+
+# Exclude files from processing
 exclude:
   - Gemfile
   - Gemfile.lock
   - vendor/bundle
   - circle.yml
+  - README.md
+  - LICENSE
+  - .git
+  - .github
+  - .gitignore
+  - .sass-cache
+  - .jekyll-cache
+  - node_modules
+  - Makefile
 
+# Image processing settings
 responsive_image:
   template: _includes/srcset.html
   cache: false
@@ -29,3 +68,17 @@ responsive_image:
     - width: 740
     - width: 960
     - width: 1480
+  strip: true  # Strip EXIF data
+  save_to_source: false
+  quality: 85
+
+# Compression and optimization
+sass:
+  style: compressed
+  sourcemap: never
+
+# Collections (if you have any)
+collections:
+  guides:
+    output: true
+    permalink: /guides/:path/
