@@ -45,12 +45,20 @@ jobs:
           path: /var/cache/apt
           key: ${{ runner.os }}-apt-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Install ImageMagick
+      - name: Install ImageMagick and RMagick dependencies
         run: |
           sudo apt-get update
-          sudo apt-get -y install --no-install-recommends libmagickwand-dev
+          sudo apt-get -y install --no-install-recommends \
+            libmagickwand-dev \
+            imagemagick \
+            pkg-config \
+            build-essential
         env:
           DEBIAN_FRONTEND: noninteractive
+
+      - name: Configure ImageMagick policy
+        run: |
+          sudo sed -i 's/<policy domain="coder" rights="none" pattern="PDF" \/>/<policy domain="coder" rights="read|write" pattern="PDF" \/>/' /etc/ImageMagick-6/policy.xml
 
       - name: Show bundler version
         run: bundle -v
