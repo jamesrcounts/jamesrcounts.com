@@ -180,7 +180,7 @@ When you combine High Availability topologies with Disaster Recovery strategies,
 ### 💤 Active/Passive Combinations
 
 {:.img-wrapper}
-{% responsive_image path: media/2025/05/25/ha-dr-active-passive-hot-hot.png alt: "Azure architecture diagram showing Active/Passive with Hot/Warm — primary region handles live traffic, secondary is fully provisioned and synced for rapid failover" %}
+{% responsive_image path: media/2025/05/25/ha-dr-active-passive-hot-hot.png alt: "Azure architecture diagram showing Active/Passive with Hot/Hot — primary region handles live traffic, secondary is fully provisioned and synced for rapid failover" %}
 
 - **With Hot/Hot:**
   Technically possible, but often **cost inefficient**—you’re running two fully loaded regions, but only one serves users.
@@ -189,7 +189,7 @@ When you combine High Availability topologies with Disaster Recovery strategies,
 
 
 {:.img-wrapper}
-{% responsive_image path: media/2025/05/25/ha-dr-active-passive-hot-warm.png alt: "Azure architecture diagram showing Active/Passive with Hot/Cold — primary region is live, secondary is defined but not provisioned, showing only networking and monitoring layers" %}
+{% responsive_image path: media/2025/05/25/ha-dr-active-passive-hot-warm.png alt: "Azure architecture diagram showing Active/Passive with Hot/Warm — primary region is live, secondary is defined but not provisioned, showing only networking and monitoring layers" %}
 
 - **With Hot/Warm:**
   A **cost compromise**—less expensive than Hot/Hot, but slower failover and more recovery complexity.
