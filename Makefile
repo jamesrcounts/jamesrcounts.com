@@ -1,12 +1,19 @@
 .DEFAULT_GOAL := serve
 
-serve:
+# Install dependencies if they're missing
+dependencies:
+	@echo "Installing Jekyll dependencies..."
+	bundle config set --local path 'vendor/bundle'
+	bundle config set --local force_ruby_platform true
+	bundle install
+
+serve: dependencies
 	bundle exec jekyll serve --incremental --drafts
 
-build:
+build: dependencies
 	bundle exec jekyll build --incremental --drafts
 
-production-build:
+production-build: dependencies
 	JEKYLL_ENV=production bundle exec jekyll build --incremental --drafts
 
 clean:
@@ -14,10 +21,10 @@ clean:
 
 rebuild: clean build
 
-debug: clean
+debug: clean dependencies
 	bundle exec jekyll build --trace
 
-htmlproofer:
+htmlproofer: dependencies
 	bundle exec htmlproofer ./_site \
 		--checks "Links,Images,Scripts" \
 		--disable_external \

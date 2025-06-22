@@ -78,7 +78,7 @@ The site is automatically deployed to AWS when changes are pushed to the main br
 1. GitHub Actions builds the site and runs validation
 2. If successful, files are synced to S3
 3. CloudFront distribution is updated
-4. Site is available at https://jamesrcounts.com
+4. Site is available at [jamesrcounts.com](https://jamesrcounts.com)
 
 ## License
 
