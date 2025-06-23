@@ -1,10 +1,37 @@
 ---
 layout: post
 title: 'Terraform Pipelines with Azure DevOps: Getting Started'
+description: 'Learn how to build safe, automated Terraform pipelines with Azure DevOps that include plan review and approval workflows. Complete guide with code examples and best practices.'
+author: James Counts
+date: 2021-07-07
+last_modified_at: 2021-07-07
+categories:
+  - DevOps
+  - Infrastructure as Code
+  - Azure
 tags:
   - AzureDevOps
   - DevOps
   - Terraform
+  - Infrastructure as Code
+  - CI/CD
+  - Azure Pipelines
+  - HashiCorp
+  - Automation
+keywords:
+  - terraform azure devops pipeline
+  - terraform automation
+  - infrastructure as code pipeline
+  - azure devops terraform integration
+  - terraform plan review
+  - safe terraform deployment
+  - terraform backend configuration
+  - azure storage terraform state
+seo:
+  title: 'Terraform Pipelines with Azure DevOps: Complete Guide to Safe Automation'
+  description: 'Step-by-step guide to building secure Terraform pipelines with Azure DevOps. Learn plan review, approval workflows, and best practices for infrastructure automation.'
+  image: '/media/2021/07/07/hero.png'
+  canonical_url: 'https://jamesrcounts.com/2021/07/07/terraform-pipelines-with-azure-devops.html'
 ---
 
 {:style="text-align:center"}
