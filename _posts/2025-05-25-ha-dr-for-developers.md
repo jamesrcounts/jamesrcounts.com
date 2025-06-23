@@ -3,9 +3,15 @@ layout: post
 title: "HA/DR for Developers: Building Resilient Systems Without Losing Sleep"
 date: 2025-05-25
 author: Jim Counts
-tags: [ha, dr, azure, devops, resilience, cloud]
+categories: [Azure, DevOps, Architecture, Cloud-Native]
+tags: [high-availability, disaster-recovery, azure, devops, resilience, cloud-architecture, system-design, azure-front-door, availability-zones, rto-rpo, active-active, hot-hot, infrastructure-as-code, platform-engineering, burnout-prevention]
 image: /media/2025/05/25/family-laptop-sunset.png
-excerpt: "Your system will fail. But that doesn’t mean your weekend plans have to. Learn how to build peace of mind into your architecture with practical HA/DR strategies—especially in Azure."
+excerpt: "Your system will fail. But that doesn't mean your weekend plans have to. Learn how to build peace of mind into your architecture with practical HA/DR strategies—especially in Azure."
+description: "Comprehensive guide to High Availability and Disaster Recovery for developers. Learn Azure HA/DR patterns, Active/Active vs Active/Passive topologies, and how to build resilient systems that prevent burnout. Includes practical examples and cost-benefit analysis."
+keywords: "high availability, disaster recovery, Azure HA/DR, cloud resilience, system architecture, DevOps, platform engineering, Azure Front Door, availability zones, RTO RPO, active-active deployment"
+canonical_url: "https://jamesrcounts.com/2025/05/25/ha-dr-for-developers"
+og_image: /media/2025/05/25/family-laptop-sunset.png
+twitter_image: /media/2025/05/25/family-laptop-sunset.png
 ---
 
 **TL;DR:** Your system *will* fail. But that doesn’t mean your weekend plans have to.
