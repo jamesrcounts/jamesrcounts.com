@@ -1,12 +1,38 @@
 ---
 layout: post
 title: One Pipeline, One Lifecycle
+description: Learn how to optimize Azure DevOps pipelines by separating build and deployment lifecycles. This guide shows you how to refactor monolithic pipelines into focused, efficient workflows for Docker images, Helm charts, and deployments.
+keywords:
+  - Azure DevOps pipeline optimization
+  - CI/CD best practices
+  - Docker pipeline lifecycle
+  - Helm chart deployment
+  - Kubernetes deployment automation
+  - DevOps pipeline architecture
+  - Build and deploy separation
+  - Pipeline refactoring
+author: James R. Counts
+date: 2020-02-08
+last_modified_at: 2020-02-08
+categories:
+  - DevOps
+  - Azure DevOps
+  - CI/CD
 tags:
   - AzureDevOps
   - Kubernetes
   - DevOps
   - AKS
   - ACR
+  - Docker
+  - Helm
+  - Pipeline Optimization
+  - CI/CD Best Practices
+image: /media/2020/02/01/ADO-pipeline-flow.png
+image_alt: Pipeline flow diagram showing single source repository triggering multiple build pipelines
+canonical_url: https://jamesrcounts.com/2020/02/08/one-lifecycle.html
+og_type: article
+twitter_card: summary_large_image
 ---
 
 <!-- TOC -->
