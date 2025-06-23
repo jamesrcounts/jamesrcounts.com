@@ -1,18 +1,40 @@
 ---
 layout: post
+title: "Testing and Debugging AWS Lambda Functions: A Complete Guide for Developers"
+description: "Learn how to effectively test and debug AWS Lambda functions using unit tests, integration tests, and proper logging strategies. Includes C# examples and best practices for serverless development."
+author: "James Counts"
+date: 2017-05-13
+categories:
+  - AWS
+  - Serverless
+  - Development
 tags:
-    - serverless    
-    - lambda
-    - AWS
-    - testing
-    - dotnet
-    - debugging
-title: On testing and debugging Lambdas
+  - AWS Lambda
+  - serverless
+  - testing
+  - unit testing
+  - integration testing
+  - debugging
+  - C#
+  - .NET
+  - AWS SDK
+  - CloudWatch
+  - dependency injection
+  - mocking
+  - Moq
+  - S3
+  - Kinesis
+  - API Gateway
+  - production debugging
+  - logging
+  - IAM
+  - credentials
+url: /testing-debugging-aws-lambda-functions-guide
 ---
 
 <style type="text/css">
-a + em { 
-    display: block; 
+a + em {
+    display: block;
     text-align: center;
     font-size: small;
     }
@@ -38,7 +60,7 @@ A Lambda is a program, just like any other.  Let's check the anatomy of a basic 
 public class Function
 {
     public void FunctionHandler(
-        KinesisEvent kinesisEvent, 
+        KinesisEvent kinesisEvent,
         ILambdaContext context)
     {
         // ... omitted ...
@@ -52,7 +74,7 @@ public class Function
 The handler method takes two parameters: event data and a context.  Both of these parameters are dependencies you take from Amazon.  Dependencies by themselves are not sufficient to prevent testing.  Even bad, difficult to work with dependencies (I'm looking at you `SqlException`) are not sufficient to prevent testing because we can usually find a way to work around them.  So, what kind of dependencies are these: difficult or easy?
 
 The answer is "easy dependencies".  The event data types are well defined in the AWS SDK, they have public constructors and read-write properties.  This means that your unit test can instantiate instances of `KinesisEvent` (or whatever `*Event` you are using), configure the event in whatever way is necessary to exercise your code.
-  
+
 The second parameter is the `ILambdaContext`.  This context contains metadata about the Lambda execution environment.  There are a few interesting things about this context.  First, it's totally optional.  We could just remove the parameter if we don't need to know anything about the execution context.  Second, `ILambdaContext` is an interface. If we do need the context (often because we want access to `ILambdaContext.Logger`) then we can create a test double with any mocking framework, or even by hand.  Third, we don't even need to fool around with mocking frameworks to get our hands on an `ILambdaContext` instance--Amazon already provides a test double for you: `TestLambdaContext`.  `TestLambdaContext` is exactly what it sounds like, a lambda context for use with tests.
 
 A Lambda is a public class, with a public method that takes two parameters.  Both parameters are easy to work with in tests.  Any other dependencies you take on are part of your own use case, they are not intrinsic to Lambda.
@@ -91,8 +113,8 @@ public Function(IAmazonS3 s3Client)
 }
 ```
 
-Lambda will use the parameterless constructor, your tests will use the second constructor to pass in mocks.  
- 
+Lambda will use the parameterless constructor, your tests will use the second constructor to pass in mocks.
+
 > Tip: Because AWS will reuse Lambda `Function` instances and invoke `FunctionHandler` for more than one event, you get a slight(?) performance boost by constructing the client in the constructor.  Be aware that the same client will be used across invocations (don't call `Dispose` on it for example).
 
 Now your test will look something like this (using `Moq` for mocks):
@@ -124,9 +146,9 @@ var s3Event = new S3Event
 
 ### Integration Tests
 
-Testing against mocks is not very satisfying, especially as the number of dependencies that need to be mocked go up.  If your mocks start interacting with each other then you are dangerously close to not actually proving anything in your tests.  I'm not completely against mocks, sometimes you need them.  
+Testing against mocks is not very satisfying, especially as the number of dependencies that need to be mocked go up.  If your mocks start interacting with each other then you are dangerously close to not actually proving anything in your tests.  I'm not completely against mocks, sometimes you need them.
 
-> Saying that mocks suck is like saying screwdrivers suck.  Screwdrivers are actually pretty good for screwing in screws, they are not so great for brain surgery. 
+> Saying that mocks suck is like saying screwdrivers suck.  Screwdrivers are actually pretty good for screwing in screws, they are not so great for brain surgery.
 
 Other times you need "the real thing".  That's where integration tests come in.  The dependency injection constructor is good for more than mocks.  You don't have to use mocks, you can use `AmazonS3Client`.  Providing control is the point of the second constructor.  You control the client instance, and its configuration, credentials, region, etc.
 
@@ -144,7 +166,7 @@ When you use this strategy your test will actually make calls to S3 or Kinesis o
 
 To make a long story short, a lambda **can** be executed in the AWS lambda service, but it can just as easily be executed on your computer.  Once you get over the hurdle of realizing that you can just run the code on your own machine, then it's easy to see that the entire set of testing tools you are used to using can be used to test Lambdas.
 
-Unit and integration testing are totally possible using common frameworks, but that's not the only option.  I recently worked on a project where I found it easier to write a console program and fire off the Lambda from `void Main()`.  
+Unit and integration testing are totally possible using common frameworks, but that's not the only option.  I recently worked on a project where I found it easier to write a console program and fire off the Lambda from `void Main()`.
 
 Keep in mind that whatever route you choose, there is some configuration to do related to credentials. You need to provide credentials when running on your machine, and there are several ways to do this (machine config via `aws configure`, or credentials configured by the AWS toolkit for Visual Studio).  To get the closest experience to running in AWS, use an implicit set of credentials (described above) rather than hard-coding your credentials into the test code (never a good idea).  Also, your test will be more useful if the credentials you use belong to an IAM User that has the exact same permissions as the IAM Role which the Lambda will execute under. Don't just use your admin credentials and assume everything will work later.
 
@@ -153,16 +175,16 @@ Keep in mind that whatever route you choose, there is some configuration to do r
 *Code by Tom Bech (CC BY 2.0)*
 
 Maybe I'm a crackpot, but I haven't been bitten by "works on my machine" type issues.  What has worked in my local tests, has worked in AWS.  Up until recently all of my thoughts on testing mostly revolved around hunches and small experiments.  But I've been working with real production Lambdas lately, for real clients and these techniques have not let me down yet.  Give it a try.  If fear that you won't be able to unit test and calculate code coverage has been keeping you away from trying serverless, get over your fear, you can do it.  These examples are in C#, but I don't see why you couldn't achieve the same results in Java, JavaScript, Python or any of the other languages supported by Lambda.
-    
+
  It's all just code.
- 
+
 ## But, but what about debugging production?
 
 Of course, I have made all these points to some people (in more compact rant format), and we finally end up with this as the last question.  "Great speech Jim, but how do I debug Lambdas in production?"
 
 My first response is "Who the heck debugs in production?"
 
-The answer to the first question of "how" is simple.  Like a lot of what I've covered so far, debugging Lambdas in production is no different that debugging anything else in production: you read the logs.  
+The answer to the first question of "how" is simple.  Like a lot of what I've covered so far, debugging Lambdas in production is no different that debugging anything else in production: you read the logs.
 
 > Most operations teams are not going to let you walk up to a production instance and attach your debugger to it!  The AWS operations team feels the same way.
 
@@ -170,7 +192,3 @@ You wouldn't normally attach your debugger to *anything* in production (I'm sure
 
 
 I hope this helps, feel free to reach out via twitter or email and let me know what you think.
- 
- 
- 
- 
