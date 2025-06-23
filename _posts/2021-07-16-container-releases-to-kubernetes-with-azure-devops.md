@@ -1,11 +1,40 @@
 ---
 layout: post
 title: 'Container Releases to Kubernetes with Azure DevOps'
+description: 'Learn how to build a complete CI/CD pipeline for containerized applications using Azure DevOps, Docker, and Kubernetes. Includes step-by-step guide for multi-environment deployments with Helm charts.'
+author: James R. Counts
+date: 2021-07-16
+last_modified_at: 2021-07-16
+categories:
+  - DevOps
+  - Azure
+  - Kubernetes
+  - CI/CD
 tags:
   - AzureDevOps
   - DevOps
   - Docker
   - Kubernetes
+  - Helm
+  - CI/CD
+  - Container
+  - Pipeline
+  - AKS
+  - Azure Container Registry
+keywords:
+  - Azure DevOps Kubernetes deployment
+  - Docker container CI/CD
+  - Helm chart deployment
+  - Azure Kubernetes Service
+  - Container pipeline automation
+  - Multi-environment deployment
+  - Azure DevOps environments
+  - Kubernetes deployment pipeline
+  - Container image scanning
+  - Trivy vulnerability scanning
+image: media/2021/07/11/container-hero.png
+image_alt: "Container Releases to Kubernetes with Azure DevOps"
+canonical_url: https://jamesrcounts.com/2021/07/16/container-releases-to-kubernetes-with-azure-devops.html
 ---
 
 {:.img-wrapper}
