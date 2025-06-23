@@ -2,11 +2,25 @@
 title: "How I Use ChatGPT to Interview Myself (and Why You Should Too)"
 date: 2025-05-31
 layout: post
-tags: [chatgpt, productivity, writing, developer-tools, ai, communication]
+tags: [chatgpt, productivity, writing, developer-tools, ai, communication, content-creation, writing-tips, ai-productivity]
 excerpt: >
   Stuck on a blank page? I use ChatGPT as a thinking partner—not just a writing tool. Here's how "interviewing myself" with ChatGPT helps me think clearly, structure better, and write with less friction.
 canonical_url: https://jamesrcounts.com/2025/05/31/how-i-use-chatgpt-to-interview-myself/
 image: /media/2025/05/31/chatgpt-interview-inspiration.png
+author: James R. Counts
+category: Productivity
+meta_description: "Learn how to use ChatGPT as an interviewer to overcome writer's block, structure your thoughts, and create better content. Discover the interview technique that transforms blank pages into engaging conversations."
+keywords: "ChatGPT interview technique, writer's block, content creation, AI writing assistant, productivity tips, writing workflow, ChatGPT prompts, content strategy"
+og_title: "How I Use ChatGPT to Interview Myself (and Why You Should Too)"
+og_description: "Transform blank pages into conversations with this ChatGPT interview technique. Learn how to use AI as a thinking partner to create better content."
+og_image: /media/2025/05/31/chatgpt-interview-inspiration.png
+twitter_card: summary_large_image
+twitter_title: "How I Use ChatGPT to Interview Myself"
+twitter_description: "Transform blank pages into conversations with this ChatGPT interview technique. Learn how to use AI as a thinking partner."
+twitter_image: /media/2025/05/31/chatgpt-interview-inspiration.png
+last_modified_at: 2025-05-31
+published: true
+featured: true
 ---
 
 Most people treat ChatGPT like a search engine. I treat it like a collaborator. What started as a tool to summarize chat logs evolved into something more powerful: a thinking partner that interviews me. It's how I beat blank-page syndrome, uncover ideas I hadn't consciously considered, and stay focused when the stakes feel high.
