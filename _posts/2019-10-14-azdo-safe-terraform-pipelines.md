@@ -1,10 +1,37 @@
 ---
 layout: post
 title: Safe Terraform Pipelines with Azure DevOps
+description: Learn how to build secure and safe Terraform automation pipelines in Azure DevOps with proper plan review, approval workflows, and remote state management for production infrastructure.
+keywords:
+  - Terraform
+  - Azure DevOps
+  - Infrastructure as Code
+  - CI/CD
+  - DevOps
+  - Azure
+  - Pipeline Security
+  - Remote State
+  - Plan Review
+  - Infrastructure Automation
+categories:
+  - DevOps
+  - Infrastructure as Code
+  - Azure
+  - Terraform
 tags:
   - AzureDevOps
   - Terraform
   - DevOps
+  - Infrastructure
+  - CI/CD
+  - Security
+  - Automation
+author: James R Counts
+date: 2019-10-14
+last_modified_at: 2019-10-14
+image: /assets/azure-devops-terraform-pipeline.png
+excerpt: Build secure Terraform pipelines in Azure DevOps with proper plan review workflows, remote state management, and approval gates for production infrastructure deployment.
+canonical_url: https://jamesrcounts.com/2019/10/14/azdo-safe-terraform-pipelines.html
 ---
 
 <!-- TOC -->
