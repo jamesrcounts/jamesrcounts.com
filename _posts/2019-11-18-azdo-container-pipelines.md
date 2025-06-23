@@ -1,12 +1,43 @@
 ---
 layout: post
 title: Azure DevOps Pipelines - Container Releases Demystified
+description: "Complete guide to building and deploying containerized .NET applications to Kubernetes using Azure DevOps pipelines, Azure Container Registry (ACR), and Helm charts. Learn CI/CD best practices for container deployments."
+author: James R. Counts
+date: 2019-11-18
+last_modified_at: 2019-11-18
+categories:
+  - DevOps
+  - Azure
+  - Kubernetes
+  - CI/CD
 tags:
   - AzureDevOps
   - Kubernetes
   - DevOps
   - AKS
   - ACR
+  - Docker
+  - Helm
+  - .NET
+  - Containerization
+  - CI/CD
+  - Azure Pipelines
+  - Container Registry
+  - Deployment Automation
+keywords:
+  - Azure DevOps pipelines
+  - Kubernetes deployment
+  - Container CI/CD
+  - Azure Container Registry
+  - Helm charts
+  - .NET Docker
+  - Azure Kubernetes Service
+  - DevOps automation
+  - Container orchestration
+  - Pipeline automation
+image: /media/2019/11/01/container-hero.png
+featured: true
+toc: true
 ---
 
 <!-- TOC -->
@@ -332,7 +363,7 @@ Of course, we can see the parrot application running in the browser too. Still, 
 
 ## Looking Ahead
 
-Azure Pipelines have come a long way over the past year.  The ability to provide both build and deployment definitions in YAML improves maintainability.  The new Environments feature provides a logical separation between defining steps and governing deployment targets.  Features like caching still have preview status but already show promise.  
+Azure Pipelines have come a long way over the past year.  The ability to provide both build and deployment definitions in YAML improves maintainability.  The new Environments feature provides a logical separation between defining steps and governing deployment targets.  Features like caching still have preview status but already show promise.
 
 At the moment, though, the governance options for the Environments feature still has many fewer options that were available in the "classic" Release pipelines.  However, at the rate of change observed in Azure DevOps recently, I look forward to seeing Environments reach feature parity soon.
 
