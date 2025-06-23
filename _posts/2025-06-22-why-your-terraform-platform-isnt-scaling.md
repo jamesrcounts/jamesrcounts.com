@@ -6,9 +6,25 @@ tags: [terraform, infrastructure-as-code, terraform-cloud, azure, devops, platfo
 excerpt: >
   Your Terraform automation is great—until you need a new workspace, service principal, or landing zone. Then you're back to tickets and manual processes. Here's how to automate the back office that supports your infrastructure platform.
 image: /media/2025/06/22/workspace-request-flow.png
+author: James Counts
+description: >
+  Learn how to build a scalable Terraform platform that automates workspace creation, service principals, and landing zones. Stop relying on tickets and manual processes for infrastructure automation.
+keywords: >
+  terraform platform engineering, infrastructure automation, terraform cloud workspace management,
+  azure devops automation, service principal automation, landing zone automation,
+  infrastructure as code best practices, terraform scaling, platform engineering patterns
+canonical_url: https://jamesrcounts.com/2025/06/22/why-your-terraform-platform-isnt-scaling
+og_title: "Why Your Terraform Platform Isn't Scaling—and What to Do About It"
+og_description: >
+  Your Terraform automation is great—until you need a new workspace, service principal, or landing zone.
+  Then you're back to tickets and manual processes. Here's how to automate the back office that supports your infrastructure platform.
+og_image: /media/2025/06/22/workspace-request-flow.png
+twitter_card: summary_large_image
+twitter_title: "Why Your Terraform Platform Isn't Scaling"
+twitter_description: >
+  Learn how to build a scalable Terraform platform that automates workspace creation, service principals, and landing zones.
+twitter_image: /media/2025/06/22/workspace-request-flow.png
 ---
-
-# Why Your Terraform Platform Isn't Scaling—and What to Do About It
 
 Most Terraform blog posts start at the middle layer—deploying infrastructure like networks, services, or security policies. But that assumes something important: that your Terraform platform is already in place.
 
