@@ -14,7 +14,7 @@ Most Terraform blog posts start at the middle layer—deploying infrastructure l
 
 Before you deploy a single subnet or virtual machine, you need to establish the foundation that makes Terraform work at scale. That foundation is the root layer—and getting it right means the difference between a fragile pile of scripts and a scalable, governed infrastructure platform.
 
-In this post, I'll share how I structure the root layer to support multi-environment, multi-team Terraform setups using Terraform Cloud and GitHub. This isn't theory—it's what I've learned after multiple iterations across real-world orgs.
+In this post, I'll share how I structure the root layer to support multi-environment, multi-team Terraform setups using Terraform Cloud and GitHub (or Azure DevOps). This isn't theory—it's what I've learned after multiple iterations across real-world orgs.
 
 ## Production Was Perfect. Everything Else Still Ran on Tickets.
 
@@ -30,7 +30,7 @@ This is a problem I first ran into at a financial services company during one of
 
 But that illusion cracked the moment we needed to touch the platform *behind* the automation.
 
-If I needed a new service principal in Azure AD, I had to open a ServiceNow ticket.
+If I needed a new service principal in Entra ID, I had to open a ServiceNow ticket.
 If I needed access to a Git repo or a shared pipeline library in Azure DevOps, I needed to hunt down the Project Collection Administrator.
 If we wanted a new workspace in Terraform Cloud, forget it—we were back to tribal knowledge and manual steps.
 
@@ -55,7 +55,7 @@ Imagine spinning up a brand-new cloud **environment**—a subscription or resour
 
 In this model, you're not just deploying *services* with Terraform. You're defining the environment **in which those services will live**.
 
-* A scoped Azure AD service principal with the right roles? Code.
+* A scoped Entra ID service principal with the right roles? Code.
 * A private Git repo with permissions set and a pipeline ready to go? Code.
 * A secure secret store wired into your deployment workflow? Code.
 * A Terraform Cloud workspace with tagging, policies, and access controls? All in code.
@@ -80,7 +80,7 @@ The root layer isn't a single Terraform module — it's a layered architecture t
 
 The foundation. This is applied once (or very rarely) and manages your **Terraform Cloud organization** at the highest level. It establishes global constructs, such as teams, policies, and projects. Most importantly, it enables the automation of Terraform Cloud itself, allowing workspaces, modules, and environments to be managed *as code*.
 
-### 🧭 Workspace Workspace (!)
+### 🧭 Workspaces Workspace
 
 This layer runs **each time a new environment or project-level landing zone is needed**. It creates:
 
@@ -89,21 +89,21 @@ This layer runs **each time a new environment or project-level landing zone is n
 * Variable sets and their associations with workspaces
 * Optionally, Git repositories (when a new repo is needed)
 
-The workspace layer is revisited as projects grow, new zones are required, or shared pipelines need to be extended. It's the engine behind scaling your platform one secure, self-contained environment at a time.
+This workspace is revisited as projects grow, new zones are required, or shared pipelines need to be extended. It's the engine behind scaling your platform one secure, self-contained environment at a time.
 
 ### 🧩 Shared Modules Workspace
 
-This layer provides reusable infrastructure building blocks, such as an App Service module or a shared Virtual Network (VNet) template. Each shared module gets:
+This workspace provides reusable infrastructure building blocks, such as an App Service module or a shared Virtual Network (VNet) template. Each shared module gets:
 
 * Its own Git repository (always 1:1)
 * A Terraform Cloud registry entry
 * Automated registration and webhook setup so updates flow directly from Git
 
-This layer runs **whenever a new shared capability is developed**, helping teams reuse best-practice infrastructure without duplicating code.
+This workspace runs **whenever a new shared capability is developed**, helping teams reuse best-practice infrastructure without duplicating code.
 
 ---
 
-Together, these layers provide a platform that can be deployed securely, consistently, and without ticket-driven friction. You don't just automate environments. You automate the ability to create and evolve environments as your organization grows.
+Together, these workspaces provide a platform that can be deployed securely, consistently, and without ticket-driven friction. You don't just automate environments. You automate the ability to create and evolve environments as your organization grows.
 
 ## Getting Started: Bootstrapping the Root Workspace
 
@@ -213,7 +213,7 @@ At this point, your root layer is complete:
 
 * The **root workspace** manages Terraform Cloud itself.
 * The **workspaces workspace** provisions environments and organizational scaffolding.
-* The **shared modules workspace**, created by the workspaces workspace, delivers reusable infrastructure components.
+* The **shared modules workspace**, delivers reusable infrastructure components.
 
 With this structure in place, you're ready to use the workspaces workspace to provision real, production-ready landing zones—securely, consistently, and with zero ticket friction.
 
