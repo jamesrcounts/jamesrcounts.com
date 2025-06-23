@@ -1,12 +1,26 @@
 ---
 layout: post
 title: Getting started with serverless
+description: "A comprehensive guide to serverless computing for developers. Learn how to set up tools, cloud services, and deployment pipelines for your first serverless project."
+keywords: "serverless computing, cloud services, deployment pipeline, ruby, jekyll, homebrew, AWS Lambda, serverless architecture, cloud development"
+author: "James Counts"
+date: 2017-03-16
+last_modified_at: 2017-03-16
+categories:
+  - serverless
+  - cloud-computing
+  - development
 tags:
     - ruby
     - homebrew
     - jekyll
     - serverless
     - guides
+    - aws
+    - cloud
+    - deployment
+    - infrastructure
+excerpt: "Learn the fundamentals of serverless computing through a practical example of setting up a blog with cloud services and automated deployment pipelines."
 ---
 I'm really excited about serverless computing.  The major cloud vendors are expanding their serverless offerings every day.  I've spent quite a bit of time experimenting with these technologies and implementing them for customers.  But some of the most interesting work I've been doing I haven't been able to share.  So I decided to start this blog, and come up with some original examples so that I can share what I've learned, find out what people think, and get feedback on how it could be better.
 
