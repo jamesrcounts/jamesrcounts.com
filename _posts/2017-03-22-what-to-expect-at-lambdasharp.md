@@ -1,13 +1,36 @@
 ---
 layout: post
+title: "What to Expect at a LambdaSharp Meetup - Building a Twitter Bot with AWS Lambda"
+description: "Join me for a hands-on experience at the LambdaSharp meetup where we built an automated Twitter bot using AWS Lambda, S3, and Rekognition. Learn about serverless development, .NET Core, and image recognition."
+author: James Counts
+date: 2017-03-22
+categories:
+  - Serverless Development
+  - AWS
+  - .NET
+  - Meetups
 tags:
-    - serverless
-    - lambda
-    - AWS
-    - S3
-    - dotnet
-    - rekognition
-title: What to expect at a LambdaSharp Meetup - Good Times!
+  - serverless
+  - lambda
+  - AWS
+  - S3
+  - dotnet
+  - rekognition
+  - twitter-bot
+  - image-recognition
+  - meetup
+  - san-diego
+  - visual-studio-code
+  - net-core
+  - tweetinvi
+  - cloudwatch
+  - iam
+  - s3-events
+  - hands-on-coding
+  - team-challenge
+featured_image: /media/2017/03/22/the-challenge.jpg
+image_alt: "LambdaSharp meetup challenge setup with laptops and coding materials"
+canonical_url: /2017/03/22/what-to-expect-at-lambdasharp-meetup
 ---
 
 I feel lucky to live in San Diego because we have a great MeetUp here called [LambdaSharp](https://www.meetup.com/lambdasharp/), hosted by [@MindTouch](https://twitter.com/MindTouch).  It is a perfect MeetUp for me, I'm a longtime .net programmer, and a serverless computing enthusiast.  If that describes you too, or even if it half describes you, then you should come to the next meeting and check it out.  There is room in this group for .net devs curious about AWS, or AWS devs curious about .net.  There is even room for beginners interested in learning about both.
