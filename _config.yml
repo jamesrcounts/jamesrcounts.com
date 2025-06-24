@@ -12,6 +12,9 @@ lang: en  # Set default language
 github_username: jamesrcounts
 linkedin_username: jamesrcounts
 
+disqus:
+  shortname: jamesrcounts
+
 # SEO settings
 # logo: /assets/images/logo.png  # Add if you have a logo
 social:
