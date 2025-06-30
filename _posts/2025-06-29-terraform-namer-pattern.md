@@ -204,7 +204,7 @@ The caller doesn't have to build the name manually or remember the token order â
 
 We're not the only ones to notice the need for codified naming.
 
-Around the same time I wrote my first `namer`, Microsoft released an official [Terraform module for naming Azure resources](https://registry.terraform.io/modules/Azure/naming/azurerm/latest). Their module constructs names using inputs such as prefix, suffix. It's flexible by design â€” users can override the slug or supply custom strings, which makes it broadly applicable across thousands of organizations.
+Around the same time I wrote my first `namer`, Microsoft released an official [Terraform module for naming Azure resources](https://registry.terraform.io/modules/Azure/naming/azurerm/latest). Their module constructs names using inputs such as prefix, suffix. It's flexible by design, which makes it broadly applicable across thousands of organizations.
 
 And while we share the same goal (consistency), our approaches reflect different audiences:
 
@@ -214,9 +214,7 @@ My `namer` module is **opinionated by design**. It expects structured inputs suc
 
 This approach allows me to codify domain-specific structures. For example, one of my customers organizes infrastructure by program, grouped into solutions, each with multiple applications. That's easy to reflect in a structured `namer`. For Microsoft, building a module that covers all such variations would be nearly impossible.
 
-So while both modules solve the naming problem, they serve different needs:
-
-> Microsoft gives you a toolbox. A custom namer gives you a blueprint.
+So while both modules solve the naming problem, they serve different needs.
 
 ## Answering Common Objections
 
