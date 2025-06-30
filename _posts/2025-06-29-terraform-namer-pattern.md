@@ -115,9 +115,6 @@ But the important part isn't the order — it's **consistency**.
 > If it's app name, lead with that.
 > **Pick an order that makes sense for your team and stick to it.**
 
-{:.img-wrapper}
-{% responsive_image path: media/2025/06/29/azure-naming-tokens-stack.png alt: "Color-coded breakdown of a structured Azure naming convention showing resource type, environment, region, workload, application, and instance identifier" %}
-
 ---
 
 Once your structure is defined, the next step is to **codify it**.
