@@ -5,7 +5,7 @@ layout: post
 tags: [chatgpt, productivity, writing, developer-tools, ai, communication, content-creation, writing-tips, ai-productivity]
 excerpt: >
   Stuck on a blank page? I use ChatGPT as a thinking partner—not just a writing tool. Here's how "interviewing myself" with ChatGPT helps me think clearly, structure better, and write with less friction.
-canonical_url: https://jamesrcounts.com/2025/05/31/how-i-use-chatgpt-to-interview-myself/
+canonical_url: https://jamesrcounts.com/2025/05/31/how-i-use-chatgpt-to-interview-myself.html
 image: /media/2025/05/31/chatgpt-interview-inspiration.png
 author: James R. Counts
 category: Productivity

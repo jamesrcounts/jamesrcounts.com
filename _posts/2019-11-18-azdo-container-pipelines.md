@@ -2,6 +2,7 @@
 layout: post
 title: Azure DevOps Pipelines - Container Releases Demystified
 description: "Complete guide to building and deploying containerized .NET applications to Kubernetes using Azure DevOps pipelines, Azure Container Registry (ACR), and Helm charts. Learn CI/CD best practices for container deployments."
+canonical_url: "https://jamesrcounts.com/2019/11/18/azdo-container-pipelines.html"
 author: James R. Counts
 date: 2019-11-18
 last_modified_at: 2019-11-18

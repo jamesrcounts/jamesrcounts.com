@@ -2,6 +2,7 @@
 layout: post
 title: "Testing and Debugging AWS Lambda Functions: A Complete Guide for Developers"
 description: "Learn how to effectively test and debug AWS Lambda functions using unit tests, integration tests, and proper logging strategies. Includes C# examples and best practices for serverless development."
+canonical_url: "https://jamesrcounts.com/2017/05/13/on-testing-and-debugging-lambdas.html"
 author: "James Counts"
 date: 2017-05-13
 categories:

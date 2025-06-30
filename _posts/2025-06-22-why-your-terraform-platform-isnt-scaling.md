@@ -13,7 +13,7 @@ keywords: >
   terraform platform engineering, infrastructure automation, terraform cloud workspace management,
   azure devops automation, service principal automation, landing zone automation,
   infrastructure as code best practices, terraform scaling, platform engineering patterns
-canonical_url: https://jamesrcounts.com/2025/06/22/why-your-terraform-platform-isnt-scaling
+canonical_url: https://jamesrcounts.com/2025/06/22/why-your-terraform-platform-isnt-scaling.html
 og_title: "Why Your Terraform Platform Isn't Scaling—and What to Do About It"
 og_description: >
   Your Terraform automation is great—until you need a new workspace, service principal, or landing zone.

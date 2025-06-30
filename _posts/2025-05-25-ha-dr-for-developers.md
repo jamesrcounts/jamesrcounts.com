@@ -9,7 +9,7 @@ image: /media/2025/05/25/family-laptop-sunset.png
 excerpt: "Your system will fail. But that doesn't mean your weekend plans have to. Learn how to build peace of mind into your architecture with practical HA/DR strategies—especially in Azure."
 description: "Comprehensive guide to High Availability and Disaster Recovery for developers. Learn Azure HA/DR patterns, Active/Active vs Active/Passive topologies, and how to build resilient systems that prevent burnout. Includes practical examples and cost-benefit analysis."
 keywords: "high availability, disaster recovery, Azure HA/DR, cloud resilience, system architecture, DevOps, platform engineering, Azure Front Door, availability zones, RTO RPO, active-active deployment"
-canonical_url: "https://jamesrcounts.com/2025/05/25/ha-dr-for-developers"
+canonical_url: "https://jamesrcounts.com/2025/05/25/ha-dr-for-developers.html"
 og_image: /media/2025/05/25/family-laptop-sunset.png
 twitter_image: /media/2025/05/25/family-laptop-sunset.png
 ---

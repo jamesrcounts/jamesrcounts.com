@@ -21,6 +21,7 @@ tags:
     - deployment
     - infrastructure
 excerpt: "Learn the fundamentals of serverless computing through a practical example of setting up a blog with cloud services and automated deployment pipelines."
+canonical_url: "https://jamesrcounts.com/2017/03/16/getting-started-with-serverless.html"
 ---
 I'm really excited about serverless computing.  The major cloud vendors are expanding their serverless offerings every day.  I've spent quite a bit of time experimenting with these technologies and implementing them for customers.  But some of the most interesting work I've been doing I haven't been able to share.  So I decided to start this blog, and come up with some original examples so that I can share what I've learned, find out what people think, and get feedback on how it could be better.
 

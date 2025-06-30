@@ -30,7 +30,7 @@ tags:
   - team-challenge
 featured_image: /media/2017/03/22/the-challenge.jpg
 image_alt: "LambdaSharp meetup challenge setup with laptops and coding materials"
-canonical_url: /2017/03/22/what-to-expect-at-lambdasharp-meetup
+canonical_url: "https://jamesrcounts.com/2017/03/22/what-to-expect-at-lambdasharp-meetup.html"
 ---
 
 I feel lucky to live in San Diego because we have a great MeetUp here called [LambdaSharp](https://www.meetup.com/lambdasharp/), hosted by [@MindTouch](https://twitter.com/MindTouch).  It is a perfect MeetUp for me, I'm a longtime .net programmer, and a serverless computing enthusiast.  If that describes you too, or even if it half describes you, then you should come to the next meeting and check it out.  There is room in this group for .net devs curious about AWS, or AWS devs curious about .net.  There is even room for beginners interested in learning about both.
