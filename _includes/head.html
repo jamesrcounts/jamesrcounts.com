@@ -11,6 +11,13 @@
 
 <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}">
 
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="{{ '/favicon.svg' | relative_url }}">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ '/favicon-32x32.png' | relative_url }}">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ '/favicon-16x16.png' | relative_url }}">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ '/apple-touch-icon.png' | relative_url }}">
+<link rel="shortcut icon" href="{{ '/favicon.ico' | relative_url }}">
+
 {%- if page.image -%}
 <meta property="og:image" content="{{ page.image | relative_url }}">
 {%- endif -%}

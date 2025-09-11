@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Cloud shape -->
+  <path d="M24 12c0-4.4-3.6-8-8-8s-8 3.6-8 8c-2.2 0-4 1.8-4 4s1.8 4 4 4h16c2.2 0 4-1.8 4-4s-1.8-4-4-4z" fill="#0078d4"/>
+
+  <!-- Code brackets -->
+  <path d="M8 8l-2 2 2 2v2l-4-4 4-4v2z" fill="#ffffff"/>
+  <path d="M24 8l2 2-2 2v2l4-4-4-4v2z" fill="#ffffff"/>
+
+  <!-- Equal sign (representing code/configuration) -->
+  <rect x="12" y="14" width="8" height="1.5" fill="#ffffff"/>
+  <rect x="12" y="16.5" width="8" height="1.5" fill="#ffffff"/>
+</svg>

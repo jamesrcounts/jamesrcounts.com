@@ -17,6 +17,7 @@ disqus:
 
 # SEO settings
 # logo: /assets/images/logo.png  # Add if you have a logo
+favicon: /favicon.ico
 social:
   name: Jim Counts
   links:
