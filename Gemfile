@@ -23,6 +23,7 @@ group :development, :test do
   gem "html-proofer", "~> 5.0"
   gem "webrick", "~> 1.8"  # Required for Ruby 3+
   gem "nokogiri", ">= 1.15"
+  gem "solargraph", "~> 0.50"  # Ruby language server for VS Code
 end
 
 # Markdown processing
